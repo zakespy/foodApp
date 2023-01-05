@@ -3,6 +3,6 @@ import express from 'express'
 
 const router = express.Router();
 
-router.get('/customer',customerController.getAllDoc)
+router.get('/allCustomer',customerController.getAllDoc)
 
 export default router

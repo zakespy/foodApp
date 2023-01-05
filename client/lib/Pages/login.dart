@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foodapp/Data/customer.dart';
+import '../Data/customer.dart';
 
 class login extends StatefulWidget {
   const login({super.key});
@@ -12,6 +14,20 @@ class _loginState extends State<login> {
 
   @override
   Widget build(BuildContext context) {
+    Customer customer = Customer();
+
+    Future<List> result = customer.getAllCustomer();
+    print(result);
+
+    // return Container(
+    //     child: FutureBuilder<List>(
+    //   future: customer.getAllCustomer(),
+    //   builder: (context, snapshot) {
+    //     print(snapshot.data);
+    //     return Container();
+    //   },
+    // ));
+
     return Scaffold(
       // backgroundColor: Color.fromARGB(255, 192, 106, 36),
       body: Container(
@@ -21,7 +37,7 @@ class _loginState extends State<login> {
             end: Alignment.bottomLeft,
             stops: [0.1, 0.5, 0.7, 0.9],
             colors: [
-                Colors.yellow.shade800,
+              Colors.yellow.shade800,
               Colors.yellow.shade700,
               Colors.yellow.shade500,
               Colors.yellow.shade400,
@@ -43,7 +59,9 @@ class _loginState extends State<login> {
                     child: TextFormField(
                       // ignore: prefer_const_constructors
                       decoration: InputDecoration(
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade600)),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade600)),
                         hintText: 'Email',
                         hintStyle: const TextStyle(
                             fontSize: 18.0, fontStyle: FontStyle.italic),
@@ -71,7 +89,8 @@ class _loginState extends State<login> {
                       // ignore: prefer_const_constructors
                       decoration: InputDecoration(
                         focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade600)),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade600)),
                         hintText: 'Password',
                         hintStyle: const TextStyle(
                             fontSize: 18.0, fontStyle: FontStyle.italic),
@@ -97,12 +116,18 @@ class _loginState extends State<login> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                     child: ElevatedButton(
-                      
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.yellow[900])),
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.yellow[900])),
                       onPressed: () {},
                       child: Text('Login'),
                     ),
-                  )
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: Text("Don't have account. Sign Up")),
                 ],
               ),
             ),
