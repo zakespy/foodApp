@@ -11,10 +11,6 @@ class customerController{
         }
     }
 
-    static login = async(req,res)=>{
-        const emailId = req.emailId
-        const password = req.password
-    }
 }
 
 export default customerController;

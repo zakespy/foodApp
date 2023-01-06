@@ -1,6 +1,7 @@
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import '../Data/customer.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -12,11 +13,17 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   Map user = {
     'emailId': '',
-    'password':'',
-    'confirmPassword':'',
-    'name':'',
-    'phoneNo':'',
+    'password': '',
+    'confirmPassword': '',
+    'name': '',
+    'phoneNo': '',
   };
+
+  void signup(String emailId, String password, String name, String phoneNo) {
+    Customer c1 = Customer();
+    print(emailId + password + name + phoneNo);
+    c1.register(emailId, password, name, phoneNo);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +44,12 @@ class _SignUpState extends State<SignUp> {
         ),
         child: Center(
           child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
               color: Colors.white60,
             ),
             height: 500.0,
             width: 350.0,
-            
             child: Form(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -160,7 +167,7 @@ class _SignUpState extends State<SignUp> {
                       },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter Your password';
+                          return 'Enter Your Name';
                         } else {
                           return null;
                         }
@@ -190,7 +197,7 @@ class _SignUpState extends State<SignUp> {
                       },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter Your password';
+                          return 'Enter Your Phone Number';
                         } else {
                           return null;
                         }
@@ -203,7 +210,12 @@ class _SignUpState extends State<SignUp> {
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(Colors.yellow[900])),
-                      onPressed: () {},
+                      onPressed: () {
+                        print(user['emailId'] + user['password'] + user['name'] +
+                            user['phoneNo']);
+                        signup(user['emailId'], user['password'], user['name'],
+                            user['phoneNo']);
+                      },
                       child: Text('Sign Up'),
                     ),
                   ),
@@ -220,7 +232,7 @@ class _SignUpState extends State<SignUp> {
       ),
       appBar: AppBar(
         title: Text("Sign Up"),
-        backgroundColor:  Color.fromARGB(255, 224, 147, 59),
+        backgroundColor: Color.fromARGB(255, 224, 147, 59),
       ),
     );
   }
