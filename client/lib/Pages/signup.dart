@@ -19,10 +19,11 @@ class _SignUpState extends State<SignUp> {
     'phoneNo': '',
   };
 
-  void signup(String emailId, String password, String name, String phoneNo) {
+  void signup() {
     Customer c1 = Customer();
-    print(emailId + password + name + phoneNo);
-    c1.register(emailId, password, name, phoneNo);
+    // print(user['emailId'] + user['password'] + user['name'] + user['phoneNo']);
+    // c1.register(user['emailId'], user['password'], user['name'], user['phoneNo']);
+    c1.register(user);
   }
 
   @override
@@ -72,8 +73,10 @@ class _SignUpState extends State<SignUp> {
                         // ),
                       ),
                       onChanged: (value) {
-                        user['email'] = value;
-                        print(user['email']);
+                        setState(() {
+                          user['emailId'] = value;
+                        });
+                        print(user['emailId']);
                       },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
@@ -102,7 +105,9 @@ class _SignUpState extends State<SignUp> {
                       ),
                       obscureText: true,
                       onChanged: (value) {
-                        user['password'] = value;
+                        setState(() {
+                          user['password'] = value;
+                        });
                         print(user['password']);
                       },
                       validator: (String? value) {
@@ -132,7 +137,9 @@ class _SignUpState extends State<SignUp> {
                       ),
                       obscureText: true,
                       onChanged: (value) {
-                        user['confirmPassword'] = value;
+                        setState(() {
+                          user['confirmPassword'] = value;
+                        });
                         print(user['confirmPassword']);
                       },
                       validator: (String? value) {
@@ -162,7 +169,9 @@ class _SignUpState extends State<SignUp> {
                       ),
                       obscureText: false,
                       onChanged: (value) {
-                        user['Name'] = value;
+                        setState(() {
+                          user['name'] = value;
+                        });
                         print(user['Name']);
                       },
                       validator: (String? value) {
@@ -192,7 +201,9 @@ class _SignUpState extends State<SignUp> {
                       ),
                       obscureText: false,
                       onChanged: (value) {
-                        user['phoneNo'] = value;
+                        setState(() {
+                          user['phoneNo'] = value;
+                        });
                         print(user['phoneNo']);
                       },
                       validator: (String? value) {
@@ -211,10 +222,10 @@ class _SignUpState extends State<SignUp> {
                           backgroundColor:
                               MaterialStateProperty.all(Colors.yellow[900])),
                       onPressed: () {
-                        print(user['emailId'] + user['password'] + user['name'] +
-                            user['phoneNo']);
-                        signup(user['emailId'], user['password'], user['name'],
-                            user['phoneNo']);
+                        // print(user);
+                        // signup(user['emailId'], user['password'], user['name'],
+                        //     user['phoneNo']);
+                        signup();
                       },
                       child: Text('Sign Up'),
                     ),

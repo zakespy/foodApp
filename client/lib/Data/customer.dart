@@ -11,15 +11,26 @@ class Customer {
   String phoneNo = '';
 
   Future<Map> register(
-      String emailId, String password, String name, String phoneNo) async {
+      // String emailId, String password, String name, String phoneNo
+      Map user) async {
     try {
+      print(user['emailId'] );
+      Map<String, String> jsonMap = {};
+      // String body = jsonEncode(jsonMap);
       String path = 'http://10.0.2.2:8000/api/signup';
-      Response response = await http.post(Uri.parse(path), body: {
-        emailId: emailID,
-        password: password,
-        name: name,
-        phoneNo: phoneNo
-      });
+      Response response = await http.post(
+        Uri.parse(path),
+        body: jsonEncode({
+          'emailId': user['emailId'],
+          'password': user['password'],
+          'name': user['name'],
+          'phoneNo': user['phoneNo']
+        }),
+        headers: {
+          'Content-type':'application/json',
+          'Accept':'application/json',
+        }
+      );
       print(response.body);
       return jsonDecode(response.body);
     } catch (err) {
