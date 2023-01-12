@@ -24,6 +24,7 @@ class _SignUpState extends State<SignUp> {
     // print(user['emailId'] + user['password'] + user['name'] + user['phoneNo']);
     // c1.register(user['emailId'], user['password'], user['name'], user['phoneNo']);
     c1.register(user);
+    Navigator.pop(context, '/');
   }
 
   @override

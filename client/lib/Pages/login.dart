@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodapp/Data/customer.dart';
 import '../Data/customer.dart';
+import '../storage.dart';
 
 class login extends StatefulWidget {
   const login({super.key});
@@ -10,7 +12,9 @@ class login extends StatefulWidget {
 }
 
 class _loginState extends State<login> {
-  Map user = {'email': '', 'password': ''};
+  Map user = {'emailId': '', 'password': ''};
+
+  Map response = {};
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +22,21 @@ class _loginState extends State<login> {
 
     Future<List> result = customer.getAllCustomer();
     print(result);
+
+    Future<void> login() async {
+      response = await customer.login(user);
+      final secureStorage store = secureStorage();
+      print("***************");
+      print(response);
+      String? id = await store.getId();
+      String? token = await store.getToken();
+      // print(id);
+      // print(token);
+      // print(store.getId());
+      // print(store.getToken());
+
+      // response['status'] ? Navigator.pushReplacementNamed(context, '/home'):'';
+    }
 
     // return Container(
     //     child: FutureBuilder<List>(
@@ -71,7 +90,7 @@ class _loginState extends State<login> {
                         ),
                       ),
                       onChanged: (value) {
-                        user['email'] = value;
+                        user['emailId'] = value;
                         print(user['email']);
                       },
                       validator: (String? value) {
@@ -119,7 +138,9 @@ class _loginState extends State<login> {
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(Colors.yellow[900])),
-                      onPressed: () {},
+                      onPressed: () {
+                        login();
+                      },
                       child: Text('Login'),
                     ),
                   ),

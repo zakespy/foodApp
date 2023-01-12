@@ -30,10 +30,11 @@ class customerAuthController {
 
   static login = async (req, res) => { 
     const {emailId,password} = req.body
+    console.log(emailId,' ',password)
     await customerModel.findOne({emailId:emailId}).then(async e=>{
         if(bcrypt.compareSync(password,e.password)){
             var privateKey = process.env.PRIVATE_KEY
-            console.log(privateKey)
+            // console.log(privateKey)
             var token = jwt.sign(
                 {
                     emailId:e.emailId
