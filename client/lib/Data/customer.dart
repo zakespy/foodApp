@@ -47,7 +47,7 @@ class Customer {
           'Content-type': 'application/json',
           'Accept': 'application/json',
         });
-    print(response.body);
+    // print(response.body);
     Map res = jsonDecode(response.body);
     final secureStorage _secureStorage = secureStorage();
     Map USER = res['user'];

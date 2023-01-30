@@ -27,15 +27,15 @@ class _loginState extends State<login> {
       response = await customer.login(user);
       final secureStorage store = secureStorage();
       print("***************");
-      print(response);
+      // print(response);
       String? id = await store.getId();
       String? token = await store.getToken();
-      // print(id);
-      // print(token);
+      print("id "+id!);
+      print("token "+token!);
       // print(store.getId());
       // print(store.getToken());
 
-      // response['status'] ? Navigator.pushReplacementNamed(context, '/home'):'';
+      response['status'] ? Navigator.pushReplacementNamed(context, '/home'):'';
     }
 
     // return Container(

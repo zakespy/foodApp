@@ -8,22 +8,24 @@ class secureStorage {
   final String _keyToken = 'token';
 
   Future<void> setId(String id) async {
+    // print("Id" + id);
     await storage.write(key: _keyId, value: id);
   }
 
   Future<String?> getId() async {
     String? ID = await storage.read(key: _keyId) ?? "";
-    print(ID);
+    // print(ID);
     return ID;
   }
 
   Future<void> setToken(String token) async {
+    // print("Token" + token);
     await storage.write(key: _keyToken, value: token);
   }
 
   Future<String?> getToken() async {
     String? to = await storage.read(key: _keyToken) ?? "";
-    print(to);
+    // print(to);
 
     return to;
   }
