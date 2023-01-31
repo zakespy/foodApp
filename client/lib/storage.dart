@@ -29,4 +29,12 @@ class secureStorage {
 
     return to;
   }
+
+  Future<void> deleteToken() async {
+    await storage.delete(key: _keyToken);
+  }
+
+  Future<void> deleteId() async {
+    await storage.delete(key: _keyId);
+  }
 }
