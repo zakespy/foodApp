@@ -5,8 +5,14 @@ const customerSchema = new mongoose.Schema({
     password:{type:String,required:true,trim:true},
     name:{type:String},
     phoneNo:{type:String},
-    token:{type:String}
+    token:{type:String},
+    cart:[{
+        foodName:String,
+        foodPrice:Number,
+        foodType:String
+    }],
 })
+
 
 const customerModel  = mongoose.model("customer",customerSchema)
 
