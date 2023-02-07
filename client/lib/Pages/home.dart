@@ -27,10 +27,28 @@ class _homeState extends State<home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: Column(children: <Widget>[
-          Text("Widget 1"),
-          Text("Widget 2"),
-          Text("Widget 3"),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+          Padding(
+            padding:  const EdgeInsets.all(10),
+            child: ElevatedButton(onPressed: ()=>{},
+            child: Text("Widget 1"),
+            ),
+          ),
+          Padding(
+            padding:  const EdgeInsets.all(10),
+            child: ElevatedButton(onPressed: ()=>{},
+            child: Text("Widget 2"),
+            ),
+          ),
+          Padding(
+            padding:  const EdgeInsets.all(10),
+            child: ElevatedButton(onPressed: ()=>{},
+            child: Text("Widget 3"),
+            ),
+          ),
+        
         ]),
       ),
       appBar: AppBar(
@@ -100,6 +118,9 @@ class _homeState extends State<home> {
               height: 650,
               width: 400,
               color: Colors.red[200],
+              child: Column(children: <Widget>[
+
+              ],),
             ),
           ),
         ],),
