@@ -53,12 +53,21 @@ class foodController{
     }
 
     static editFood = async(req,res)=>{
-        const {foodName,foodPrice,foodType} = req.body
+        const {foodName,foodPrice,foodType,categoryNumber} = req.body
         await foodModel.findOne({foodName:foodName}).then(async e=>{
             if(e){
                 e.foodName = foodName
                 e.foodPrice = foodPrice
                 e.foodType = foodType
+                let count = 0
+                e.foodCategory.map(e=>{
+                    if(e.categoryNumber == categoryNumber){
+                        count++;
+                    }
+                })
+                if(count==0){
+                    e.foodCategory.append(categoryNumber)
+                }
                 await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
                     return res.json({message:"Successfully updated food",status:true})
                 })
@@ -71,10 +80,73 @@ class foodController{
         })
     }
 
-    static createCombination = async(req,res)=>{
+    static getFoodCategory  = async (req,res)=>{
         const {foodName} = req.body
-
+        await foodModel.findOne({foodName:foodName}).then(e=>{
+            if(e){
+                return res.json({category:e.foodCategory,status:true})
+            }else{
+                return res.json({message:"Food does not exists",status:false})
+            }
+        }).catch(err=>{
+            return res.status(500).json({message:"Server error",status:false})
+        })
     }
+
+    static addCategory = async (req,res)=>{
+        const {foodName,categoryNumber} = req.body
+        await foodModel.findOne({foodName:foodName}).then(async e=>{
+            if(e){
+                let count = 0;
+                e.foodCategory.map(element=>{
+                    if(e.categoryNumber == categoryNumber){
+                        count++
+                    }
+                })
+                if(count == 0){
+                    e.foodCategory.append(categoryNumber)
+                    await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
+                        return res.json({message:"Successfully added category",status:true})
+                    })
+                }else{
+                    return res.json({message:"Category already exists",status:false})
+                }
+            }else{
+                return res.json({message:"food does not exists",status:false})
+            }
+        }).catch(err=>{
+            return res.status(500).json({message:"Server error",status:false})
+        })
+    }
+
+    static deleteCategory = async (req,res)=>{
+        const {foodName,categoryNumber} = req.body
+        await foodModel.findOne({foodName:foodName}).then(async e=>{
+            if(e){
+                let count = 0;
+                let index = -1
+                e.foodCategory.map(element=>{
+                    if(e.categoryNumber == categoryNumber){
+                        index = count
+                    }
+                    count++
+                })
+                if(index != -1){
+                    e.foodCategory.splice(index,1)
+                    await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
+                        return res.json({message:"Successfully removed category",status:true})
+                    })
+                }else{
+                    return res.json({message:"Category does not exists",status:false})
+                }
+            }else{
+                return res.json({message:"food does not exists",status:false})
+            }
+        }).catch(err=>{
+            return res.status(500).json({message:"Server error",status:false})
+        })
+    }
+
 }
 
 export default foodController;

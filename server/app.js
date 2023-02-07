@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import connectDB from "./db/connection.js";
 import customer from "./routes/customer.js"
 import food from "./routes/food.js"
+import category from "./routes/category.js"
 
 const app = express()
 dotenv.config({ path: "./config.env" });
@@ -18,6 +19,7 @@ app.use(express.json())
 
 app.use("/api",customer);
 app.use("/api/food",food)
+app.use("/api/category",category)
 
 
 
