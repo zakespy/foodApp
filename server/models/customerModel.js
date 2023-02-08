@@ -5,15 +5,10 @@ const customerSchema = new mongoose.Schema({
     password:{type:String,required:true,trim:true},
     name:{type:String},
     phoneNo:{type:String},
-    token:{type:String},
-    cart:[{
-        foodName:String,
-        foodPrice:Number,
-        foodType:String
-    }],
+    token:{type:String}
 })
 
 
 const customerModel  = mongoose.model("customer",customerSchema)
 
-export default customerModel
+export default customerModel 
