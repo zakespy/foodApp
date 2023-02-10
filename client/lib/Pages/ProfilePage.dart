@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
           children: <Widget>[
             Container(
               height: 250,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color.fromARGB(255, 41, 88, 190), Color.fromARGB(255, 185, 55, 142)],
                   begin: Alignment.centerLeft,
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
+                    children: const <Widget>[
                      
                       CircleAvatar(
                         backgroundColor: Color.fromARGB(179, 75, 168, 230),
@@ -43,10 +43,10 @@ class MyApp extends StatelessWidget {
                       
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
-                  Text(
+                  const Text(
                     'Paresh',
                     style: TextStyle(
                       fontSize: 35,
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  Text(
+                  const Text(
                     'TY Comps',
                     style: TextStyle(
                       color: Color.fromARGB(255, 255, 255, 255),
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                   Expanded(
                     child: Container(
                       color: Color.fromARGB(255, 92, 75, 192),
-                      child: ListTile(
+                      child: const ListTile(
                         title: Text(
                           '33',
                           textAlign: TextAlign.center,
@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
             ),
             Container(
               child: Column(
-                children: <Widget>[
+                children: const <Widget>[
                   ListTile(
                     title: Text(
                       'College ID',

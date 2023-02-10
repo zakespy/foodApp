@@ -18,6 +18,7 @@ class historyController{
         const {emailId,orderList} = req.body
         await historyModel.find({emailId:emailId}).then(async e=>{
             if(e){
+                e.order = new Date() 
                 e.order.append(orderList)
                 await historyModel.findOneAndUpdate({emailId:emailId},e).then(e=>{
                     return res.json({message:"Succesfully added to history",status:true})
