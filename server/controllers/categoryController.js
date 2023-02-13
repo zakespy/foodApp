@@ -1,3 +1,5 @@
+//admin food category operations
+
 import categoryModel from "../models/categoryModel.js";
 
 class categoryController{
