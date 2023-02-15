@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/Pages/home.dart';
 import 'Pages/login.dart';
+import 'package:foodapp/Pages/ProfilePage.dart';
 import 'Pages/signup.dart';
 import '../storage.dart';
 
@@ -17,7 +18,8 @@ Future<void> main() async {
       '/': (context) => home(),
       '/signup': (context) => SignUp(),
       '/login': (context)=> login(),
-      '/home': (context) => home()
+      '/home': (context) => home(),
+      '/profile':(context)=> ProfilePage(),
     },
   ));
   }else{
@@ -27,7 +29,8 @@ Future<void> main() async {
       '/': (context) => login(),
       '/signup': (context) => SignUp(),
       '/home': (context) => home(),
-      '/login':(context) => login() 
+      '/login':(context) => login(),
+      '/profile':(context)=> ProfilePage(),
     },
   ));
   }

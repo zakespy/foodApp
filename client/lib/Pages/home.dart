@@ -3,6 +3,7 @@
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
+import 'package:foodapp/Pages/ProfilePage.dart';
 import 'package:foodapp/Data/food.dart';
 import '../storage.dart';
 // import 'package:flutter/src/widgets/framework.dart';
@@ -58,27 +59,27 @@ class _homeState extends State<home> {
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () => {},
-                    child: Text("Widget 1"),
+                    child: const Text("Widget 1"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () => {},
-                    child: Text("Widget 2"),
+                    child: const Text("Widget 2"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () => {},
-                    child: Text("Widget 3"),
+                    child: const Text("Widget 3"),
                   ),
                 ),
               ]),
         ),
         appBar: AppBar(
-          title: Text("appbar"),
+          title: const Text("appbar"),
           actions: [
             Row(
               children: [
@@ -91,8 +92,10 @@ class _homeState extends State<home> {
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(20)),
                     child: IconButton(
-                      icon: Icon(Icons.person_2_rounded),
-                      onPressed: () => {},
+                      icon: const Icon(Icons.person_2_rounded),
+                      onPressed: () => {
+                        Navigator.pushNamed(context, '/profile')
+                      },
                     ),
                   ),
                 )
@@ -112,7 +115,7 @@ class _homeState extends State<home> {
           // ),
         ),
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+          // scrollDirection: Axis.vertical,
           child: Column(
             children: <Widget>[
               Padding(
@@ -190,7 +193,7 @@ class _homeState extends State<home> {
                         future: getMenu(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (!snapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           } else {
                             return Container(
                                 child: ListView.builder(
@@ -198,15 +201,73 @@ class _homeState extends State<home> {
                                     scrollDirection: Axis.vertical,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      return Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Container(
-                                            height: 60,
-                                            width: 370,
-                                            color: Colors.white,
-                                            child: Text('${menu['menu'][index]['foodName']}'),
-                                          ),
+                                      return Card(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 250,
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          30, 10, 30, 10),
+                                                      child: Container(
+                                                        height: 70,
+                                                        width: 70,
+                                                        child: const Text("Image"),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          Title(
+                                                              color:
+                                                                  Colors.black,
+                                                              child: Text(
+                                                                '${menu['menu'][index]['foodName']}',
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              )),
+                                                          Title(
+                                                              color:
+                                                                  Colors.black,
+                                                              child: Text(
+                                                                '${menu['menu'][index]['foodType']}',
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ]),
+                                            ),
+                                            // IconButton(onPressed: ()=>{}, icon: Icon(Icons.shopping_cart,color: Colors.black54,))
+                                            Container(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: TextButton(
+                                                    onPressed: () => {},
+                                                    child: const Text(
+                                                      "Add",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              53,
+                                                              123,
+                                                              157)),
+                                                    )))
+                                          ],
                                         ),
                                       );
                                       // return Text(

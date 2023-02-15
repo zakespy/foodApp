@@ -23,12 +23,12 @@ class foodController{
     }
 
     static addFood = async (req,res)=>{
-        const {foodName,foodPrice,foodType} = req.body
+        const {foodName,foodPrice,foodType,foodImage} = req.body
         await foodModel.findOne({foodName:foodName}).then(async e=>{
             if(e){
                 return res.json({message:"Food already exists",status:false})
             }else{
-                const newFood =  new foodModel({foodName,foodPrice,foodType})
+                const newFood =  new foodModel({foodName,foodPrice,foodType,foodImage})
                 await newFood.save().then(e=>{
                     return res.json({message:"Successfully added food",status:true})
                 })
@@ -55,21 +55,31 @@ class foodController{
     }
 
     static editFood = async(req,res)=>{
-        const {foodName,foodPrice,foodType,categoryNumber} = req.body
+        const {foodName,foodPrice,foodType,categoryNumber,foodImage} = req.body
+        // console.log(req.body.foodName)
         await foodModel.findOne({foodName:foodName}).then(async e=>{
+            // console.log(e)
             if(e){
                 e.foodName = foodName
                 e.foodPrice = foodPrice
-                e.foodType = foodType
-                let count = 0
-                e.foodCategory.map(e=>{
-                    if(e.categoryNumber == categoryNumber){
-                        count++;
+                // e.foodType = foodType
+                e.foodImage = foodImage 
+                // console.log("e :",e);
+                if(e.foodCategory.length == 0){
+                    // console.log("e :",e);
+                    e.foodCategory.push(categoryNumber)
+                }else{
+                    let count = 0
+                    e.foodCategory.map(e=>{
+                        if(e.categoryNumber == categoryNumber){
+                            count++;
+                        }
+                    })
+                    if(count==0){
+                        e.foodCategory.push(categoryNumber)
                     }
-                })
-                if(count==0){
-                    e.foodCategory.append(categoryNumber)
                 }
+                // console.log("e :",e);
                 await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
                     return res.json({message:"Successfully updated food",status:true})
                 })
@@ -77,8 +87,8 @@ class foodController{
             else{
                 return res.json({message:"Food Does not exist",status:false})
             }
-        }).catch(err=>{ 
-            return res.status(500).json({message:"Server error",status:false})
+        }).catch((err)=>{ 
+            return res.status(500).json({message:"Server error",status:false,error:err})
         })
     }
 
@@ -106,7 +116,7 @@ class foodController{
                     }
                 })
                 if(count == 0){
-                    e.foodCategory.append(categoryNumber)
+                    e.foodCategory.push(categoryNumber)
                     await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
                         return res.json({message:"Successfully added category",status:true})
                     })
