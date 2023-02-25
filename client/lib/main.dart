@@ -2,9 +2,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/Pages/home.dart';
-import 'package:foodapp/Pages/cart.dart';
-// import 'Pages/login.dart';
-// import 'Pages/signup.dart';
+import 'package:foodapp/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
+import 'Pages/login.dart';
+import 'package:foodapp/Pages/ProfilePage.dart';
+import 'Pages/signup.dart';
 import '../storage.dart';
 
 Future<void> main() async {
@@ -12,27 +14,35 @@ Future<void> main() async {
   CheckToken to = CheckToken();
   Future<bool> tokenValue = to.verifyToken();
   if(await tokenValue){
-    runApp(MaterialApp(
+    runApp(
+      MultiProvider(providers: [
+        ChangeNotifierProvider(create: (_)=>Cart(items: []))
+      ],child:MaterialApp(
     initialRoute: '/',
     routes: {
-      // '/': (context) => home(),
-      '/': (context) => Cart(),
-      // '/signup': (context) => SignUp(),
-      // '/login': (context)=> login(),
-      // '/home': (context) => home()
+      '/': (context) => home(),
+      '/signup': (context) => SignUp(),
+      '/login': (context)=> login(),
+      '/home': (context) => home(),
+      '/profile':(context)=> ProfilePage(),
     },
-  ));
+  ))
+      );
   }else{
-    runApp(MaterialApp(
+    runApp(
+      MultiProvider(providers: [
+        ChangeNotifierProvider(create: (_)=>Cart(items: []))
+      ],child:MaterialApp(
     initialRoute: '/',
     routes: {
-      // '/': (context) => login(),
-      // '/signup': (context) => SignUp(),
-      // '/home': (context) => home(),
-      '/home': (context) => Cart(),
-      // '/login':(context) => login() 
+      '/': (context) => login(),
+      '/signup': (context) => SignUp(),
+      '/home': (context) => home(),
+      '/login':(context) => login(),
+      '/profile':(context)=> ProfilePage(),
     },
-  ));
+  ))
+      ,);
   }
   
 }
