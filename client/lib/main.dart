@@ -2,6 +2,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/Pages/home.dart';
+import 'package:foodapp/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
 import 'Pages/login.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
 import 'Pages/signup.dart';
@@ -12,7 +14,10 @@ Future<void> main() async {
   CheckToken to = CheckToken();
   Future<bool> tokenValue = to.verifyToken();
   if(await tokenValue){
-    runApp(MaterialApp(
+    runApp(
+      MultiProvider(providers: [
+        ChangeNotifierProvider(create: (_)=>Cart(items: []))
+      ],child:MaterialApp(
     initialRoute: '/',
     routes: {
       '/': (context) => home(),
@@ -21,9 +26,13 @@ Future<void> main() async {
       '/home': (context) => home(),
       '/profile':(context)=> ProfilePage(),
     },
-  ));
+  ))
+      );
   }else{
-    runApp(MaterialApp(
+    runApp(
+      MultiProvider(providers: [
+        ChangeNotifierProvider(create: (_)=>Cart(items: []))
+      ],child:MaterialApp(
     initialRoute: '/',
     routes: {
       '/': (context) => login(),
@@ -32,7 +41,8 @@ Future<void> main() async {
       '/login':(context) => login(),
       '/profile':(context)=> ProfilePage(),
     },
-  ));
+  ))
+      ,);
   }
   
 }

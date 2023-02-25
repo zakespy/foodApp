@@ -5,6 +5,9 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
 import 'package:foodapp/Data/food.dart';
+import 'package:foodapp/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
+
 import '../storage.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +54,10 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.shopping_cart),
+        ),
         drawer: Drawer(
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -93,9 +100,8 @@ class _homeState extends State<home> {
                         BoxDecoration(borderRadius: BorderRadius.circular(20)),
                     child: IconButton(
                       icon: const Icon(Icons.person_2_rounded),
-                      onPressed: () => {
-                        Navigator.pushNamed(context, '/profile')
-                      },
+                      onPressed: () =>
+                          {Navigator.pushNamed(context, '/profile')},
                     ),
                   ),
                 )
@@ -193,7 +199,8 @@ class _homeState extends State<home> {
                         future: getMenu(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (!snapshot.hasData) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           } else {
                             return Container(
                                 child: ListView.builder(
@@ -219,7 +226,8 @@ class _homeState extends State<home> {
                                                       child: Container(
                                                         height: 70,
                                                         width: 70,
-                                                        child: const Text("Image"),
+                                                        child:
+                                                            const Text("Image"),
                                                       ),
                                                     ),
                                                     Container(
@@ -255,7 +263,9 @@ class _homeState extends State<home> {
                                                 alignment:
                                                     Alignment.centerRight,
                                                 child: TextButton(
-                                                    onPressed: () => {},
+                                                    // onPressed: () => {print("Hii")},
+                                                    // onPressed: () => {print(menu['menu'][index])},
+                                                    onPressed: () => context.read<Cart>().addToCart(menu['menu'][index]),
                                                     child: const Text(
                                                       "Add",
                                                       style: TextStyle(
