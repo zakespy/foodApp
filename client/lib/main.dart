@@ -2,6 +2,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/Pages/home.dart';
+import 'package:foodapp/Pages/cart.dart';
 // import 'Pages/login.dart';
 // import 'Pages/signup.dart';
 import '../storage.dart';
@@ -14,7 +15,8 @@ Future<void> main() async {
     runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => home(),
+      // '/': (context) => home(),
+      '/': (context) => Cart(),
       // '/signup': (context) => SignUp(),
       // '/login': (context)=> login(),
       // '/home': (context) => home()
@@ -26,7 +28,8 @@ Future<void> main() async {
     routes: {
       // '/': (context) => login(),
       // '/signup': (context) => SignUp(),
-      '/home': (context) => home(),
+      // '/home': (context) => home(),
+      '/home': (context) => Cart(),
       // '/login':(context) => login() 
     },
   ));
