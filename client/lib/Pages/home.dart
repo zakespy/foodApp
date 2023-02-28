@@ -55,7 +55,9 @@ class _homeState extends State<home> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/cart');
+          },
           child: Icon(Icons.shopping_cart),
         ),
         drawer: Drawer(
@@ -194,7 +196,7 @@ class _homeState extends State<home> {
                 child: Container(
                     height: 750,
                     width: 350,
-                    color: Colors.red[200],
+                    color: Color.fromRGBO(239, 154, 154, 1),
                     child: FutureBuilder(
                         future: getMenu(),
                         builder: (context, AsyncSnapshot snapshot) {
@@ -265,7 +267,10 @@ class _homeState extends State<home> {
                                                 child: TextButton(
                                                     // onPressed: () => {print("Hii")},
                                                     // onPressed: () => {print(menu['menu'][index])},
-                                                    onPressed: () => context.read<Cart>().addToCart(menu['menu'][index]),
+                                                    onPressed: () => context
+                                                        .read<Cart>()
+                                                        .addToCart(menu['menu']
+                                                            [index]),
                                                     child: const Text(
                                                       "Add",
                                                       style: TextStyle(
