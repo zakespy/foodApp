@@ -3,6 +3,7 @@ import 'package:foodapp/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/model/items.dart';
 import 'package:http/http.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -15,6 +16,38 @@ class _CartState extends State<CartPage> {
   // List products = context.read<Cart>().cartLength;
 
   static get index => null;
+
+  final _razorpay = Razorpay();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    });
+    super.initState();
+  }
+
+  _handlePaymentSuccess() {
+
+  }
+
+  _handlePaymentError() {
+
+  }
+
+  _handleExternalWallet() {
+
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    
+    super.dispose();
+  }
+
   List<Item> products = [
     Item(
         name: 'Apple',
