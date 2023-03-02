@@ -71,4 +71,25 @@ class Customer {
       return Future.error(err);
     }
   }
+
+  Future<Map> getProfile(String id) async {
+    try {
+      String path = 'http://10.0.2.2:8000/api/profile';
+      Response response = await http.post(Uri.parse(path),
+        body: jsonEncode(
+            {'id': id}),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        return Future.error("Server error");
+      }
+    } catch (err) {
+      return Future.error(err);
+    }
+  }
+
 }

@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/Pages/home.dart';
 import 'package:foodapp/provider/cart_provider.dart';
+import 'package:foodapp/Pages/cartPage.dart';
+import 'package:foodapp/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'Pages/login.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
@@ -16,7 +18,8 @@ Future<void> main() async {
   if(await tokenValue){
     runApp(
       MultiProvider(providers: [
-        ChangeNotifierProvider(create: (_)=>Cart(items: []))
+        ChangeNotifierProvider(create: (_)=>Cart(items: [])),
+        ChangeNotifierProvider(create: (_)=>Profile(data: {})),
       ],child:MaterialApp(
     initialRoute: '/',
     routes: {
@@ -25,13 +28,15 @@ Future<void> main() async {
       '/login': (context)=> login(),
       '/home': (context) => home(),
       '/profile':(context)=> ProfilePage(),
+      '/cart':(context)=> CartPage(),
     },
   ))
       );
   }else{
     runApp(
       MultiProvider(providers: [
-        ChangeNotifierProvider(create: (_)=>Cart(items: []))
+        ChangeNotifierProvider(create: (_)=>Cart(items: [])),
+        ChangeNotifierProvider(create: (_)=>Profile(data: {})),
       ],child:MaterialApp(
     initialRoute: '/',
     routes: {
@@ -40,6 +45,7 @@ Future<void> main() async {
       '/home': (context) => home(),
       '/login':(context) => login(),
       '/profile':(context)=> ProfilePage(),
+      '/cart':(context)=> CartPage(),
     },
   ))
       ,);
