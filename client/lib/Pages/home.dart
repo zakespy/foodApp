@@ -98,11 +98,11 @@ class _homeState extends State<home> {
                     // color: Colors.black,
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                    child: IconButton(
-                      icon: const Icon(Icons.person_2_rounded),
-                      onPressed: () =>
-                          {Navigator.pushNamed(context, '/profile')},
-                    ),
+                    // child: IconButton(
+                    //   icon: const Icon(Icons.person_2_rounded),
+                    //   onPressed: () =>
+                    //       {Navigator.pushNamed(context, '/profile')},
+                    // ),
                   ),
                 )
               ],
