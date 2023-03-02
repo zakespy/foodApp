@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:foodapp/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +48,21 @@ class _CartState extends State<CartPage> {
     _razorpay.clear();
     
     super.dispose();
+  }
+
+  void createOrder() async {
+    String keyId = 'rzp_test_rk34q3MXaI4tBi';
+    String keySec = 'T5RC8mNXy9yJANYD6QLdEUPH';
+    
+    String basicAuth = 'Basic ${base64Encode(utf8.encode('$keyId:$keySec'))}';
+
+    Map<String, dynamic> body = {
+      "amount": 100,
+      "currency": "INR",
+      "receipt": "rcpt_id_1"
+    };
+
+    
   }
 
   List<Item> products = [
