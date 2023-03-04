@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:foodapp/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/model/items.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class CartPage extends StatefulWidget {
@@ -31,8 +31,8 @@ class _CartState extends State<CartPage> {
     super.initState();
   }
 
-  _handlePaymentSuccess() {
-
+  _handlePaymentSuccess( PaymentSuccessResponse response ) {
+    
   }
 
   _handlePaymentError() {
@@ -50,19 +50,77 @@ class _CartState extends State<CartPage> {
     super.dispose();
   }
 
-  void createOrder() async {
-    String keyId = 'rzp_test_rk34q3MXaI4tBi';
-    String keySec = 'T5RC8mNXy9yJANYD6QLdEUPH';
+  // void createOrder() async {
+  //   String keyId = 'rzp_test_rk34q3MXaI4tBi';
+  //   String keySec = 'T5RC8mNXy9yJANYD6QLdEUPH';
     
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$keyId:$keySec'))}';
+  //   String basicAuth = 'Basic ${base64Encode(utf8.encode('$keyId:$keySec'))}';
 
-    Map<String, dynamic> body = {
-      "amount": 100,
-      "currency": "INR",
-      "receipt": "rcpt_id_1"
+  //   Map<String, dynamic> body = {
+  //     "amount": 100,
+  //     "currency": "INR",
+  //     "receipt": "rcpt_id_1"
+  //   };
+
+    
+  // }
+
+  void createOrder() async {
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/createOrder"),
+                      body: jsonEncode({
+                        "amount": 100
+                      }),
+                      headers: {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                      }
+                    ); 
+
+    if( res.statusCode == 201 ){
+      orderCheckout( jsonDecode(res.body)['order']['id'], jsonDecode(res.body)['order']['amount'] );
+    }
+
+  }
+
+  void orderCheckout( orderId, amount ) async {
+    var options = {
+      'key': 'rzp_test_rk34q3MXaI4tBi',
+      'amount': amount, //in the smallest currency sub-unit.
+      'name': 'Acme Corp.',
+      'order_id': orderId, // Generate order_id using Orders API
+      'description': 'Fine T-Shirt',
+      'timeout': 60*5, // in seconds
+      'prefill': {
+        'contact': '1234567890',
+        'email': 'testuser1@example.com'
+      }
     };
 
-    
+    _razorpay.open(options);
+  }
+
+  void verifySignature( { String? signature, String? paymentId, String? orderId} ) async {
+    Map<String, dynamic> body = {
+      "order_id": orderId,
+      "razorpay_payment_id": paymentId,
+      "razorpay_signature":signature
+    };
+
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/verifySignature"),
+                      body: body,
+                      headers: {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                      }
+                    );
+
+    if( res.statusCode == 200 ) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res.body),
+          )
+      );
+    }
   }
 
   List<Item> products = [
