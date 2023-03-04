@@ -20,6 +20,7 @@ class _CartState extends State<CartPage> {
   static get index => null;
 
   final _razorpay = Razorpay();
+  late String order_Id;
 
   @override
   void initState() {
@@ -32,15 +33,28 @@ class _CartState extends State<CartPage> {
   }
 
   _handlePaymentSuccess( PaymentSuccessResponse response ) {
-    
+    verifySignature(
+      signature: response.signature,
+      paymentId: response.paymentId,
+      // orderId: response.orderId
+      orderId: order_Id
+    );
   }
 
-  _handlePaymentError() {
-
+  _handlePaymentError( PaymentFailureResponse response ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response.message ?? " "),
+      ),
+    );
   }
 
-  _handleExternalWallet() {
-
+  _handleExternalWallet( ExternalWalletResponse response ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response.walletName ?? ""),
+      )
+    );
   }
 
   @override
@@ -75,6 +89,8 @@ class _CartState extends State<CartPage> {
                         'Accept': 'application/json',
                       }
                     ); 
+  
+    order_Id = jsonDecode(res.body)['order']['id'];
 
     if( res.statusCode == 201 ){
       orderCheckout( jsonDecode(res.body)['order']['id'], jsonDecode(res.body)['order']['amount'] );
@@ -468,7 +484,7 @@ class _CartState extends State<CartPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: createOrder,
                             child: const Text(
                               "Place Order",
                               style: TextStyle(
