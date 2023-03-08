@@ -10,6 +10,7 @@ import 'Pages/login.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
 import 'Pages/signup.dart';
 import '../storage.dart';
+import 'package:foodapp/Pages/tokenPage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
