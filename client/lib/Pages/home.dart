@@ -3,7 +3,12 @@
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
+import 'package:foodapp/Pages/ProfilePage.dart';
 import 'package:foodapp/Data/food.dart';
+import 'package:foodapp/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:foodapp/Pages/tokenPage.dart';
+
 import '../storage.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +55,12 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/cart');
+          },
+          child: Icon(Icons.shopping_cart),
+        ),
         drawer: Drawer(
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,27 +69,27 @@ class _homeState extends State<home> {
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () => {},
-                    child: Text("Widget 1"),
+                    child: const Text("Widget 1"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () => {},
-                    child: Text("Widget 2"),
+                    child: const Text("Widget 2"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () => {},
-                    child: Text("Widget 3"),
+                    child: const Text("Widget 3"),
                   ),
                 ),
               ]),
         ),
         appBar: AppBar(
-          title: Text("appbar"),
+          title: const Text("appbar"),
           actions: [
             Row(
               children: [
@@ -90,10 +101,11 @@ class _homeState extends State<home> {
                     // color: Colors.black,
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                    child: IconButton(
-                      icon: Icon(Icons.person_2_rounded),
-                      onPressed: () => {},
-                    ),
+                    // child: IconButton(
+                    //   icon: const Icon(Icons.person_2_rounded),
+                    //   onPressed: () =>
+                    //       {Navigator.pushNamed(context, '/profile')},
+                    // ),
                   ),
                 )
               ],
@@ -112,7 +124,7 @@ class _homeState extends State<home> {
           // ),
         ),
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+          // scrollDirection: Axis.vertical,
           child: Column(
             children: <Widget>[
               Padding(
@@ -185,12 +197,13 @@ class _homeState extends State<home> {
                 child: Container(
                     height: 750,
                     width: 350,
-                    color: Colors.red[200],
+                    color: Color.fromRGBO(239, 154, 154, 1),
                     child: FutureBuilder(
                         future: getMenu(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (!snapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           } else {
                             return Container(
                                 child: ListView.builder(
@@ -198,15 +211,79 @@ class _homeState extends State<home> {
                                     scrollDirection: Axis.vertical,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      return Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Container(
-                                            height: 60,
-                                            width: 370,
-                                            color: Colors.white,
-                                            child: Text('${menu['menu'][index]['foodName']}'),
-                                          ),
+                                      return Card(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 250,
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          30, 10, 30, 10),
+                                                      child: Container(
+                                                        height: 70,
+                                                        width: 70,
+                                                        child:
+                                                            const Text("Image"),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          Title(
+                                                              color:
+                                                                  Colors.black,
+                                                              child: Text(
+                                                                '${menu['menu'][index]['foodName']}',
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              )),
+                                                          Title(
+                                                              color:
+                                                                  Colors.black,
+                                                              child: Text(
+                                                                '${menu['menu'][index]['foodType']}',
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ]),
+                                            ),
+                                            // IconButton(onPressed: ()=>{}, icon: Icon(Icons.shopping_cart,color: Colors.black54,))
+                                            Container(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: TextButton(
+                                                    // onPressed: () => {print("Hii")},
+                                                    // onPressed: () => {print(menu['menu'][index])},
+                                                    onPressed: () => context
+                                                        .read<Cart>()
+                                                        .addToCart(menu['menu']
+                                                            [index]),
+                                                    child: const Text(
+                                                      "Add",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              53,
+                                                              123,
+                                                              157)),
+                                                    )))
+                                          ],
                                         ),
                                       );
                                       // return Text(

@@ -5,6 +5,7 @@ const connectDB = async (DATABASE_URL)=>{
         const DB_OPTIONS = {
             dbName : 'foodApp',
         }
+        mongoose.set('strictQuery', false);
         await mongoose.connect(DATABASE_URL,DB_OPTIONS);
         console.log('Connected successfully');
     }

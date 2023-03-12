@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/signup',customerAuthController.signup)
 router.post('/login',customerAuthController.login)
+router.post('/profile',customerController.getProfile)
 router.get('/allCustomer',customerController.getAllDoc)
 
 
