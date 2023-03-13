@@ -4,21 +4,25 @@ import 'package:foodapp/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
+  Map profileData = {};
+  ProfilePage(this.profileData);
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  Map profileData = {};
-  //  Map profileData = {};
-  void initState() {
-    getData();
-  }
+  _ProfilePageState() {}
 
-  void getData() async {
-    profileData = await context.read<Profile>().getProfile() as Map;
-    print(profileData);
-  }
+  
+  //  Map profileData = {};
+  // void initState() {
+  //   getData();
+  // }
+
+  // void getData() async {
+  //   profileData = await context.read<Profile>().getProfile() as Map;
+  //   print(profileData);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Text(
                     '${context.read<Profile>().data['name']}',
+                    // '${widget.profileData['name']}',
                     // context.read<Profile>().data.toString(),
                     style: TextStyle(
                       fontSize: 35,

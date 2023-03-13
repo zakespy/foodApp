@@ -9,6 +9,7 @@ import 'package:foodapp/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/Pages/tokenPage.dart';
 
+import '../provider/profile_provider.dart';
 import '../storage.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,18 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+
+  Map profileData = {};
+
+  void initState() {
+    getData();
+  }
+
+  void getData() async {
+    profileData = await context.read<Profile>().getProfile() as Map;
+    print(profileData);
+  }
+
   Map menu = {};
   Food foodList = Food();
 
@@ -65,27 +78,40 @@ class _homeState extends State<home> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("Widget 1"),
+                FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.all(00),
+                    child: ElevatedButton(
+                      onPressed: () => {},
+                      child: const Text("Widget 1"),
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("Widget 2"),
+                FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.all(00),
+                    child: ElevatedButton(
+                      onPressed: () => {},
+                      child: const Text("Widget 1"),
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("Widget 3"),
+                FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.all(00),
+                    child: ElevatedButton(
+                      onPressed: () => {},
+                      child: const Text("Widget 1"),
+                    ),
                   ),
                 ),
+                
               ]),
         ),
         appBar: AppBar(
@@ -127,36 +153,36 @@ class _homeState extends State<home> {
           // scrollDirection: Axis.vertical,
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: 200,
-                  width: 400,
-                  color: Colors.amber,
-                  child: Center(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const <Widget>[
-                          SizedBox(width: 5),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                            child: Text(
-                              "Wednesday offer",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          SizedBox(width: 25),
-                          Image(
-                            image: AssetImage("assets/dosa.png"),
-                            alignment: Alignment.center,
-                            height: 150,
-                            width: 150,
-                          )
-                        ]),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(10.0),
+              //   child: Container(
+              //     height: 200,
+              //     width: 400,
+              //     color: Colors.amber,
+              //     child: Center(
+              //       child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //           children: const <Widget>[
+              //             SizedBox(width: 5),
+              //             Padding(
+              //               padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+              //               child: Text(
+              //                 "Wednesday offer",
+              //                 style: TextStyle(
+              //                     fontSize: 20, fontWeight: FontWeight.w500),
+              //               ),
+              //             ),
+              //             SizedBox(width: 25),
+              //             Image(
+              //               image: AssetImage("assets/dosa.png"),
+              //               alignment: Alignment.center,
+              //               height: 150,
+              //               width: 150,
+              //             )
+              //           ]),
+              //     ),
+              //   ),
+              // ),
               Container(
                   height: 50,
                   // color: Colors.blue,

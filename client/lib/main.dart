@@ -28,7 +28,7 @@ Future<void> main() async {
       '/signup': (context) => SignUp(),
       '/login': (context)=> login(),
       '/home': (context) => home(),
-      '/profile':(context)=> ProfilePage(),
+      '/profile':(context)=> ProfilePage({}),
       '/cart':(context)=> CartPage(),
     },
   ))
@@ -45,7 +45,7 @@ Future<void> main() async {
       '/signup': (context) => SignUp(),
       '/home': (context) => home(),
       '/login':(context) => login(),
-      '/profile':(context)=> ProfilePage(),
+      '/profile':(context)=> ProfilePage({}),
       '/cart':(context)=> CartPage(),
     },
   ))
