@@ -8,8 +8,8 @@ class Profile with ChangeNotifier {
 
   Profile({required this.data});
 
-  Map get cart => data;
-  int get cartLength => data.length;
+  Map get profile => data;
+  int get profileLength => data.length;
 
   Map getCart() {
     notifyListeners();
@@ -20,9 +20,10 @@ class Profile with ChangeNotifier {
     Customer customer = Customer();
     const storage = FlutterSecureStorage();
     String? ID = await storage.read(key: 'id');
-    print(ID);
-    data = await customer.getProfile(ID!);
-    print(data);
+    // print(ID);
+    Map rawData = await customer.getProfile(ID!);
+    data = rawData['profile'][0];
+    // print(data);
     notifyListeners();
     return data;
   }

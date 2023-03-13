@@ -74,15 +74,15 @@ class Customer {
 
   Future<Map> getProfile(String id) async {
     try {
-      String path = 'http://10.0.2.2:8000/api/profile';
-      Response response = await http.post(Uri.parse(path),
-        body: jsonEncode(
-            {'id': id}),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        });
+      // print("inside data file"+id);
+      String path = 'http://localhost:8000/api/profile';
+      Response response = await http
+          .post(Uri.parse(path), body: jsonEncode({'id': id}), headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      });
       if (response.statusCode == 200) {
+        // print(response.body);
         return jsonDecode(response.body);
       } else {
         return Future.error("Server error");
@@ -91,5 +91,4 @@ class Customer {
       return Future.error(err);
     }
   }
-
 }
