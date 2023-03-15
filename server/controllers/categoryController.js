@@ -18,12 +18,13 @@ class categoryController{
                 return res.json({message:"Category already exists",status:false})
             }else{
                 const newCategory = new categoryModel({categoryName:categoryName,categoryNumber:categoryNumber})
-                await categoryModel.save().then(e=>{
+                await newCategory.save().then(e=>{
                     return res.json({message:"Successfully added category",status:true})
                 })
             }
         }).catch(err=>{
-            return res.status(500).json({message:"Server error",status:false})
+            console.log(err)
+            // return res.status(500).json({message:"Server error",status:false})
         })
     }
 

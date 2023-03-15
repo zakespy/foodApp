@@ -30,7 +30,7 @@ class Customer {
             'Content-type': 'application/json',
             'Accept': 'application/json',
           });
-      print(response.body);
+      // print(response.body);
       Map res = jsonDecode(response.body);
 
       return res;

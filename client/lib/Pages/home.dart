@@ -1,5 +1,6 @@
 // import 'dart:html';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -9,6 +10,7 @@ import 'package:foodapp/provider/cart_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/Pages/tokenPage.dart';
 
+import '../Data/category.dart';
 import '../provider/profile_provider.dart';
 import '../storage.dart';
 // import 'package:flutter/src/widgets/framework.dart';
@@ -22,11 +24,24 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-
   Map profileData = {};
+  Map category = {};
 
   void initState() {
+    print("h");
     getData();
+    print('category ${category}');
+  }
+
+  Future<Map> getCategory() async {
+    // Map newCat = {};
+    print("hi");
+    FoodCategory cat = FoodCategory();
+    print("hii");
+    category = await cat.getCategory();
+    print("hiii");
+    return category;
+    // print(category['categories']);
   }
 
   void getData() async {
@@ -36,19 +51,6 @@ class _homeState extends State<home> {
 
   Map menu = {};
   Food foodList = Food();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   void getMenu() async {
-  //     Food foodList = Food();
-  //     menu = await foodList.getMenu();
-  //     // print(menu['menu'].length);
-  //   }
-
-  //   print(menu['menu']);
-  //   getMenu();
-  // }
 
   Future<Map> getMenu() async {
     Food foodList = Food();
@@ -111,7 +113,6 @@ class _homeState extends State<home> {
                     ),
                   ),
                 ),
-                
               ]),
         ),
         appBar: AppBar(
@@ -184,40 +185,64 @@ class _homeState extends State<home> {
               //   ),
               // ),
               Container(
-                  height: 50,
-                  // color: Colors.blue,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      TextButton(
-                          onPressed: () => {},
-                          child: const Text(
-                            "Menu",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          )),
-                      TextButton(
-                          onPressed: () => {},
-                          child: const Text(
-                            "Today's Special",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          )),
-                      TextButton(
-                          onPressed: () => {},
-                          child: const Text(
-                            "Offer",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          )),
-                    ],
-                  )),
+                height: 50,
+                // color: Colors.blue,
+                // child: Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: <Widget>[
+                //     TextButton(
+                //         onPressed: () => {},
+                //         child: const Text(
+                //           "Breakfast",
+                //           style: TextStyle(
+                //               color: Colors.black,
+                //               fontSize: 15,
+                //               fontWeight: FontWeight.w500),
+                //         )),
+                //     TextButton(
+                //         onPressed: () => {},
+                //         child: const Text(
+                //           "Lunch",
+                //           style: TextStyle(
+                //               color: Colors.black,
+                //               fontSize: 15,
+                //               fontWeight: FontWeight.w500),
+                //         )),
+                //     TextButton(
+                //         onPressed: () => {},
+                //         child: const Text(
+                //           "Drinks",
+                //           style: TextStyle(
+                //               color: Colors.black,
+                //               fontSize: 15,
+                //               fontWeight: FontWeight.w500),
+                //         )),
+                //   ],
+                // )),
+
+                child: FutureBuilder(
+                  future: getCategory(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return Container(
+                        color: Colors.amber,
+                        padding: EdgeInsets.all(10),
+                        alignment: Alignment.center,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: category['categories'].length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return CategoryCard(
+                                  title: category['categories'][index]
+                                      ["categoryName"]);
+                            }),
+                      );
+                    }
+                  },
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Container(
@@ -350,6 +375,18 @@ class _homeState extends State<home> {
         );
   }
 }
+
+class CategoryCard extends StatelessWidget {
+  final String title;
+  const CategoryCard({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    // return Text('${title}');
+    return TextButton(onPressed: () {}, child: Text('${title}'));
+  }
+}
+
 
 // Container(
 //       child: Center(
