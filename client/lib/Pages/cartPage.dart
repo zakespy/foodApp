@@ -150,7 +150,7 @@ class _CartState extends State<CartPage> {
         name: 'Mango',
         unit: 'Doz',
         price: 30,
-        image: 'assets/dosa.png',
+        image: 'assets/dosa.png',       
         quantity: 0),
     Item(
         name: 'Banana',

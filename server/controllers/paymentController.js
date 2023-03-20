@@ -1,4 +1,8 @@
+import mongoose from "mongoose";
 import Razorpay from "razorpay";
+
+import orderModel from "../models/orderModel.js";
+
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
 
 export const createOrder = async (req, res) => {
@@ -13,6 +17,8 @@ export const createOrder = async (req, res) => {
     
     try {
         let order = await instance.orders.create(options);
+
+        const newOrder = await new orderModel({ isPaid: false, amount:100, order_id: order.id, payment_id: "pay_id", signature: "T5RC8mNXy9yJANYD6QLdEUPH" });
 
         res.status(201).json( { success: true, order: order } );
     } catch (error) {
@@ -38,4 +44,17 @@ export const verifySignature = async (req, res) => {
     } catch (error) {
         res.status(500).json( { message: error.message } );
     }
-}
+};
+
+export const paymentSuccess = async (req, res) => {
+    // const { order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    try {
+        const updatedOrder = await orderModel.findOneAndUpdate({ payment_id: 'pay_id' }, { isPaid: true }, {new:true});
+
+        res.status(200).json( { message: "Your payment was successfull", order: updatedOrder } );
+    } catch (error) {
+        res.status(500).json( { message: error.message } );
+        
+    }
+};
