@@ -8,7 +8,6 @@ const customerSchema = new mongoose.Schema({
     token:{type:String}
 })
 
-
 const customerModel  = mongoose.model("customer",customerSchema)
 
-export default customerModel 
+export default customerModel

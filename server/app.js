@@ -8,6 +8,7 @@ import category from "./routes/category.js";
 import history from "./routes/history.js";
 import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
+import order from "./routes/order.js"
 
 const app = express()
 dotenv.config({ path: "./config.env" });
@@ -37,6 +38,7 @@ app.use("/api/category", category);
 app.use("/api/history", history);
 app.use("/api/admin", admin);
 app.use("/api/payment", payment);
+app.use("/api/order",order)
 
 
 
