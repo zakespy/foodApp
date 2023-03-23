@@ -18,9 +18,11 @@ export const createOrder = async (req, res) => {
     try {
         let order = await instance.orders.create(options);
 
-        const newOrder = await new orderModel({ isPaid: false, amount:100, order_id: order.id, payment_id: "pay_id", signature: "T5RC8mNXy9yJANYD6QLdEUPH" });
+        const newOrder = new orderModel({ isPaid: false, amount:100, order_id: order.id, payment_id: "pay_id", signature: "T5RC8mNXy9yJANYD6QLdEUPH" });
 
-        res.status(201).json( { success: true, order: order } );
+        await newOrder.save();
+
+        res.status(201).json( { success: true, order: order, newOrder: newOrder } );
     } catch (error) {
         res.status(500).json( { message: error.message } );
     }
@@ -50,7 +52,7 @@ export const paymentSuccess = async (req, res) => {
     // const { order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
     try {
-        const updatedOrder = await orderModel.findOneAndUpdate({ payment_id: 'pay_id' }, { isPaid: true }, {new:true});
+        const updatedOrder = await orderModel.findOneAndUpdate({ order_id: 'order_LUrRLha3sipa1c' }, { isPaid: true }, {new:true});
 
         res.status(200).json( { message: "Your payment was successfull", order: updatedOrder } );
     } catch (error) {

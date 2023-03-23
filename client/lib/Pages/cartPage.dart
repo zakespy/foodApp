@@ -32,13 +32,24 @@ class _CartState extends State<CartPage> {
     super.initState();
   }
 
-  _handlePaymentSuccess( PaymentSuccessResponse response ) {
+  _handlePaymentSuccess( PaymentSuccessResponse response ) async {
     verifySignature(
       signature: response.signature,
       paymentId: response.paymentId,
       // orderId: response.orderId
       orderId: order_Id
     );
+
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
+                      body: jsonEncode({
+                        "amount": 100
+                      }),
+                      headers: {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                      }
+                    );
+
   }
 
   _handlePaymentError( PaymentFailureResponse response ) {
