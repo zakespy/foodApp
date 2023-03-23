@@ -8,6 +8,9 @@ import category from "./routes/category.js";
 import history from "./routes/history.js";
 import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
+import order from "./routes/order.js"
+import Queue from "./modules/queue.js";
+
 
 const app = express()
 dotenv.config({ path: "./config.env" });
@@ -37,8 +40,11 @@ app.use("/api/category", category);
 app.use("/api/history", history);
 app.use("/api/admin", admin);
 app.use("/api/payment", payment);
+app.use("/api/order",order);
 
-
+setInterval(()=>{
+  Queue.process()
+},1000)
 
 app.listen(port,()=>{
     console.log(`Server LIstening at port http://localhost:${port}`)
