@@ -24,8 +24,9 @@ import {enqueue , dequeue , reqProcess} from "../modules/queue.js";
 class orderController{
 
     static createToken = async (req,res)=>{
-       const cog = await enqueue(req.body)
-       res.json({tokenNo:cog})
+        console.log(res.body)
+        const tokenNo = await enqueue(req.body)
+        res.json({tokenNo:tokenNo})
         // agenda.define('myJob', (job, done) => {
         //     console.log(job)
         //     console.log('Running myJob');
