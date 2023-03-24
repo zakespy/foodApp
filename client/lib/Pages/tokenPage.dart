@@ -1,34 +1,11 @@
 import 'package:flutter/material.dart';
 
-class TokenPage extends StatefulWidget {
-  @override
-  _TokenPageState createState() => _TokenPageState();
-}
 
-class _TokenPageState extends State<TokenPage> {
-  late int _tokenNumber;
-  bool _isProcessing = true;
+class TokenPage extends StatelessWidget {
+  const TokenPage({super.key, required this.tokenNumber});
 
-  @override
-  void initState() {
-    super.initState();
-    _generateTokenNumber();
-    _startProcessing();
-  }
-
-  void _generateTokenNumber() {
-    
-    _tokenNumber = DateTime.now().millisecondsSinceEpoch % 10000;
-  }
-
-  void _startProcessing() {
-   
-    Future.delayed(Duration(seconds: 5)).then((value) {
-      setState(() {
-        _isProcessing = false;
-      });
-    });
-  }
+  final int tokenNumber;
+  final bool _isProcessing = true;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +23,7 @@ class _TokenPageState extends State<TokenPage> {
             ),
             SizedBox(height: 16),
             Text(
-              '$_tokenNumber',
+              '$tokenNumber',
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 32),
@@ -65,3 +42,38 @@ class _TokenPageState extends State<TokenPage> {
     );
   }
 }
+
+
+// class TokenPage extends StatefulWidget {
+//   @override
+//   _TokenPageState createState() => _TokenPageState();
+// }
+
+// class _TokenPageState extends State<TokenPage> {
+//   late int tokenNumber;
+//   bool _isProcessing = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _generateTokenNumber();
+//     _startProcessing();
+//   }
+
+//   void _generateTokenNumber() {
+    
+//     tokenNumber = DateTime.now().millisecondsSinceEpoch % 10000;
+//   }
+
+//   void _startProcessing() {
+   
+//     Future.delayed(Duration(seconds: 5)).then((value) {
+//       setState(() {
+//         _isProcessing = false;
+//       });
+//     });
+//   }
+
+//   @override
+  
+// }

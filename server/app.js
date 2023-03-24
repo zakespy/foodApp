@@ -9,7 +9,7 @@ import history from "./routes/history.js";
 import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
 import order from "./routes/order.js"
-import Queue from "./modules/queue.js";
+import {enqueue , dequeue , reqProcess} from "./modules/queue.js";
 
 
 const app = express()
@@ -42,9 +42,9 @@ app.use("/api/admin", admin);
 app.use("/api/payment", payment);
 app.use("/api/order",order);
 
-// setInterval(()=>{
-//   Queue.process()
-// },1000)
+setInterval(()=>{
+  reqProcess()
+},1000)
 
 app.listen(port,()=>{
     console.log(`Server LIstening at port http://localhost:${port}`)

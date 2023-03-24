@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:foodapp/Pages/tokenPage.dart';
 import 'package:foodapp/provider/cart_provider.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/model/items.dart';
 import 'package:http/http.dart' as http;
@@ -32,13 +34,23 @@ class _CartState extends State<CartPage> {
     super.initState();
   }
 
-  _handlePaymentSuccess( PaymentSuccessResponse response ) async {
+  Future<http.Response> getToken(Map res) async {
+    var tokenRes = await http.post(
+        Uri.parse("http://localhost:8000/api/order/createToken"),
+        body: jsonEncode(res),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
+    return tokenRes ;
+  }
+
+  _handlePaymentSuccess(PaymentSuccessResponse response) async {
     verifySignature(
-      signature: response.signature,
-      paymentId: response.paymentId,
-      // orderId: response.orderId
-      orderId: order_Id
-    );
+        signature: response.signature,
+        paymentId: response.paymentId,
+        // orderId: response.orderId
+        orderId: order_Id);
 
     var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
                       body: jsonEncode({
@@ -50,9 +62,21 @@ class _CartState extends State<CartPage> {
                       }
                     );
 
+    Response tokenRes = await getToken(jsonDecode(res.body)['order']);
+    // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
+    print("token no");
+    print(tokenRes.body);
+    print(jsonDecode(res.body)['order']);
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => TokenPage(
+    //               tokenNumber: 1,
+    //             )));
+    // Navigator.pushNamed(context, '/token');
   }
 
-  _handlePaymentError( PaymentFailureResponse response ) {
+  _handlePaymentError(PaymentFailureResponse response) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(response.message ?? " "),
@@ -60,25 +84,23 @@ class _CartState extends State<CartPage> {
     );
   }
 
-  _handleExternalWallet( ExternalWalletResponse response ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response.walletName ?? ""),
-      )
-    );
+  _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.walletName ?? ""),
+    ));
   }
 
   @override
   void dispose() {
     _razorpay.clear();
-    
+
     super.dispose();
   }
 
   // void createOrder() async {
   //   String keyId = 'rzp_test_rk34q3MXaI4tBi';
   //   String keySec = 'T5RC8mNXy9yJANYD6QLdEUPH';
-    
+
   //   String basicAuth = 'Basic ${base64Encode(utf8.encode('$keyId:$keySec'))}';
 
   //   Map<String, dynamic> body = {
@@ -87,7 +109,6 @@ class _CartState extends State<CartPage> {
   //     "receipt": "rcpt_id_1"
   //   };
 
-    
   // }
 
   void createOrder() async {
@@ -103,34 +124,32 @@ class _CartState extends State<CartPage> {
   
     order_Id = jsonDecode(res.body)['order']['id'];
 
-    if( res.statusCode == 201 ){
-      orderCheckout( jsonDecode(res.body)['order']['id'], jsonDecode(res.body)['order']['amount'] );
+    if (res.statusCode == 201) {
+      orderCheckout(jsonDecode(res.body)['order']['id'],
+          jsonDecode(res.body)['order']['amount']);
     }
-
   }
 
-  void orderCheckout( orderId, amount ) async {
+  void orderCheckout(orderId, amount) async {
     var options = {
       'key': 'rzp_test_rk34q3MXaI4tBi',
       'amount': amount, //in the smallest currency sub-unit.
       'name': 'Acme Corp.',
       'order_id': orderId, // Generate order_id using Orders API
       'description': 'Fine T-Shirt',
-      'timeout': 60*5, // in seconds
-      'prefill': {
-        'contact': '1234567890',
-        'email': 'testuser1@example.com'
-      }
+      'timeout': 60 * 5, // in seconds
+      'prefill': {'contact': '1234567890', 'email': 'testuser1@example.com'}
     };
 
     _razorpay.open(options);
   }
 
-  void verifySignature( { String? signature, String? paymentId, String? orderId} ) async {
+  void verifySignature(
+      {String? signature, String? paymentId, String? orderId}) async {
     Map<String, dynamic> body = {
       "order_id": orderId,
       "razorpay_payment_id": paymentId,
-      "razorpay_signature":signature
+      "razorpay_signature": signature
     };
 
     var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
@@ -141,12 +160,10 @@ class _CartState extends State<CartPage> {
                       }
                     );
 
-    if( res.statusCode == 200 ) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(res.body),
-          )
-      );
+    if (res.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(res.body),
+      ));
     }
   }
 
@@ -161,7 +178,7 @@ class _CartState extends State<CartPage> {
         name: 'Mango',
         unit: 'Doz',
         price: 30,
-        image: 'assets/dosa.png',       
+        image: 'assets/dosa.png',
         quantity: 0),
     Item(
         name: 'Banana',
@@ -325,8 +342,7 @@ class _CartState extends State<CartPage> {
                                           image: AssetImage(
                                               // context.read<Cart>()
                                               //     .items[index]['foodImage']
-                                              "assets/dosa.png"
-                                                  ),
+                                              "assets/dosa.png"),
                                         ),
                                         const SizedBox(
                                           width: 25,
@@ -344,7 +360,8 @@ class _CartState extends State<CartPage> {
                                                 padding: const EdgeInsets.only(
                                                     left: 13),
                                                 child: Text(
-                                                  context.read<Cart>()
+                                                  context
+                                                      .read<Cart>()
                                                       .items[index]['foodName'],
                                                   style: const TextStyle(
                                                       fontSize: 20,
@@ -377,32 +394,37 @@ class _CartState extends State<CartPage> {
                                                         onPressed: (() {
                                                           setState(() {
                                                             if (context
-                                                        .read<Cart>()
+                                                                        .read<
+                                                                            Cart>()
                                                                         .items[index]
                                                                     [
                                                                     'quantity'] >
                                                                 0) {
-                                                             context
-                                                        .read<Cart>()
-                                                                  .decreaseQuantity(
-                                                                      context
-                                                        .read<Cart>()
-                                                                          .items[index]);
+                                                              context
+                                                                  .read<Cart>()
+                                                                  .decreaseQuantity(context
+                                                                      .read<
+                                                                          Cart>()
+                                                                      .items[index]);
                                                               // context.read<Cart>().items[index]['quantity'] -= 1;
                                                             } else {
                                                               context
-                                                        .read<Cart>()
-                                                                  .removeFromCart(
-                                                                      context
-                                                        .read<Cart>()
-                                                                          .items[index]);
+                                                                  .read<Cart>()
+                                                                  .removeFromCart(context
+                                                                      .read<
+                                                                          Cart>()
+                                                                      .items[index]);
                                                             }
                                                             total = calcTotal();
                                                           });
                                                         }),
                                                         // child: const Icon(products[index].quantity ? Icons.remove :  Icons.delete),
-                                                        child: context.read<Cart>()
-                                                              .items[index]['quantity']>
+                                                        child: context
+                                                                        .read<
+                                                                            Cart>()
+                                                                        .items[index]
+                                                                    [
+                                                                    'quantity'] >
                                                                 0
                                                             ? const Icon(
                                                                 Icons.remove)
@@ -410,8 +432,11 @@ class _CartState extends State<CartPage> {
                                                                 Icons.delete),
                                                       ),
                                                       Text(
-                                                        context.read<Cart>()
-                                                      .items[index]['quantity'].toString(),
+                                                        context
+                                                            .read<Cart>()
+                                                            .items[index]
+                                                                ['quantity']
+                                                            .toString(),
                                                         style: const TextStyle(
                                                             fontSize: 19,
                                                             fontWeight:
@@ -436,7 +461,12 @@ class _CartState extends State<CartPage> {
                                                                 .all(0.0),
                                                         onPressed: (() {
                                                           setState(() {
-                                                            context.read<Cart>().increaseQuantity(context.read<Cart>().items[index]);
+                                                            context
+                                                                .read<Cart>()
+                                                                .increaseQuantity(context
+                                                                    .read<
+                                                                        Cart>()
+                                                                    .items[index]);
                                                             total = calcTotal();
                                                           });
                                                         }),
@@ -471,9 +501,7 @@ class _CartState extends State<CartPage> {
                                           //   child: const Icon(Icons.delete, size: 20,),
                                           // ),
                                           Text(
-                                            'Rs. ${context.read<Cart>()
-                                                      .items[index]['quantity'] * context.read<Cart>()
-                                                      .items[index]['foodPrice']}',
+                                            'Rs. ${context.read<Cart>().items[index]['quantity'] * context.read<Cart>().items[index]['foodPrice']}',
                                             style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.w500),
@@ -495,7 +523,10 @@ class _CartState extends State<CartPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton(
-                            onPressed: createOrder,
+                            onPressed: () => {
+                              createOrder(),
+                              // Navigator.pushNamed(context, '/token')
+                            },
                             child: const Text(
                               "Place Order",
                               style: TextStyle(

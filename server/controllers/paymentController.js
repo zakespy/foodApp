@@ -54,9 +54,8 @@ export const paymentSuccess = async (req, res) => {
     try {
         const updatedOrder = await orderModel.findOneAndUpdate({ order_id: order_id }, { isPaid: true }, {new:true});
 
-        res.status(200).json( { message: "Your payment was successfull", order: updatedOrder } );
+        res.status(200).json( {message: "Your payment was successfull", order: updatedOrder } );
     } catch (error) {
-        res.status(500).json( { message: error.message } );
-        
+        res.status(500).json({message: error.message});
     }
 };
