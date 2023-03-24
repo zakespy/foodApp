@@ -49,10 +49,10 @@ export const verifySignature = async (req, res) => {
 };
 
 export const paymentSuccess = async (req, res) => {
-    // const { order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { order_id } = req.body;
 
     try {
-        const updatedOrder = await orderModel.findOneAndUpdate({ order_id: 'order_LUrRLha3sipa1c' }, { isPaid: true }, {new:true});
+        const updatedOrder = await orderModel.findOneAndUpdate({ order_id: order_id }, { isPaid: true }, {new:true});
 
         res.status(200).json( { message: "Your payment was successfull", order: updatedOrder } );
     } catch (error) {

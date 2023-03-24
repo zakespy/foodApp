@@ -42,9 +42,9 @@ app.use("/api/admin", admin);
 app.use("/api/payment", payment);
 app.use("/api/order",order);
 
-setInterval(()=>{
-  Queue.process()
-},1000)
+// setInterval(()=>{
+//   Queue.process()
+// },1000)
 
 app.listen(port,()=>{
     console.log(`Server LIstening at port http://localhost:${port}`)

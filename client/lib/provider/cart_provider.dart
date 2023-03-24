@@ -34,6 +34,32 @@ class Cart with ChangeNotifier {
     print(items);
     notifyListeners();
   }
+  // bool addToCart(Map item) {
+  //   try {
+  //     int count = -1;
+  //     for (int i = 0; i < items.length; i++) {
+  //       if (items[i]['foodName'] == item['foodName']) {
+  //         if (items[i]['quantity'] != null) {
+  //           items[i]['quantity']++;
+  //         } else {
+  //           items[i].update('quantity', (value) => 1, ifAbsent: () => 1);
+  //         }
+  //         count++;
+  //       }
+  //     }
+  //     if (count == -1) {
+  //       items.add(item);
+  //       items[items.length - 1]
+  //           .update('quantity', (value) => 1, ifAbsent: () => 1);
+  //     }
+  //     print(items);
+  //     notifyListeners();
+  //     return true;
+  //   } 
+  //   catch (e) {
+  //     return false;
+  //   }
+  // }
 
   void removeFromCart(Map item) {
     items.remove(item);

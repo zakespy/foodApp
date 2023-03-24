@@ -4,9 +4,9 @@ import 'package:http/http.dart';
 import '../storage.dart';
 
 class Food {
-  Future<Map> getMenu() async {
+  Future<List> getMenu() async {
     try {
-      String path = 'http://localhost:8000/api/food/allFood';
+      String path = 'http://10.0.2.2:8000/api/food/allFood';
       // String path = 'http://10.0.2.2:8000/api/food/allFood';
       Response response = await http.get(Uri.parse(path), headers: {
         'Content-type': 'application/json',
@@ -14,7 +14,8 @@ class Food {
       });
       // print(response.body);
       Map res = jsonDecode(response.body);
-      return res;
+      // print(res['menu']);
+      return res['menu'];
     } catch (err) {
       return Future.error(err);
     }
