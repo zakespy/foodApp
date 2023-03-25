@@ -36,7 +36,7 @@ class _CartState extends State<CartPage> {
 
   Future<http.Response> getToken(Map res) async {
     var tokenRes = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
+        Uri.parse("http://localhost:8000/api/order/createToken"),
         body: jsonEncode(res),
         headers: {
           'Content-type': 'application/json',
@@ -52,7 +52,7 @@ class _CartState extends State<CartPage> {
         // orderId: response.orderId
         orderId: order_Id);
 
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
                       body: jsonEncode({
                         "order_id": order_Id
                       }),
@@ -65,14 +65,15 @@ class _CartState extends State<CartPage> {
     Response tokenRes = await getToken(jsonDecode(res.body)['order']);
     // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
     print("token no");
-    print(tokenRes.body);
+    print(jsonDecode(tokenRes.body)['tokenNo']);
     print(jsonDecode(res.body)['order']);
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => TokenPage(
-    //               tokenNumber: 1,
-    //             )));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TokenPage(
+                  // tokenNumber: 1,
+                  tokenNumber: jsonDecode(tokenRes.body)['tokenNo'],
+                )));
     // Navigator.pushNamed(context, '/token');
   }
 
@@ -112,7 +113,7 @@ class _CartState extends State<CartPage> {
   // }
 
   void createOrder( amount ) async {
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/createOrder"),
                       body: jsonEncode({
                         "amount": amount 
                       }),
@@ -152,7 +153,7 @@ class _CartState extends State<CartPage> {
       "razorpay_signature": signature
     };
 
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/verifySignature"),
                       body: body,
                       headers: {
                         'Content-type': 'application/json',
@@ -167,69 +168,7 @@ class _CartState extends State<CartPage> {
     }
   }
 
-  List<Item> products = [
-    Item(
-        name: 'Apple',
-        unit: 'Kg',
-        price: 20,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Mango',
-        unit: 'Doz',
-        price: 30,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Banana',
-        unit: 'Doz',
-        price: 10,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Grapes',
-        unit: 'Kg',
-        price: 8,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Water Melon',
-        unit: 'Kg',
-        price: 25,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Kiwi',
-        unit: 'Pc',
-        price: 40,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Orange',
-        unit: 'Doz',
-        price: 15,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Peach',
-        unit: 'Pc',
-        price: 8,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Strawberry',
-        unit: 'Box',
-        price: 12,
-        image: 'assets/dosa.png',
-        quantity: 0),
-    Item(
-        name: 'Fruit Basket',
-        unit: 'Kg',
-        price: 55,
-        image: 'assets/dosa.png',
-        quantity: 0),
-  ];
-
+  
   @override
   Widget build(BuildContext context) {
     int calcTotal() {
@@ -549,3 +488,68 @@ class _CartState extends State<CartPage> {
         ));
   }
 }
+
+
+
+// List<Item> products = [
+//     Item(
+//         name: 'Apple',
+//         unit: 'Kg',
+//         price: 20,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Mango',
+//         unit: 'Doz',
+//         price: 30,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Banana',
+//         unit: 'Doz',
+//         price: 10,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Grapes',
+//         unit: 'Kg',
+//         price: 8,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Water Melon',
+//         unit: 'Kg',
+//         price: 25,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Kiwi',
+//         unit: 'Pc',
+//         price: 40,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Orange',
+//         unit: 'Doz',
+//         price: 15,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Peach',
+//         unit: 'Pc',
+//         price: 8,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Strawberry',
+//         unit: 'Box',
+//         price: 12,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//     Item(
+//         name: 'Fruit Basket',
+//         unit: 'Kg',
+//         price: 55,
+//         image: 'assets/dosa.png',
+//         quantity: 0),
+//   ];
