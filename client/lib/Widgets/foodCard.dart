@@ -141,8 +141,29 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             shape: roundedRectangle4,
             color: mainColor,
             child: InkWell(
-              onTap: (() => context.read<Cart>().addToCart({ "foodName":"${food.name}", "foodPrice":food.price })),
+              onTap: (() => {
+                if (context.read<Cart>().addToCart({ "foodName":"${food.name}", "foodPrice":food.price })) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                    content: Text('${food.name} added to cart'),
+                    // action: SnackBarAction(
+                    //   label: 'view',
+                    //   onPressed: showCart,
+                    // ),
+                    duration: Duration(milliseconds: 1500),
+                  ),
+                  )
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                    content: Text('You can\'t order from multiple shop at the same time'),
+                    duration: Duration(milliseconds: 1500),
+                  ),
+                  )
+                }
+              }),
               splashColor: Colors.white70,
+              // splashColor: Color.fromARGB(179, 0, 0, 0),
               customBorder: roundedRectangle4,
               child: Icon(Icons.add),
             ),
@@ -174,6 +195,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   }
 
   // addItemToCard() {
+  //   // bool isAddSuccess = Provider.of<Cart>(context, listen: true).addToCart({"foodName":"${food.name}"});
   //   bool isAddSuccess = Provider.of<Cart>(context, listen: true).addToCart({"foodName":"${food.name}"});
   //   print(isAddSuccess);
 
