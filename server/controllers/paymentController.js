@@ -6,10 +6,10 @@ import orderModel from "../models/orderModel.js";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
 
 export const createOrder = async (req, res) => {
-
+    const { amount } = req.body;
     var instance = new Razorpay( { key_id: 'rzp_test_rk34q3MXaI4tBi', key_secret: 'T5RC8mNXy9yJANYD6QLdEUPH' } );
     var options = {
-        amount: 100,
+        amount: amount * 100,
         currency: "INR",
         receipt: "rcpt_id_1",
     };
