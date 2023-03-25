@@ -183,7 +183,7 @@ class _homeState extends State<home> {
 
 Widget buildFoodFilter() {
   return Container(
-    height: 50,
+    height: 55,
     //color: Colors.red,
     child: FutureBuilder(
       future: getCategory(),

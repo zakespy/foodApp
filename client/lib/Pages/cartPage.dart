@@ -52,7 +52,7 @@ class _CartState extends State<CartPage> {
         // orderId: response.orderId
         orderId: order_Id);
 
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
                       body: jsonEncode({
                         "order_id": order_Id
                       }),
@@ -112,7 +112,7 @@ class _CartState extends State<CartPage> {
   // }
 
   void createOrder() async {
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/createOrder"),
                       body: jsonEncode({
                         "amount": 100
                       }),
@@ -152,7 +152,7 @@ class _CartState extends State<CartPage> {
       "razorpay_signature": signature
     };
 
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
+    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/verifySignature"),
                       body: body,
                       headers: {
                         'Content-type': 'application/json',
@@ -240,7 +240,7 @@ class _CartState extends State<CartPage> {
         // t += (context.read<Cart>().items[i]['quantity'] *
         //     context.read<Cart>().items[i]['foodPrice']) as int;
         // print(context.read<Cart>().items[1]['quantity']);
-        // t += (context.read<Cart>().items[i]['quantity'] * context.read<Cart>().items[i]['foodPrice']);
+        t += (context.read<Cart>().items[i]['quantity'] * context.read<Cart>().items[i]['foodPrice']) as int;
       }
       // for (int i = 0; i < products.length; i++) {
       //   t += (products[i].price * products[i].quantity);

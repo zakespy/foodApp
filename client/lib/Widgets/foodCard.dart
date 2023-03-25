@@ -127,7 +127,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
 
   Widget buildPriceInfo() {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+      padding: const EdgeInsets.only(left: 8, right: 8,bottom: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,7 +141,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             shape: roundedRectangle4,
             color: mainColor,
             child: InkWell(
-              onTap: (() => context.read<Cart>().addToCart({ "foodName":"${food.name}", "FoodPrice":food.price })),
+              onTap: (() => context.read<Cart>().addToCart({ "foodName":"${food.name}", "foodPrice":food.price })),
               splashColor: Colors.white70,
               customBorder: roundedRectangle4,
               child: Icon(Icons.add),
