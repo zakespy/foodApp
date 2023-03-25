@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import '../storage.dart';
 
 class Customer {
-  String url = 'http://localhost:8000/api/';
+  String url = 'http://10.0.2.2:8000/api/';
   String emailID = '';
   String password = '';
   String name = '';
@@ -17,8 +17,8 @@ class Customer {
       print(user['emailId']);
       // Map<String, String> jsonMap = {};
       // String body = jsonEncode(jsonMap);
-      // String path = 'http://localhost:8000/api/signup';
-      String path = 'http://localhost:8000/api/signup';
+      // String path = 'http://10.0.2.2:8000/api/signup';
+      String path = 'http://10.0.2.2:8000/api/signup';
       Response response = await http.post(Uri.parse(path),
           body: jsonEncode({
             'emailId': user['emailId'],
@@ -40,8 +40,8 @@ class Customer {
   }
 
   Future<Map> login(Map user) async {
-    // String path = 'http://localhost:8000/api/login';
-    String path = 'http://localhost:8000/api/login';
+    // String path = 'http://10.0.2.2:8000/api/login';
+    String path = 'http://10.0.2.2:8000/api/login';
     Response response = await http.post(Uri.parse(path),
         body: jsonEncode(
             {'emailId': user['emailId'], 'password': user['password']}),
@@ -60,7 +60,7 @@ class Customer {
 
   Future<List> getAllCustomer() async {
     try {
-      String path = 'http://localhost:8000/api/allCustomer';
+      String path = 'http://10.0.2.2:8000/api/allCustomer';
       Response response = await http.get(Uri.parse(path));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -75,7 +75,7 @@ class Customer {
   Future<Map> getProfile(String id) async {
     try {
       // print("inside data file"+id);
-      String path = 'http://localhost:8000/api/profile';
+      String path = 'http://10.0.2.2:8000/api/profile';
       Response response = await http
           .post(Uri.parse(path), body: jsonEncode({'id': id}), headers: {
         'Content-type': 'application/json',
