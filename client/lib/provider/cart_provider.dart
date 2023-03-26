@@ -89,4 +89,17 @@ class Cart with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // List emptyCart() {
+  //   items.clear();
+
+  //   notifyListeners();
+
+  //   return items;
+  // }
+  void emptyCart() {
+    items.clear();
+
+    notifyListeners();
+  }
 }

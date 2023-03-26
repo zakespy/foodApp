@@ -36,7 +36,7 @@ class _CartState extends State<CartPage> {
 
   Future<http.Response> getToken(Map res) async {
     var tokenRes = await http.post(
-        Uri.parse("http://localhost:8000/api/order/createToken"),
+        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
         body: jsonEncode(res),
         headers: {
           'Content-type': 'application/json',
@@ -52,7 +52,7 @@ class _CartState extends State<CartPage> {
         // orderId: response.orderId
         orderId: order_Id);
 
-    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
+    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
                       body: jsonEncode({
                         "order_id": order_Id
                       }),
@@ -113,7 +113,7 @@ class _CartState extends State<CartPage> {
   // }
 
   void createOrder( amount ) async {
-    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/createOrder"),
+    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
                       body: jsonEncode({
                         "amount": amount 
                       }),
@@ -153,7 +153,7 @@ class _CartState extends State<CartPage> {
       "razorpay_signature": signature
     };
 
-    var res = await http.post( Uri.parse("http://localhost:8000/api/payment/verifySignature"),
+    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
                       body: body,
                       headers: {
                         'Content-type': 'application/json',

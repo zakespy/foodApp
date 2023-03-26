@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:foodapp/Widgets/cartBottomSheet.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/Constants/values.dart';
 import 'package:foodapp/provider/cart_provider.dart';
@@ -146,10 +147,10 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                     content: Text('${food.name} added to cart'),
-                    // action: SnackBarAction(
-                    //   label: 'view',
-                    //   onPressed: showCart,
-                    // ),
+                    action: SnackBarAction(
+                      label: 'view',
+                      onPressed: showCart,
+                    ),
                     duration: Duration(milliseconds: 1500),
                   ),
                   )
@@ -167,28 +168,7 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
               customBorder: roundedRectangle4,
               child: Icon(Icons.add),
             ),
-          )
-
-          // MaterialButton(
-          //   height: 20,
-          //   minWidth: 20,
-          //   shape: RoundedRectangleBorder(
-          //       borderRadius:
-          //           BorderRadius
-          //               .circular(
-          //                   3),
-          //       side: BorderSide(
-          //           width: 1.5,
-          //           color: Colors
-          //               .lightBlue
-          //               .shade200)),
-          //   padding:
-          //       const EdgeInsets
-          //           .all(0.0),
-          //   onPressed: addItemToCard,
-          //   child: const Icon(
-          //       Icons.add),
-          // ),
+          ) 
         ],
       ),
     );
@@ -218,11 +198,11 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   //   }
   // }
 
-  // showCart() {
-  //   showModalBottomSheet(
-  //     shape: roundedRectangle40,
-  //     context: context,
-  //     builder: (context) => CartBottomSheet(),
-  //   );
-  // }
+  showCart() {
+    showModalBottomSheet(
+      shape: roundedRectangle40,
+      context: context,
+      builder: (context) => CartBottomSheet(),
+    );
+  }
 }
