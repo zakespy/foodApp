@@ -132,7 +132,7 @@ class _homeState extends State<home> {
         //       ]),
         // ),
         appBar: AppBar(
-          title: const Text("appbar"),
+          title: const Text("BreakBite"),
           actions: [
             Row(
               children: [
@@ -148,6 +148,7 @@ class _homeState extends State<home> {
                       icon: const Icon(Icons.person),
                       onPressed: () =>
                           {Navigator.pushNamed(context, '/profile')},
+                          // {Navigator.push(context, MaterialPageRoute(builder: builder))}
                     ),
                   ),
                 )
