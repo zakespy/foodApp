@@ -14,52 +14,52 @@ class Cart with ChangeNotifier {
     return cart;
   }
 
-  void addToCart(Map item) {
-    int count = -1;
-    for (int i = 0; i < items.length; i++) {
-      if (items[i]['foodName'] == item['foodName']) {
-        if (items[i]['quantity'] != null) {
-          items[i]['quantity']++;
-        } else {
-          items[i].update('quantity', (value) => 1, ifAbsent: () => 1);
-        }
-        count++;
-      }
-    }
-    if (count == -1) {
-      items.add(item);
-      items[items.length - 1]
-          .update('quantity', (value) => 1, ifAbsent: () => 1);
-    }
-    print(items);
-    notifyListeners();
-  }
-  // bool addToCart(Map item) {
-  //   try {
-  //     int count = -1;
-  //     for (int i = 0; i < items.length; i++) {
-  //       if (items[i]['foodName'] == item['foodName']) {
-  //         if (items[i]['quantity'] != null) {
-  //           items[i]['quantity']++;
-  //         } else {
-  //           items[i].update('quantity', (value) => 1, ifAbsent: () => 1);
-  //         }
-  //         count++;
+  // void addToCart(Map item) {
+  //   int count = -1;
+  //   for (int i = 0; i < items.length; i++) {
+  //     if (items[i]['foodName'] == item['foodName']) {
+  //       if (items[i]['quantity'] != null) {
+  //         items[i]['quantity']++;
+  //       } else {
+  //         items[i].update('quantity', (value) => 1, ifAbsent: () => 1);
   //       }
+  //       count++;
   //     }
-  //     if (count == -1) {
-  //       items.add(item);
-  //       items[items.length - 1]
-  //           .update('quantity', (value) => 1, ifAbsent: () => 1);
-  //     }
-  //     print(items);
-  //     notifyListeners();
-  //     return true;
-  //   } 
-  //   catch (e) {
-  //     return false;
   //   }
+  //   if (count == -1) {
+  //     items.add(item);
+  //     items[items.length - 1]
+  //         .update('quantity', (value) => 1, ifAbsent: () => 1);
+  //   }
+  //   print(items);
+  //   notifyListeners();
   // }
+  bool addToCart(Map item) {
+    try {
+      int count = -1;
+      for (int i = 0; i < items.length; i++) {
+        if (items[i]['foodName'] == item['foodName']) {
+          if (items[i]['quantity'] != null) {
+            items[i]['quantity']++;
+          } else {
+            items[i].update('quantity', (value) => 1, ifAbsent: () => 1);
+          }
+          count++;
+        }
+      }
+      if (count == -1) {
+        items.add(item);
+        items[items.length - 1]
+            .update('quantity', (value) => 1, ifAbsent: () => 1);
+      }
+      print(items);
+      notifyListeners();
+      return true;
+    } 
+    catch (e) {
+      return false;
+    }
+  }
 
   void removeFromCart(Map item) {
     items.remove(item);
@@ -87,6 +87,19 @@ class Cart with ChangeNotifier {
         } else {}
       }
     }
+    notifyListeners();
+  }
+
+  // List emptyCart() {
+  //   items.clear();
+
+  //   notifyListeners();
+
+  //   return items;
+  // }
+  void emptyCart() {
+    items.clear();
+
     notifyListeners();
   }
 }

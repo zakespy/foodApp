@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:foodapp/Widgets/cartBottomSheet.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/Constants/values.dart';
 import 'package:foodapp/provider/cart_provider.dart';
@@ -141,39 +142,40 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
             shape: roundedRectangle4,
             color: mainColor,
             child: InkWell(
-              onTap: (() => context.read<Cart>().addToCart({ "foodName":"${food.name}", "foodPrice":food.price })),
+              onTap: (() => {
+                if (context.read<Cart>().addToCart({ "foodName":"${food.name}", "foodPrice":food.price })) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                    content: Text('${food.name} added to cart'),
+                    action: SnackBarAction(
+                      label: 'view',
+                      onPressed: showCart,
+                    ),
+                    duration: Duration(milliseconds: 1500),
+                  ),
+                  )
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                    content: Text('You can\'t order from multiple shop at the same time'),
+                    duration: Duration(milliseconds: 1500),
+                  ),
+                  )
+                }
+              }),
               splashColor: Colors.white70,
+              // splashColor: Color.fromARGB(179, 0, 0, 0),
               customBorder: roundedRectangle4,
               child: Icon(Icons.add),
             ),
-          )
-
-          // MaterialButton(
-          //   height: 20,
-          //   minWidth: 20,
-          //   shape: RoundedRectangleBorder(
-          //       borderRadius:
-          //           BorderRadius
-          //               .circular(
-          //                   3),
-          //       side: BorderSide(
-          //           width: 1.5,
-          //           color: Colors
-          //               .lightBlue
-          //               .shade200)),
-          //   padding:
-          //       const EdgeInsets
-          //           .all(0.0),
-          //   onPressed: addItemToCard,
-          //   child: const Icon(
-          //       Icons.add),
-          // ),
+          ) 
         ],
       ),
     );
   }
 
   // addItemToCard() {
+  //   // bool isAddSuccess = Provider.of<Cart>(context, listen: true).addToCart({"foodName":"${food.name}"});
   //   bool isAddSuccess = Provider.of<Cart>(context, listen: true).addToCart({"foodName":"${food.name}"});
   //   print(isAddSuccess);
 
@@ -196,11 +198,11 @@ class _FoodCardState extends State<FoodCard> with SingleTickerProviderStateMixin
   //   }
   // }
 
-  // showCart() {
-  //   showModalBottomSheet(
-  //     shape: roundedRectangle40,
-  //     context: context,
-  //     builder: (context) => CartBottomSheet(),
-  //   );
-  // }
+  showCart() {
+    showModalBottomSheet(
+      shape: roundedRectangle40,
+      context: context,
+      builder: (context) => CartBottomSheet(),
+    );
+  }
 }
