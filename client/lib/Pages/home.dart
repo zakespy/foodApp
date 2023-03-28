@@ -88,8 +88,8 @@ class _homeState extends State<home> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/cart');
+          onPressed: () => {
+            Navigator.pushNamed(context, '/cart')
           },
           child: Icon(Icons.shopping_cart),
         ),

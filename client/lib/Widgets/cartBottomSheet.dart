@@ -48,7 +48,9 @@ class CartBottomSheet extends StatelessWidget {
         Text('Your Order', style: headerStyle),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            // backgroundColor: Colors.red,
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            splashFactory: InkRipple.splashFactory,
             shape: StadiumBorder(),
           ),
           icon: Icon(Icons.delete_forever),
@@ -76,7 +78,7 @@ class CartBottomSheet extends StatelessWidget {
                   backgroundImage: AssetImage('assets/dosa.png'),
               ),
               title: Text('${cart[index]['foodName']}', style: subtitleStyle),
-              subtitle: Text('\$ ${cart[index]['foodPrice']}'),
+              subtitle: Text('\u{20B9} ${cart[index]['foodPrice']}'),
               trailing: Text('x ${cart[index]['quantity']}', style: subtitleStyle),
             ),
           );
@@ -111,7 +113,7 @@ class CartBottomSheet extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text('Total:', style: headerStyle),
-        Text('\$ ${total.toStringAsFixed(2)}', style: headerStyle),
+        Text('\u{20B9} ${total.toStringAsFixed(2)}', style: headerStyle),
       ],
     );
   }

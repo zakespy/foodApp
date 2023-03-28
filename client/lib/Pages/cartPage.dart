@@ -1,555 +1,254 @@
-import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:foodapp/Pages/tokenPage.dart';
-import 'package:foodapp/provider/cart_provider.dart';
-import 'package:http/http.dart';
+import 'package:flutter/widgets.dart';
+import 'package:foodapp/Constants/values.dart';
+// import 'package:flutter_food_ordering/model/cart_model.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:foodapp/model/items.dart';
-import 'package:http/http.dart' as http;
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:foodapp/provider/cart_provider.dart';
+// import 'package:toast/toast.dart';
 
 class CartPage extends StatefulWidget {
-  const CartPage({super.key});
-
-  @override
-  State<CartPage> createState() => _CartState();
+  _CartPageState createState() => _CartPageState();
 }
 
-class _CartState extends State<CartPage> {
-  // List products = context.read<Cart>().cartLength;
+class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin {
+  var now = DateTime.now();
+  get weekDay => DateFormat('EEEE').format(now);
+  get day => DateFormat('dd').format(now);
+  get month => DateFormat('MMMM').format(now);
+  double oldTotal = 0;
+  double total = 0;
 
-  static get index => null;
+  ScrollController scrollController = ScrollController();
+  late AnimationController animationController;
 
-  final _razorpay = Razorpay();
-  late String order_Id;
+  onCheckOutClick(List cart) async {
+    try {
+      // List<Map> data = List.generate(cart.cartItems.length, (index) {
+      //   return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
+      // }).toList();
+
+      // var response = await Dio().post('$BASE_URL/api/order/food', queryParameters: {"token": token}, data: data);
+      // print(response.data);
+
+      // if (response.data['status'] == 1) {
+      //   cart.clearCart();
+      //   Navigator.of(context).pop();
+      // } else {
+      //   Toast.show(response.data['message'], context);
+      // }
+    } catch (ex) {
+      print(ex.toString());
+    }
+  }
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    });
+    animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200))..forward();
     super.initState();
-  }
-
-  Future<http.Response> getToken(Map res) async {
-    var tokenRes = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
-        body: jsonEncode(res),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        });
-    return tokenRes ;
-  }
-
-  _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    verifySignature(
-        signature: response.signature,
-        paymentId: response.paymentId,
-        // orderId: response.orderId
-        orderId: order_Id);
-
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
-                      body: jsonEncode({
-                        "order_id": order_Id
-                      }),
-                      headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                      }
-                    );
-
-    Response tokenRes = await getToken(jsonDecode(res.body)['order']);
-    // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
-    print("token no");
-    print(jsonDecode(tokenRes.body)['tokenNo']);
-    print(jsonDecode(res.body)['order']);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TokenPage(
-                  // tokenNumber: 1,
-                  tokenNumber: jsonDecode(tokenRes.body)['tokenNo'],
-                )));
-    // Navigator.pushNamed(context, '/token');
-  }
-
-  _handlePaymentError(PaymentFailureResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response.message ?? " "),
-      ),
-    );
-  }
-
-  _handleExternalWallet(ExternalWalletResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(response.walletName ?? ""),
-    ));
   }
 
   @override
   void dispose() {
-    _razorpay.clear();
-
+    animationController.dispose();
     super.dispose();
   }
 
-  // void createOrder() async {
-  //   String keyId = 'rzp_test_rk34q3MXaI4tBi';
-  //   String keySec = 'T5RC8mNXy9yJANYD6QLdEUPH';
-
-  //   String basicAuth = 'Basic ${base64Encode(utf8.encode('$keyId:$keySec'))}';
-
-  //   Map<String, dynamic> body = {
-  //     "amount": 100,
-  //     "currency": "INR",
-  //     "receipt": "rcpt_id_1"
-  //   };
-
-  // }
-
-  void createOrder( amount ) async {
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
-                      body: jsonEncode({
-                        "amount": amount 
-                      }),
-                      headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                      }
-                    ); 
-  
-    order_Id = jsonDecode(res.body)['order']['id'];
-
-    if (res.statusCode == 201) {
-      orderCheckout(jsonDecode(res.body)['order']['id'],
-          jsonDecode(res.body)['order']['amount']);
-    }
-  }
-
-  void orderCheckout(orderId, amount) async {
-    var options = {
-      'key': 'rzp_test_rk34q3MXaI4tBi',
-      'amount': amount, //in the smallest currency sub-unit.
-      'name': 'Acme Corp.',
-      'order_id': orderId, // Generate order_id using Orders API
-      'description': 'Fine T-Shirt',
-      'timeout': 60 * 5, // in seconds
-      'prefill': {'contact': '1234567890', 'email': 'testuser1@example.com'}
-    };
-
-    _razorpay.open(options);
-  }
-
-  void verifySignature(
-      {String? signature, String? paymentId, String? orderId}) async {
-    Map<String, dynamic> body = {
-      "order_id": orderId,
-      "razorpay_payment_id": paymentId,
-      "razorpay_signature": signature
-    };
-
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
-                      body: body,
-                      headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                      }
-                    );
-
-    if (res.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(res.body),
-      ));
-    }
-  }
-
-  
   @override
   Widget build(BuildContext context) {
-    int calcTotal() {
-      int t = 0;
-      print(context.read<Cart>().cartLength);
-      for (int i = 0; i < context.read<Cart>().cartLength; i++) {
-        print("Cart ");
-        // t += (context.read<Cart>().items[i]['quantity'] *
-        //     context.read<Cart>().items[i]['foodPrice']) as int;
-        // print(context.read<Cart>().items[1]['quantity']);
-        t += (context.read<Cart>().items[i]['quantity'] * context.read<Cart>().items[i]['foodPrice']) as int;
-      }
-      // for (int i = 0; i < products.length; i++) {
-      //   t += (products[i].price * products[i].quantity);
-      // }
-
-      return t;
-    }
-
-    int total = calcTotal();
+    Cart cartProvider = Provider.of<Cart>(context);
+    List cart = cartProvider.getCart();
 
     return Scaffold(
-        drawer: Drawer(
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        title: Text('CheckOut'),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
+        // textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
+        titleTextStyle: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("Widget 1"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("Widget 2"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () => {},
-                    child: const Text("Widget 3"),
-                  ),
-                ),
-              ]),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ...buildHeader(),
+              //cart items list
+              ListView.builder(
+                itemCount: cart.length,
+                shrinkWrap: true,
+                controller: scrollController,
+                itemBuilder: (BuildContext context, int index) {
+                  return buildCartItemList( cartProvider, cart, cart[index]);
+                },
+              ),
+              SizedBox(height: 16),
+              Divider(),
+              buildPriceInfo(cart),
+              checkoutButton(cart, context),
+            ],
+          ),
         ),
-        appBar: AppBar(
-          title: const Text("appbar"),
-          actions: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 5, 10, 5),
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    // color: Colors.black,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                    // child: IconButton(icon: Icon(Icons.person_2_rounded),onPressed: ()=>{},),
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-        body: Column(
-          children: [
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Container(
-            //     alignment: Alignment.centerLeft,
-            //     child: const Text("Your Cart",
-            //       style: TextStyle(
-            //         fontSize: 30,
+      ),
+    );
+  }
 
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 20,
-            // ),
-            Expanded(
+  List<Widget> buildHeader() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: Text('Cart', style: headerStyle),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 0),
+        child: Text('$weekDay, ${day}th of $month ', style: headerStyle),
+      ),
+      TextButton(
+        child: Text('+ Add to order'),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    ];
+  }
+
+  Widget buildPriceInfo(List cart) {
+    oldTotal = total;
+    total = 0;
+    for (Map item  in cart) {
+      total += item['foodPrice'] * item['quantity'];
+    }
+    //oldTotal = total;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text('Total:', style: headerStyle),
+        AnimatedBuilder(
+          animation: animationController,
+          builder: (context, child) {
+            return Text('\u{20B9} ${lerpDouble(oldTotal, total, animationController.value)?.toStringAsFixed(2)}',
+                style: headerStyle);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget checkoutButton(List cart, context) {
+    return Container(
+      margin: EdgeInsets.only(top: 24, bottom: 64),
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 64, vertical: 12),
+          backgroundColor: mainColor,
+          shape: StadiumBorder(),
+        ),
+        child: Text('Checkout', style: titleStyle),
+        onPressed: () {
+          onCheckOutClick(cart);
+        },
+      ),
+    );
+  }
+
+  Widget buildCartItemList(Cart cartProvider, List cart, Map item) {
+    return Card(
+      margin: EdgeInsets.only(bottom: 16),
+      child: Container(
+        height: 100,
+        padding: EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(6)),
+              child: Image.asset(
+                'assets/dosa.png',
+                fit: BoxFit.cover,
+                width: 100,
+                height: 100,
+              ),
+            ),
+            Flexible(
+              flex: 3,
               child: Column(
-                children: [
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: context.read<Cart>().cartLength,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Image(
-                                          height: 75,
-                                          width: 75,
-                                          image: AssetImage(
-                                              // context.read<Cart>()
-                                              //     .items[index]['foodImage']
-                                              "assets/dosa.png"),
-                                        ),
-                                        const SizedBox(
-                                          width: 25,
-                                        ),
-                                        Container(
-                                          height: 70,
-                                          // color: Colors.red[100],
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 13),
-                                                child: Text(
-                                                  context
-                                                      .read<Cart>()
-                                                      .items[index]['foodName'],
-                                                  style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                              Container(
-                                                // color: Colors.amber[200],
-                                                child: SizedBox(
-                                                  height: 30,
-                                                  child: Row(
-                                                    children: [
-                                                      MaterialButton(
-                                                        height: 20,
-                                                        minWidth: 20,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            side: BorderSide(
-                                                                width: 1.5,
-                                                                color: Colors
-                                                                    .lightBlue
-                                                                    .shade200)),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(0.0),
-                                                        onPressed: (() {
-                                                          setState(() {
-                                                            if (context
-                                                                        .read<
-                                                                            Cart>()
-                                                                        .items[index]
-                                                                    [
-                                                                    'quantity'] >
-                                                                0) {
-                                                              context
-                                                                  .read<Cart>()
-                                                                  .decreaseQuantity(context
-                                                                      .read<
-                                                                          Cart>()
-                                                                      .items[index]);
-                                                              // context.read<Cart>().items[index]['quantity'] -= 1;
-                                                            } else {
-                                                              context
-                                                                  .read<Cart>()
-                                                                  .removeFromCart(context
-                                                                      .read<
-                                                                          Cart>()
-                                                                      .items[index]);
-                                                            }
-                                                            total = calcTotal();
-                                                          });
-                                                        }),
-                                                        // child: const Icon(products[index].quantity ? Icons.remove :  Icons.delete),
-                                                        child: context
-                                                                        .read<
-                                                                            Cart>()
-                                                                        .items[index]
-                                                                    [
-                                                                    'quantity'] >
-                                                                0
-                                                            ? const Icon(
-                                                                Icons.remove)
-                                                            : const Icon(
-                                                                Icons.delete),
-                                                      ),
-                                                      Text(
-                                                        context
-                                                            .read<Cart>()
-                                                            .items[index]
-                                                                ['quantity']
-                                                            .toString(),
-                                                        style: const TextStyle(
-                                                            fontSize: 19,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                      MaterialButton(
-                                                        height: 20,
-                                                        minWidth: 20,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            side: BorderSide(
-                                                                width: 1.5,
-                                                                color: Colors
-                                                                    .lightBlue
-                                                                    .shade200)),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(0.0),
-                                                        onPressed: (() {
-                                                          setState(() {
-                                                            context
-                                                                .read<Cart>()
-                                                                .increaseQuantity(context
-                                                                    .read<
-                                                                        Cart>()
-                                                                    .items[index]);
-                                                            total = calcTotal();
-                                                          });
-                                                        }),
-                                                        child: const Icon(
-                                                            Icons.add),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      height: 70,
-                                      // color: Colors.blue[100],
-                                      // alignment: Alignment.topCenter,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          // MaterialButton(
-                                          //   height: 20,
-                                          //   minWidth: 20,
-                                          //   onPressed: (() {
-                                          //     setState(() {
-                                          //        products.removeWhere((e) => e.name==products[index].name);
-                                          //     });
-                                          //   }),
-                                          //   child: const Icon(Icons.delete, size: 20,),
-                                          // ),
-                                          Text(
-                                            'Rs. ${context.read<Cart>().items[index]['quantity'] * context.read<Cart>().items[index]['foodPrice']}',
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ]),
-                            ),
-                          );
-                        }),
-                  ),
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
                   Container(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => {
-                              createOrder( total ),
-                              // Navigator.pushNamed(context, '/token')
-                            },
-                            child: const Text(
-                              "Place Order",
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          Text(
-                            'Rs. $total',
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w600),
-                          )
-                        ],
-                      ),
+                    height: 45,
+                    child: Text(
+                      item['foodName'],
+                      style: titleStyle,
+                      textAlign: TextAlign.center,
                     ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      InkWell(
+                        customBorder: roundedRectangle4,
+                        onTap: () {
+                          cartProvider.decreaseQuantity(item);
+                          animationController.reset();
+                          animationController.forward();
+                        },
+                        child: Icon(Icons.remove_circle),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 2),
+                        child: Text('${item['quantity']}', style: titleStyle),
+                      ),
+                      InkWell(
+                        customBorder: roundedRectangle4,
+                        onTap: () {
+                          cartProvider.increaseQuantity(item);
+                          animationController.reset();
+                          animationController.forward();
+                        },
+                        child: Icon(Icons.add_circle),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    height: 45,
+                    width: 70,
+                    child: Text(
+                      '\u{20B9} ${item['foodPrice']}',
+                      style: titleStyle,
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      cartProvider.removeFromCart(item);
+                      animationController.reset();
+                      animationController.forward();
+                    },
+                    customBorder: roundedRectangle12,
+                    child: Icon(Icons.delete_sweep, color: Colors.red),
                   )
                 ],
               ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
-
-
-
-// List<Item> products = [
-//     Item(
-//         name: 'Apple',
-//         unit: 'Kg',
-//         price: 20,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Mango',
-//         unit: 'Doz',
-//         price: 30,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Banana',
-//         unit: 'Doz',
-//         price: 10,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Grapes',
-//         unit: 'Kg',
-//         price: 8,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Water Melon',
-//         unit: 'Kg',
-//         price: 25,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Kiwi',
-//         unit: 'Pc',
-//         price: 40,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Orange',
-//         unit: 'Doz',
-//         price: 15,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Peach',
-//         unit: 'Pc',
-//         price: 8,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Strawberry',
-//         unit: 'Box',
-//         price: 12,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//     Item(
-//         name: 'Fruit Basket',
-//         unit: 'Kg',
-//         price: 55,
-//         image: 'assets/dosa.png',
-//         quantity: 0),
-//   ];

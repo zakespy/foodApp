@@ -10,7 +10,7 @@ class Cart with ChangeNotifier {
   int get cartLength => items.length;
 
   List getCart() {
-    notifyListeners();
+    // notifyListeners();
     return cart;
   }
 
