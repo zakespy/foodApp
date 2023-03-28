@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //color
 Color mainColor = Color.fromRGBO(255, 204, 0, 1);
-//const String BASE_URL = 'http://10.0.2.2:8000';
+//const String BASE_URL = 'http://localhost:8000';
 //Style
 final headerStyle = TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 final titleStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 56, 56, 56));
