@@ -285,6 +285,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
           padding: EdgeInsets.symmetric(horizontal: 64, vertical: 12),
           backgroundColor: mainColor,
           shape: StadiumBorder(),
+          splashFactory: InkRipple.splashFactory,
         ),
         child: Text('Checkout', style: titleStyle),
         onPressed: () {
