@@ -18,7 +18,7 @@ export const createOrder = async (req, res) => {
     try {
         let order = await instance.orders.create(options);
 
-        const newOrder = new orderModel({ isPaid: false, amount: amount * 100, order_id: order.id, payment_id: "pay_id", signature: "T5RC8mNXy9yJANYD6QLdEUPH" });
+        const newOrder = new orderModel({ isPaid: false, amount: amount, order_id: order.id, payment_id: "pay_id", signature: "T5RC8mNXy9yJANYD6QLdEUPH" });
 
         await newOrder.save();
 
