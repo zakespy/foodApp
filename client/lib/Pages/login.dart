@@ -24,7 +24,7 @@ class _loginState extends State<login> {
     print(result);
 
     Future<void> login() async {
-      response = await customer.login(user);
+      response = (await customer.login(user))!;
       final secureStorage store = secureStorage();
       print("***************");
       // print(response);

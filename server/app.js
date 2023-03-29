@@ -10,18 +10,19 @@ import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
 import order from "./routes/order.js"
 import {enqueue , dequeue , reqProcess} from "./modules/queue.js";
-
+// import createSocket from "../server/modules/webSocket.js"
 
 const app = express()
 dotenv.config({ path: "./config.env" });
 
 const port = process.env.port || '8000'
-const DATABASE_URL =
+const DATABASE_URL = 
   process.env.DATABASE_URL 
   
 
 connectDB(DATABASE_URL) //connection
 
+// app.use(createSocket())
 app.use(express.json());
 // app.use(express.json({limit: '3mb'}));
 

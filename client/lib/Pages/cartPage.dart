@@ -16,7 +16,8 @@ class CartPage extends StatefulWidget {
   _CartPageState createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin {
+class _CartPageState extends State<CartPage>
+    with SingleTickerProviderStateMixin {
   var now = DateTime.now();
   get weekDay => DateFormat('EEEE').format(now);
   get day => DateFormat('dd').format(now);
@@ -27,10 +28,32 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   ScrollController scrollController = ScrollController();
   late AnimationController animationController;
 
-
   final _razorpay = Razorpay();
   late String order_Id;
 
+  Future<http.Response> getToken(Map res) async {
+    var tokenRes = await http.post(
+        Uri.parse("http://localhost:8000/api/order/createToken"),
+        body: jsonEncode(res),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
+
+    return tokenRes;
+  }
+
+  Future<http.Response> addOrder(Map order) async {
+    var res = await http.post(
+        Uri.parse("http://localhost:8000/api/order/addOrder"),
+        body: jsonEncode(order),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
+    
+    return res;
+  }
 
   _handlePaymentSuccess(PaymentSuccessResponse response) async {
     verifySignature(
@@ -39,21 +62,25 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         // orderId: response.orderId
         orderId: order_Id);
 
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
-                      body: jsonEncode({
-                        "order_id": order_Id
-                      }),
-                      headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                      }
-                    );
-
+    var res = await http.post(
+        Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
+        body: jsonEncode({"order_id": order_Id}),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
+    // print("res type");
+    // print(jsonDecode(res.body).runtimeType);
     http.Response tokenRes = await getToken(jsonDecode(res.body)['order']);
     // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
-    print("token no");
-    print(jsonDecode(tokenRes.body)['tokenNo']);
+    // print("token no");
+    // print(jsonDecode(tokenRes.body)['tokenNo']);
     print(jsonDecode(res.body)['order']);
+    Map newOrder = jsonDecode(res.body)['order'];
+    newOrder['tokenNo'] = jsonDecode(tokenRes.body)['tokenNo'];
+    // print("newOrder");
+    // print(newOrder);
+    addOrder(newOrder);
     // ignore: use_build_context_synchronously
     Navigator.push(
         context,
@@ -61,9 +88,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
             builder: (context) => TokenPage(
                   // tokenNumber: 1,
                   tokenNumber: jsonDecode(tokenRes.body)['tokenNo'],
-            )
-        )
-    );
+                )));
     // Navigator.pushNamed(context, '/token');
   }
 
@@ -81,18 +106,15 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
     ));
   }
 
+  void createOrder(amount) async {
+    var res = await http.post(
+        Uri.parse("http://localhost:8000/api/payment/createOrder"),
+        body: jsonEncode({"amount": amount}),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
 
-  void createOrder( amount ) async {
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
-                      body: jsonEncode({
-                        "amount": amount 
-                      }),
-                      headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                      }
-                    ); 
-  
     order_Id = jsonDecode(res.body)['order']['id'];
 
     if (res.statusCode == 201) {
@@ -123,13 +145,13 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
       "razorpay_signature": signature
     };
 
-    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
-                      body: body,
-                      headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                      }
-                    );
+    var res = await http.post(
+        Uri.parse("http://localhost:8000/api/payment/verifySignature"),
+        body: body,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        });
 
     if (res.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -137,20 +159,6 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
       ));
     }
   }
-
-  Future<http.Response> getToken(Map res) async {
-    var tokenRes = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
-        body: jsonEncode(res),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        }
-    );
-
-    return tokenRes;
-  }
-
 
   onCheckOutClick(List cart, double totalAmount) async {
     try {
@@ -176,14 +184,16 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
 
   @override
   void initState() {
-    animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200))..forward();
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200))
+          ..forward();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
       _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
       _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     });
-    
+
     super.initState();
   }
 
@@ -208,7 +218,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.black),
         // textTheme: TextTheme(title: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        titleTextStyle: TextStyle(
+            color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -223,7 +234,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
                 shrinkWrap: true,
                 controller: scrollController,
                 itemBuilder: (BuildContext context, int index) {
-                  return buildCartItemList( cartProvider, cart, cart[index]);
+                  return buildCartItemList(cartProvider, cart, cart[index]);
                 },
               ),
               SizedBox(height: 16),
@@ -257,7 +268,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   Widget buildPriceInfo(List cart) {
     oldTotal = total;
     total = 0;
-    for (Map item  in cart) {
+    for (Map item in cart) {
       total += item['foodPrice'] * item['quantity'];
     }
     //oldTotal = total;
@@ -268,7 +279,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         AnimatedBuilder(
           animation: animationController,
           builder: (context, child) {
-            return Text('\u{20B9} ${lerpDouble(oldTotal, total, animationController.value)?.toStringAsFixed(2)}',
+            return Text(
+                '\u{20B9} ${lerpDouble(oldTotal, total, animationController.value)?.toStringAsFixed(2)}',
                 style: headerStyle);
           },
         ),
@@ -343,7 +355,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
                         child: Icon(Icons.remove_circle),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 2),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 2),
                         child: Text('${item['quantity']}', style: titleStyle),
                       ),
                       InkWell(

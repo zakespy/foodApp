@@ -1,3 +1,4 @@
+import ongoingOrderModel from "../models/ongoingOrder.js";
 import {enqueue , dequeue , reqProcess} from "../modules/queue.js";
 // import dayOrderModel from "../models/dayOrderModel.js";
 // import ongoingOrderModel from "../models/ongoingOrder.js";
@@ -47,6 +48,23 @@ class orderController{
         //     console.error('Request failed with error:', error);
         //   });
        
+    }
+
+    static createOnGoingOrder = async (req,res)=>{
+        const {tokenNo,order_id} = req.body 
+        console.log(req.body)
+        try {
+            const newOngoingOrder = new ongoingOrderModel({tokenNo:tokenNo,order_id:order_id,claimed:false,preparedStatus:false})
+            console.log("ongoingorder",newOngoingOrder)
+            newOngoingOrder.save().then(e=>{
+                console.log("succesfull")
+                res.json({message:"Successfully added order",status:true})
+            })            
+        } catch (error) {
+            res.status(500).json({message:"Server error",status:false})
+        }
+        
+        
     }
 
 }
