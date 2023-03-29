@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:foodapp/Constants/values.dart';
-// import 'package:flutter_food_ordering/model/cart_model.dart';
+import 'package:foodapp/Pages/tokenPage.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/provider/cart_provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 // import 'package:toast/toast.dart';
 
 class CartPage extends StatefulWidget {
@@ -24,7 +27,132 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   ScrollController scrollController = ScrollController();
   late AnimationController animationController;
 
-  onCheckOutClick(List cart) async {
+
+  final _razorpay = Razorpay();
+  late String order_Id;
+
+
+  _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    verifySignature(
+        signature: response.signature,
+        paymentId: response.paymentId,
+        // orderId: response.orderId
+        orderId: order_Id);
+
+    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
+                      body: jsonEncode({
+                        "order_id": order_Id
+                      }),
+                      headers: {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                      }
+                    );
+
+    http.Response tokenRes = await getToken(jsonDecode(res.body)['order']);
+    // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
+    print("token no");
+    print(jsonDecode(tokenRes.body)['tokenNo']);
+    print(jsonDecode(res.body)['order']);
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TokenPage(
+                  // tokenNumber: 1,
+                  tokenNumber: jsonDecode(tokenRes.body)['tokenNo'],
+            )
+        )
+    );
+    // Navigator.pushNamed(context, '/token');
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response.message ?? " "),
+      ),
+    );
+  }
+
+  _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.walletName ?? ""),
+    ));
+  }
+
+
+  void createOrder( amount ) async {
+    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
+                      body: jsonEncode({
+                        "amount": amount 
+                      }),
+                      headers: {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                      }
+                    ); 
+  
+    order_Id = jsonDecode(res.body)['order']['id'];
+
+    if (res.statusCode == 201) {
+      orderCheckout(jsonDecode(res.body)['order']['id'],
+          jsonDecode(res.body)['order']['amount']);
+    }
+  }
+
+  void orderCheckout(orderId, amount) async {
+    var options = {
+      'key': 'rzp_test_rk34q3MXaI4tBi',
+      'amount': amount, //in the smallest currency sub-unit.
+      'name': 'Acme Corp.',
+      'order_id': orderId, // Generate order_id using Orders API
+      'description': 'Fine T-Shirt',
+      'timeout': 60 * 5, // in seconds
+      'prefill': {'contact': '1234567890', 'email': 'testuser1@example.com'}
+    };
+
+    _razorpay.open(options);
+  }
+
+  void verifySignature(
+      {String? signature, String? paymentId, String? orderId}) async {
+    Map<String, dynamic> body = {
+      "order_id": orderId,
+      "razorpay_payment_id": paymentId,
+      "razorpay_signature": signature
+    };
+
+    var res = await http.post( Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
+                      body: body,
+                      headers: {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                      }
+                    );
+
+    if (res.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(res.body),
+      ));
+    }
+  }
+
+  Future<http.Response> getToken(Map res) async {
+    var tokenRes = await http.post(
+        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
+        body: jsonEncode(res),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        }
+    );
+
+    return tokenRes;
+  }
+
+
+  onCheckOutClick(List cart, double totalAmount) async {
     try {
       // List<Map> data = List.generate(cart.cartItems.length, (index) {
       //   return {"id": cart.cartItems[index].food.id, "quantity": cart.cartItems[index].quantity};
@@ -39,6 +167,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
       // } else {
       //   Toast.show(response.data['message'], context);
       // }
+
+      createOrder(totalAmount);
     } catch (ex) {
       print(ex.toString());
     }
@@ -47,12 +177,22 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200))..forward();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    });
+    
     super.initState();
   }
 
   @override
   void dispose() {
     animationController.dispose();
+
+    _razorpay.clear();
+
     super.dispose();
   }
 
@@ -148,7 +288,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         ),
         child: Text('Checkout', style: titleStyle),
         onPressed: () {
-          onCheckOutClick(cart);
+          onCheckOutClick(cart, total);
         },
       ),
     );
