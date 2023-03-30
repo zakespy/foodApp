@@ -10,9 +10,13 @@ import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
 import order from "./routes/order.js"
 import {enqueue , dequeue , reqProcess} from "./modules/queue.js";
-// import createSocket from "../server/modules/webSocket.js"
+import http from 'http'
+import {WebSocketServer} from 'ws'
+// import connectSocket  from "./modules/webSocket.js"; 
+// import {newSocket} from "../server/modules/webSocket.js"
 
 const app = express()
+// const server = http.createServer(app)
 dotenv.config({ path: "./config.env" });
 
 const port = process.env.port || '8000'
@@ -47,6 +51,31 @@ setInterval(()=>{
   reqProcess()
 },1000)
 
+const server = http.createServer();
+// newSocket(server)
+const wss =  new WebSocketServer({ port:5000 });
+    wss.on('connection', (ws)=>{
+      ws.on('message',message=>{
+        console.log('%s',message)
+      })
+      ws.send("hiii from server side")
+      console.log('new connection')
+    })
+
+    // wss.on('message', function message(data) {
+    //   console.log('hello message received: %s ', data);
+    //   // wss.send("hiiii")
+    // });
+
+    // wss.on('open', function open() {
+    //   ws.send('something');
+    // });
+
+
+
+
+// connectSocket    
 app.listen(port,()=>{
     console.log(`Server LIstening at port http://localhost:${port}`)
 })
+ 

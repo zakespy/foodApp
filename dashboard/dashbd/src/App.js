@@ -8,9 +8,9 @@ function App() {
 
     <>
 
-     {/* <Mainpage /> */}
+     <Mainpage />
 
-    <Card/>
+    {/* <Card/> */}
 
     </>
 

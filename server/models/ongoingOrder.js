@@ -2,7 +2,7 @@ import mongoose, { mongo } from "mongoose";
 
 const ongoingOrderSchema = new mongoose.Schema({
     customerEmailId: String,
-    tokenN0: Number,
+    tokenNo: Number,
     orderTime: Date,
     orderDetails: [{
         foodName: String,
