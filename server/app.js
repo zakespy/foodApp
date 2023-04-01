@@ -56,9 +56,12 @@ const server = http.createServer();
 const wss =  new WebSocketServer({ port:5000 });
     wss.on('connection', (ws)=>{
       ws.on('message',message=>{
+        // ws.send("true")
         console.log('%s',message)
       })
-      ws.send("hiii from server side")
+      setTimeout(()=>{
+        ws.send("true")
+      },5000)
       console.log('new connection')
     })
 
