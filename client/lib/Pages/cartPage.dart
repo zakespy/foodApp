@@ -33,7 +33,7 @@ class _CartPageState extends State<CartPage>
 
   Future<http.Response> getToken(Map res) async {
     var tokenRes = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
+        Uri.parse("http://localhost:8000/api/order/createToken"),
         body: jsonEncode(res),
         headers: {
           'Content-type': 'application/json',
@@ -45,7 +45,7 @@ class _CartPageState extends State<CartPage>
 
   Future<http.Response> addOrder(Map order) async {
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/addOrder"),
+        Uri.parse("http://localhost:8000/api/order/addOrder"),
         body: jsonEncode(order),
         headers: {
           'Content-type': 'application/json',
@@ -63,7 +63,7 @@ class _CartPageState extends State<CartPage>
         orderId: order_Id);
 
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
+        Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
         body: jsonEncode({"order_id": order_Id}),
         headers: {
           'Content-type': 'application/json',
@@ -108,7 +108,7 @@ class _CartPageState extends State<CartPage>
 
   void createOrder(amount) async {
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
+        Uri.parse("http://localhost:8000/api/payment/createOrder"),
         body: jsonEncode({"amount": amount}),
         headers: {
           'Content-type': 'application/json',
@@ -146,7 +146,7 @@ class _CartPageState extends State<CartPage>
     };
 
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
+        Uri.parse("http://localhost:8000/api/payment/verifySignature"),
         body: body,
         headers: {
           'Content-type': 'application/json',

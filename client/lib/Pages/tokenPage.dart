@@ -3,10 +3,10 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 bool _isProcessing = false;
 final channel = WebSocketChannel.connect(
-  Uri.parse('ws://10.0.2.2:5000'),
+  Uri.parse('ws://localhost:5000'),
 );
 void clientSocket() {
-  // var webSocket = new WebSocket('ws://10.0.2.2:5000');
+  // var webSocket = new WebSocket('ws://localhost:5000');
   // webSocket.onMessage.listen((e) {
   //   print("Received Data");
   //   print(e.data);
@@ -15,7 +15,9 @@ void clientSocket() {
   // webSocket.send("Hiii I m client");
   print("Client");
   final channel = WebSocketChannel.connect(
-    Uri.parse('ws://10.0.2.2:5000'),
+
+    Uri.parse('ws://localhost:5000'),
+    // Uri.parse('ws://localhost:5000'),
   );
 
   channel.sink.add('Hello, WebSocket!');
@@ -38,7 +40,7 @@ class TokenPage extends StatefulWidget {
   final int tokenNumber;
 
   final channel = WebSocketChannel.connect(
-    Uri.parse('ws://10.0.2.2:5000'),
+    Uri.parse('ws://localhost:5000'),
   );
 
   @override
