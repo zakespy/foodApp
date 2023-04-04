@@ -1,64 +1,93 @@
 import React from "react";
 import './mainpage.css';
+import Card from "../Card/Card.js";
 
 export default function Mainpage() {
-    return(
+    return(                         
+<div class="row">
+  <div class="column sidebar">
 
-<body>
-  <div class="sidebar">
-    <div class="logo-details">
-      <i class='bx '></i>
-      <span class="logo_name">Menu</span>
+  <div class="logo-details">
+      <h1 class="logo_name">Admin</h1>
     </div>
-      <ul class="nav-links">
-       
+   
+    <ul class="nav-links">
         <li>
           <a href="#">
-            <i class='bx'></i>
-            <span class="links_name">option 2</span>
+            <h4 class="links_name">Breakfast</h4>
           </a>
         </li>
         <li>
           <a href="#">
-            <i class='bx'></i>
-            <span class="links_name">option 3</span>
+            <h4 class="links_name">lunch</h4>
           </a>
         </li>
         <li>
           <a href="#">
-            <i class='bx'></i>
-            <span class="links_name">option 4</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class='bx'></i>
-            <span class="links_name">LogOut</span>
+            <h4 class="links_name">Other</h4>
           </a>
         </li>
       </ul>
+      <div className="logot">
+      <button className="logout_">
+           <span>Logout</span>
+      </button>
+      </div>
   </div>
 
-  <section class="home-section">
-
-    <nav>
-      <div class="sidebar-button">
-        <i class='bx'></i>
-        <span class="dashboard">Dashboard</span>
+  <div class="column middle">
+    <div className="mt">
+      <p>Menu Cards</p>
+      <div className="cardholder">
+        <Card/>
       </div>
-      <div class="search-box">
-        <input type="text" placeholder="Search..." />
+      <div className="cardholder">
+        <Card/>
       </div>
-      <div class="profile-details">
-       
-        <span class="admin_name">Admin</span>
-        <i class='bx bx-chevron-down' ></i>
+      <div className="cardholder">
+        <Card/>
       </div>
-    </nav>
+      <div className="cardholder">
+        <Card/>
+      </div>
+      <div className="cardholder">
+        <Card/>
+      </div>
+      <div className="cardholder">
+        <Card/>
+      </div>
+      <div className="cardholder">
+        <Card/>
+      </div>
+      <div className="cardholder">
+        <Card/>
+      </div>
+      <div className="cardholder">
+        <Card/>
+      </div>
+    </div>
+  </div>
 
-  </section>
+  <div class="column right">
+    <div className="FinalzeMenu"> 
+    <a class="btn" href="#">Finalze Menu</a>
+    </div>
 
-</body>
+    <div className="rightcard">
+        <Card/>
+      </div>
+      <div className="rightcard">
+        <Card/>
+      </div>
+      <div className="rightcard">
+        <Card/>
+      </div>
+      <div className="rightcard">
+        <Card/>
+      </div>
 
+  </div>
+
+</div>    
     )
 }

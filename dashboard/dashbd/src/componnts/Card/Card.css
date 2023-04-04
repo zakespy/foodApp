@@ -1,130 +1,78 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 
-*{
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
+* {
+	box-sizing: border-box;
+}
+/* 
+body {
+	background-color: #ebe59b;
+	font-family: Montserrat, sans-serif;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	min-height: 100vh;
+	margin: 0;
+} */
+
+.card-container {
+	background-color: #231E39;
+	border-radius: 9px;
+	box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.75);
+	color: #B3B8CD;
+	padding-top: 30px;
+	position: relative;
+	width: 250px;
+	max-width: 100%;
+	text-align: center;
+  margin-bottom: 20px;
 }
 
-body{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: whitesmoke;
-  font-family: "Poppins", sans-serif;
+.card-container .round {
+	border: 1px solid #FFD401;
+	border-radius: 50%;
+	padding: 7px;
+  height: 170px;
+  width: 170px;
 }
 
-.card-container{
+
+
+.adt {
+  display: inline-block;
+  padding: 0.9rem 1.8rem;
+  font-size: 16px;
+  font-weight: 900;
+  color: white;
+  border: 3px solid #FFD401;
+  cursor: pointer;
   position: relative;
-  width: 260px;
-  height: 420px;
-  background: white;
-  border-radius: 6px;
-  border: 1px solid black;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-}
-
-.img-container{
+  background-color: transparent;
+  text-decoration: none;
   overflow: hidden;
-  width: 100%;
-  height: 100%;
-  border-radius: 6px 6px 0px 0px;
-}
-
-.img-container img{
-  width: 100%;
-  height: 65%;
-}
-
-.content{
+  z-index: 1;
+  font-family: inherit;
+  margin-left: 8px;
+  margin-top: 15px;
+ }
+ 
+ .adt:hover{
+  color:#0A2558;
+  }
+ 
+ .adt::before {
+  content: "";
   position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 16px;
-}
-
-.card-details{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-.card-details h3{
-  color: #111;
-  font-weight: 500;
-}
-
-.card-details h4{
-  color: #333;
-  font-weight: 500;
-  font-size: 0.9em;
-}
-
-.button {
-    display: inline-block;
-    padding: 12px 24px;
-    border: 1px solid #4f4f4f;
-    border-radius: 4px;
-    transition: all 0.2s ease-in;
-    position: relative;
-    overflow: hidden;
-    font-size: 19px;
-    color: black;
-    z-index: 1;
-   }
-   
-   .button:before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%) scaleY(1) scaleX(1.25);
-    top: 100%;
-    width: 140%;
-    height: 180%;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 50%;
-    display: block;
-    transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
-    z-index: -1;
-   }
-   
-   .button:after {
-    content: "";
-    position: absolute;
-    left: 55%;
-    transform: translateX(-50%) scaleY(1) scaleX(1.45);
-    top: 180%;
-    width: 160%;
-    height: 190%;
-    background-color: #39bda7;
-    border-radius: 50%;
-    display: block;
-    transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
-    z-index: -1;
-   }
-   
-   .button:hover {
-    color: #ffffff;
-    border: 1px solid #39bda7;
-   }
-   
-   .button:hover:before {
-    top: -35%;
-    background-color: #39bda7;
-    transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
-   }
-   
-   .button:hover:after {
-    top: -45%;
-    background-color: #39bda7;
-    transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
-   }
-
+  background-color: #FFD401;
+  transform: translateX(-100%);
+  transition: all .3s;
+  z-index: -1;
+ }
+ 
+ .adt:hover::before {
+  transform: translateX(0);
+ }
