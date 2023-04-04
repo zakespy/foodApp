@@ -1,41 +1,48 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:foodapp/provider/token_provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+String orderId = '';
 bool _isProcessing = false;
-final channel = WebSocketChannel.connect(
-  Uri.parse('ws://localhost:5000'),
-);
-void clientSocket() {
-  // var webSocket = new WebSocket('ws://localhost:5000');
-  // webSocket.onMessage.listen((e) {
-  //   print("Received Data");
-  //   print(e.data);
-  // });
+// final channel = WebSocketChannel.connect(
+//   Uri.parse('ws://localhost:5000'),
+// );
 
-  // webSocket.send("Hiii I m client");
-  print("Client");
-  final channel = WebSocketChannel.connect(
+// void clientSocket() {
 
-    Uri.parse('ws://localhost:5000'),
-    // Uri.parse('ws://localhost:5000'),
-  );
+//   final channel = WebSocketChannel.connect(
+//     Uri.parse('ws://localhost:5000'),
+//     // Uri.parse('ws://localhost:5000'),
+//   );
 
-  channel.sink.add('Hello, WebSocket!');
+//   channel.sink.add('Hello, WebSocket!');
 
-  channel.stream.listen((message) {
-    print('Received: $message');
-    if (message == "true") {
-      // setState(_isProcessing = true);
-      _isProcessing = true;
-      print("Message is true");
-    }
-  });
+//   channel.stream.listen((message) {
+//     print('Received: $message');
+//     bool result = false;
+//     TokenPage newtoken = new TokenPage(tokenNumber: 0, orderId: orderId);
+//     // newtoken.getToken();
+//     if (message == orderId) {
+//       // setState(_isProcessing = true);
+//       _isProcessing = true;
+//       print("Message is true");
+//     }
+//   });
 
-  // channel.sink.close(); to close websocket
+//   // channel.sink.close(); to close websocket
+// }
+
+void initialize(order_Id) {
+  orderId = order_Id;
 }
 
 class TokenPage extends StatefulWidget {
   TokenPage({super.key, required this.tokenNumber});
+  // TokenPage({super.key, required this.tokenNumber, required this.orderId});
+  // final String orderId;
 
   final int tokenNumber;
 
@@ -50,9 +57,63 @@ class TokenPage extends StatefulWidget {
 class _TokenPageState extends State<TokenPage> {
   // final bool _isProcessing = true;
 
+//   void clientSocket() {
+
+//   // final channel = WebSocketChannel.connect(
+//   //   Uri.parse('ws://localhost:5000'),
+//   //   // Uri.parse('ws://localhost:5000'),
+//   // );
+
+//   widget.channel.sink.add('Hello, WebSocket!');
+
+//   widget.channel.stream.listen((message) {
+//     print('Received: $message');
+//     // bool result = false;
+//     // TokenPage newtoken = new TokenPage(tokenNumber: 0, orderId: orderId);
+//     // // newtoken.getToken();
+//     // if (message == orderId) {
+//     //   // setState(_isProcessing = true);
+//     //   _isProcessing = true;
+//     //   print("Message is true");
+//     // }
+//   });
+
+//   // channel.sink.close(); to close websocket
+// }
+
+  bool chechToken(orderId) {
+    String res = "Processing";
+    bool result = getToken(orderId);
+    result ? Provider.of<Token>(context).updateToken(orderId) : "";
+    // result ? res = "Prepared" : '';
+    // return res;
+    // return result ? 'Prepared' : 'Processing';
+    return result ? true : false;
+  }
+
+  bool getToken(orderId) {
+    print('order id $orderId');
+    List tokenList = Provider.of<Token>(context,listen: false).TokenList;
+    print('tokenList $tokenList');
+    if (orderId == "true") {
+      return true;
+    } else {
+      return false;
+    }
+    // List tokenList = Provider.of<Token>(context).TokenList;
+    // print('tokenList $tokenList');
+    // bool isPresent = false;
+    // tokenList.map((e) => {
+    //       if (orderId == 'true') {isPresent = true}
+    //       // if (e['orderId'] == orderId) {isPresent = true}
+    //     });
+    // return isPresent;
+  }
+
   void initState() {
+    // initialize(widget.orderId);
     // super.initState();
-    clientSocket();
+    // clientSocket();
   }
 
   @override
@@ -79,14 +140,20 @@ class _TokenPageState extends State<TokenPage> {
                   ),
                   SizedBox(height: 32),
                   Text(
-                    snapshot.hasData && snapshot.data == "true"?'Prepared':'Processing',
-                    style: TextStyle(fontSize: 24)
-                  ),
-                  snapshot.hasData && snapshot.data == "true"?
-                  ElevatedButton(child: Text("Claim"),onPressed: ()=>{
-                    Navigator.pushNamed(context, '/')
-                  },):
-                  Text("Claim ")
+                      // snapshot.hasData && snapshot.data == "true"
+                      snapshot.hasData
+                          ? chechToken(snapshot.data)?
+                          'Prepared'
+                          : 'Processing':'processing',
+                      style: TextStyle(fontSize: 24)),
+                  snapshot.hasData
+                          ? chechToken(snapshot.data)?
+                          ElevatedButton(
+                          child: Text("Claim"),
+                          onPressed: () => {Navigator.pushNamed(context, '/')},
+                        )
+                      : Text("Claim "):Text("Claim "),
+
                   // _isProcessing
                   //     ? Text(
                   //         'Prepared',
