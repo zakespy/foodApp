@@ -4,10 +4,9 @@ import 'package:provider/provider.dart';
 class Token with ChangeNotifier {
   Map token = {
     'orderId': String,
-    'name': String,
+    'tokenNo': String,
     'isPrepared': bool,
     "orderDetails": Map,
-
   };
 
   List<Map> tokenList = [{}];
@@ -17,9 +16,11 @@ class Token with ChangeNotifier {
   List get TokenList => tokenList;
   int get tokenListLength => tokenList.length;
 
-  void addToTokenList(Map token) {
+  bool addToTokenList(Map token) {
+    print('token $token');
     tokenList.add(token);
     notifyListeners();
+    return true;
   }
 
   void removeFromTokenList(Map token) {
@@ -38,11 +39,9 @@ class Token with ChangeNotifier {
     return token;
   }
 
-  void updateToken(Map token){
+  void updateToken(String orderId) {
     tokenList.map((e) => {
-      if(e['orderId'] == token['orderId']){
-        e['isPrepared'] = true
-      }
-    });
+          if (e['orderId'] == orderId) {e['isPrepared'] = true}
+        });
   }
 }

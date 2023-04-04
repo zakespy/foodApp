@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:foodapp/Constants/values.dart';
 import 'package:foodapp/Pages/tokenPage.dart';
+import 'package:foodapp/provider/token_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/provider/cart_provider.dart';
@@ -51,8 +52,14 @@ class _CartPageState extends State<CartPage>
           'Content-type': 'application/json',
           'Accept': 'application/json',
         });
-    
+
     return res;
+  }
+
+  Future<bool> addToken(tokenNo, orderId) async {
+    final tokenData = await Provider.of<Token>(context).addToTokenList(
+        {'tokenNo': tokenNo, 'orderId': orderId, 'isPrepared': false});
+    return true;
   }
 
   _handlePaymentSuccess(PaymentSuccessResponse response) async {
@@ -69,8 +76,8 @@ class _CartPageState extends State<CartPage>
           'Content-type': 'application/json',
           'Accept': 'application/json',
         });
-    // print("res type");
-    // print(jsonDecode(res.body).runtimeType);
+    print("res type");
+    print(jsonDecode(res.body)['order']['orderId']);
     http.Response tokenRes = await getToken(jsonDecode(res.body)['order']);
     // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
     // print("token no");
@@ -81,6 +88,8 @@ class _CartPageState extends State<CartPage>
     // print("newOrder");
     // print(newOrder);
     addOrder(newOrder);
+    addToken(jsonDecode(tokenRes.body)['tokenNo'],
+        jsonDecode(res.body)['order']['orderId']);
     // ignore: use_build_context_synchronously
     Navigator.push(
         context,
