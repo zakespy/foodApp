@@ -27,12 +27,12 @@ Future<void> main() async {
           initialRoute: '/',
           routes: {
             '/': (context) => home(),
-            // '/signup': (context) => SignUp(),
-            // '/login': (context)=> login(),
-            // '/home': (context) => home(),
-            // '/profile':(context)=> ProfilePage({}),
-            // '/cart':(context)=> CartPage(),
-            // '/token':(context)=>TokenPage(tokenNumber: 0)
+            '/signup': (context) => SignUp(),
+            '/login': (context)=> login(),
+            '/home': (context) => home(),
+            '/profile':(context)=> ProfilePage({}),
+            '/cart':(context)=> CartPage(),
+            '/token':(context)=>TokenPage(tokenNumber: 0)
           },
         )));
   } else {
@@ -47,12 +47,12 @@ Future<void> main() async {
             initialRoute: '/',
             routes: {
               '/': (context) => login(),
-              // '/signup': (context) => SignUp(),
-              // '/home': (context) => home(),
-              // '/login':(context) => login(),
-              // '/profile':(context)=> ProfilePage({}),
-              // '/cart':(context)=> CartPage(),
-              // '/token':(context)=>TokenPage(tokenNumber: 0)
+              '/signup': (context) => SignUp(),
+              '/home': (context) => home(),
+              '/login':(context) => login(),
+              '/profile':(context)=> ProfilePage({}),
+              '/cart':(context)=> CartPage(),
+              '/token':(context)=>TokenPage(tokenNumber: 0)
             },
           )),
     );

@@ -91,9 +91,15 @@ class _TokenPageState extends State<TokenPage> {
     return result ? true : false;
   }
 
+  Future<List> getTokenList() async {
+    List tokenList = await context.read<Token>().TokenList;
+    return tokenList;
+  }
+
   bool getToken(orderId) {
     print('order id $orderId');
-    List tokenList = Provider.of<Token>(context,listen: false).TokenList;
+    // List tokenList = Provider.of<Token>(context,listen: false).TokenList;
+    List tokenList = context.read<Token>().getTokenList();
     print('tokenList $tokenList');
     if (orderId == "true") {
       return true;
@@ -142,17 +148,20 @@ class _TokenPageState extends State<TokenPage> {
                   Text(
                       // snapshot.hasData && snapshot.data == "true"
                       snapshot.hasData
-                          ? chechToken(snapshot.data)?
-                          'Prepared'
-                          : 'Processing':'processing',
+                          ? chechToken(snapshot.data)
+                              ? 'Prepared'
+                              : 'Processing'
+                          : 'processing',
                       style: TextStyle(fontSize: 24)),
                   snapshot.hasData
-                          ? chechToken(snapshot.data)?
-                          ElevatedButton(
-                          child: Text("Claim"),
-                          onPressed: () => {Navigator.pushNamed(context, '/')},
-                        )
-                      : Text("Claim "):Text("Claim "),
+                      ? chechToken(snapshot.data)
+                          ? ElevatedButton(
+                              child: Text("Claim"),
+                              onPressed: () =>
+                                  {Navigator.pushNamed(context, '/')},
+                            )
+                          : Text("Claim ")
+                      : Text("Claim "),
 
                   // _isProcessing
                   //     ? Text(

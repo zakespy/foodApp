@@ -57,8 +57,11 @@ class _CartPageState extends State<CartPage>
   }
 
   Future<bool> addToken(tokenNo, orderId) async {
-    final tokenData = await Provider.of<Token>(context).addToTokenList(
-        {'tokenNo': tokenNo, 'orderId': orderId, 'isPrepared': false});
+    Map newToken = {'tokenNo': tokenNo, 'orderId': orderId};
+    final tokenData = await context.read<Token>().addToTokenList(newToken);
+    print("true $tokenData");
+    // final tokenData = await Provider.of<Token>(context).addToTokenList(
+    //     {'tokenNo': tokenNo, 'orderId': orderId, 'isPrepared': false});
     return true;
   }
 
@@ -77,7 +80,7 @@ class _CartPageState extends State<CartPage>
           'Accept': 'application/json',
         });
     print("res type");
-    print(jsonDecode(res.body)['order']['orderId']);
+    print(jsonDecode(res.body)['order']);
     http.Response tokenRes = await getToken(jsonDecode(res.body)['order']);
     // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
     // print("token no");
@@ -89,7 +92,7 @@ class _CartPageState extends State<CartPage>
     // print(newOrder);
     addOrder(newOrder);
     addToken(jsonDecode(tokenRes.body)['tokenNo'],
-        jsonDecode(res.body)['order']['orderId']);
+        jsonDecode(res.body)['order']['order_id']);
     // ignore: use_build_context_synchronously
     Navigator.push(
         context,

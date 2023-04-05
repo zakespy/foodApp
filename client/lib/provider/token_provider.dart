@@ -39,6 +39,11 @@ class Token with ChangeNotifier {
     return token;
   }
 
+  List getTokenList() {
+    print(tokenList);
+    return tokenList;
+  }
+
   void updateToken(String orderId) {
     tokenList.map((e) => {
           if (e['orderId'] == orderId) {e['isPrepared'] = true}
