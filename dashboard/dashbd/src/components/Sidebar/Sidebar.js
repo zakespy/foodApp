@@ -1,10 +1,16 @@
-import React from "react";
+import React,{useState} from "react";
 import "../Sidebar/SidebarStyle.css"
+import MenuPage from "../MenuPage/MenuPage";
+import OrderPage from "../OrderPage/OrderPage";
 
 export default function Sidebar() {
 
+    const [componentsToggle,setComponentsToggle] = useState(0)
+
+
     return (
         <>
+            <div className="MainLayout">
             <div class="wrapper">
                 <div class="sidebar">
                     <div class="profile">
@@ -15,56 +21,42 @@ export default function Sidebar() {
                     </div>
                     <ul>
                         <li className="dashboardItem">
-                            <a href="#" class="active">
-                                <span class="icon"><i class="fas fa-home"></i></span>
-                                <span class="item">Home</span>
+                            <a  onClick={()=>{setComponentsToggle(0)}}>
+                                {/* {console.log(componentsToggle)} */}
+                                {/* <span class="icon"><i class="fas fa-home"></i></span> */}
+                                <span class="item">Orders</span>
                             </a>
                         </li>
                         <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-desktop"></i></span>
-                                <span class="item">My Dashboard</span>
+                            <a  onClick={()=>{setComponentsToggle(1)}}>
+                                {/* <span class="icon"><i class="fas fa-desktop"></i></span> */}
+                                <span class="item">Menu</span>
                             </a>
                         </li>
                         <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-user-friends"></i></span>
-                                <span class="item">People</span>
+                            <a  onClick={()=>{setComponentsToggle(2)}}>
+                                {/* <span class="icon"><i class="fas fa-user-friends"></i></span> */}
+                                <span class="item">Category</span>
                             </a>
                         </li>
                         <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
-                                <span class="item">Perfomance</span>
-                            </a>
-                        </li>
-                        <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-database"></i></span>
-                                <span class="item">Development</span>
-                            </a>
-                        </li>
-                        <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-chart-line"></i></span>
-                                <span class="item">Reports</span>
-                            </a>
-                        </li>
-                        <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-user-shield"></i></span>
-                                <span class="item">Admin</span>
-                            </a>
-                        </li>
-                        <li className="dashboardItem">
-                            <a href="#">
-                                <span class="icon"><i class="fas fa-cog"></i></span>
+                            <a  onClick={()=>{setComponentsToggle(3)}}>
+                                {/* <span class="icon"><i class="fas fa-cog"></i></span> */}
                                 <span class="item">Settings</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </div >
+            <div className="components">
+                {componentsToggle === 0?<OrderPage/> : 
+                componentsToggle === 1? <MenuPage/>:<MenuPage/>}
+                    {/* <MenuPage/>
+                    <OrderPage/> */}
+                </div>
+            </div>
+            
+
         </>
     )
 }
