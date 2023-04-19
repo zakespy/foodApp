@@ -1,0 +1,45 @@
+.MenuCard{
+    height: 6vh;
+    width: 80vw;
+    background-color: rgb(225, 231, 231);
+    box-shadow: 1px 1px 4px  rgb(114, 113, 113);
+    /* background-color: rgb(196, 203, 203); */
+    /* background-color: rgb(211, 211, 159); */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    padding-left: 15px;
+    color: rgb(82, 80, 80);
+    font-weight: 100;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.foodName{
+    width: 30vw;
+}
+
+.foodCategory{
+    width: 20vw;
+}
+
+.foodPrice{
+    width: 20vw;
+}
+
+.foodIcon{
+    display: flex;
+    flex-direction: row;
+}
+
+.actionIcon{
+    margin: 0 10px;
+    color:black
+}
+
+
+.actionIcon:hover{
+    cursor: pointer;
+}
+

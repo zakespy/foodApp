@@ -1,0 +1,48 @@
+
+
+/*  */
+
+
+
+.MenuPageContainer{
+    display: flex;
+    /* width: 200px; */
+    width: 85vw;
+    height: 100vh;
+    padding:30px;
+}
+
+.MenuContainer{
+    width: 100%;
+    height: 100%;
+    /* background-color: aqua; */
+    border-radius: 10px;
+}
+
+.addItem{
+    height: 6vh;
+    width: 80vw;
+    background-color: rgb(110, 110, 109);
+    box-shadow: 1px 1px 4px  rgb(184, 182, 182);
+    /* background-color: rgb(196, 203, 203); */
+    /* background-color: rgb(211, 211, 159); */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    padding-left: 15px;
+    color: rgb(224, 219, 219);
+    font-weight: 100;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.add-Button{
+    color:aliceblue;
+    margin-right: 3px;
+}
+
+.addItem:hover{
+    background-color: rgb(83, 83, 82);
+}

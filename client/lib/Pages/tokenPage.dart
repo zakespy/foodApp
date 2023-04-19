@@ -1,43 +1,125 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:foodapp/provider/token_provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-void clientSocket() {
-  // var webSocket = new WebSocket('ws://localhost:5000');
-  // webSocket.onMessage.listen((e) {
-  //   print("Received Data");
-  //   print(e.data);
-  // });
+String orderId = '';
+bool _isProcessing = false;
+// final channel = WebSocketChannel.connect(
+//   Uri.parse('ws://localhost:5000'),
+// );
 
-  // webSocket.send("Hiii I m client");
-  print("Client");
-  final channel = WebSocketChannel.connect(
-    Uri.parse('wss://localhost:5000'),
-  );
+// void clientSocket() {
 
-  channel.sink.add('Hello, WebSocket!');
+//   final channel = WebSocketChannel.connect(
+//     Uri.parse('ws://localhost:5000'),
+//     // Uri.parse('ws://localhost:5000'),
+//   );
 
-  channel.stream.listen((message) {
-    print('Received: $message');
-  });
+//   channel.sink.add('Hello, WebSocket!');
 
-  // channel.sink.close(); to close websocket
+//   channel.stream.listen((message) {
+//     print('Received: $message');
+//     bool result = false;
+//     TokenPage newtoken = new TokenPage(tokenNumber: 0, orderId: orderId);
+//     // newtoken.getToken();
+//     if (message == orderId) {
+//       // setState(_isProcessing = true);
+//       _isProcessing = true;
+//       print("Message is true");
+//     }
+//   });
+
+//   // channel.sink.close(); to close websocket
+// }
+
+void initialize(order_Id) {
+  orderId = order_Id;
 }
 
 class TokenPage extends StatefulWidget {
-  const TokenPage({super.key, required this.tokenNumber});
+  TokenPage({super.key, required this.tokenNumber});
+  // TokenPage({super.key, required this.tokenNumber, required this.orderId});
+  // final String orderId;
 
   final int tokenNumber;
+
+  final channel = WebSocketChannel.connect(
+    Uri.parse('ws://localhost:5000'),
+  );
 
   @override
   State<TokenPage> createState() => _TokenPageState();
 }
 
 class _TokenPageState extends State<TokenPage> {
-  final bool _isProcessing = true;
+  // final bool _isProcessing = true;
+
+//   void clientSocket() {
+
+//   // final channel = WebSocketChannel.connect(
+//   //   Uri.parse('ws://localhost:5000'),
+//   //   // Uri.parse('ws://localhost:5000'),
+//   // );
+
+//   widget.channel.sink.add('Hello, WebSocket!');
+
+//   widget.channel.stream.listen((message) {
+//     print('Received: $message');
+//     // bool result = false;
+//     // TokenPage newtoken = new TokenPage(tokenNumber: 0, orderId: orderId);
+//     // // newtoken.getToken();
+//     // if (message == orderId) {
+//     //   // setState(_isProcessing = true);
+//     //   _isProcessing = true;
+//     //   print("Message is true");
+//     // }
+//   });
+
+//   // channel.sink.close(); to close websocket
+// }
+
+  bool chechToken(orderId) {
+    String res = "Processing";
+    bool result = getToken(orderId);
+    result ? Provider.of<Token>(context).updateToken(orderId) : "";
+    // result ? res = "Prepared" : '';
+    // return res;
+    // return result ? 'Prepared' : 'Processing';
+    return result ? true : false;
+  }
+
+  Future<List> getTokenList() async {
+    List tokenList = await context.read<Token>().TokenList;
+    return tokenList;
+  }
+
+  bool getToken(orderId) {
+    print('order id $orderId');
+    // List tokenList = Provider.of<Token>(context,listen: false).TokenList;
+    List tokenList = context.read<Token>().getTokenList();
+    print('tokenList $tokenList');
+    if (orderId == "true") {
+      return true;
+    } else {
+      return false;
+    }
+    // List tokenList = Provider.of<Token>(context).TokenList;
+    // print('tokenList $tokenList');
+    // bool isPresent = false;
+    // tokenList.map((e) => {
+    //       if (orderId == 'true') {isPresent = true}
+    //       // if (e['orderId'] == orderId) {isPresent = true}
+    //     });
+    // return isPresent;
+  }
 
   void initState() {
+    // initialize(widget.orderId);
     // super.initState();
-    clientSocket();
+    // clientSocket();
   }
 
   @override
@@ -46,32 +128,81 @@ class _TokenPageState extends State<TokenPage> {
       appBar: AppBar(
         title: Text('Food App'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Token Number:',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 16),
-            Text(
-              '${widget.tokenNumber}',
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 32),
-            _isProcessing
-                ? Text(
-                    'Processing',
-                    style: TextStyle(fontSize: 24),
-                  )
-                : Text(
-                    'Prepared',
+      body: StreamBuilder(
+          stream: widget.channel.stream,
+          builder: (context, snapshot) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Token Number:',
                     style: TextStyle(fontSize: 24),
                   ),
-          ],
-        ),
-      ),
+                  SizedBox(height: 16),
+                  Text(
+                    '${widget.tokenNumber}',
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 32),
+                  Text(
+                      // snapshot.hasData && snapshot.data == "true"
+                      snapshot.hasData
+                          ? chechToken(snapshot.data)
+                              ? 'Prepared'
+                              : 'Processing'
+                          : 'processing',
+                      style: TextStyle(fontSize: 24)),
+                  snapshot.hasData
+                      ? chechToken(snapshot.data)
+                          ? ElevatedButton(
+                              child: Text("Claim"),
+                              onPressed: () =>
+                                  {Navigator.pushNamed(context, '/')},
+                            )
+                          : Text("Claim ")
+                      : Text("Claim "),
+
+                  // _isProcessing
+                  //     ? Text(
+                  //         'Prepared',
+                  //         style: TextStyle(fontSize: 24),
+                  //       )
+                  //     : Text(
+                  //         'Processing',
+                  //         style: TextStyle(fontSize: 24),
+                  //       ),
+                ],
+              ),
+            );
+          }
+          // child: Center(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: <Widget>[
+          //       Text(
+          //         'Token Number:',
+          //         style: TextStyle(fontSize: 24),
+          //       ),
+          //       SizedBox(height: 16),
+          //       Text(
+          //         '${widget.tokenNumber}',
+          //         style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+          //       ),
+          //       SizedBox(height: 32),
+          //       _isProcessing
+          //           ? Text(
+          //               'Prepared',
+          //               style: TextStyle(fontSize: 24),
+          //             )
+          //           : Text(
+          //               'Processing',
+          //               style: TextStyle(fontSize: 24),
+          //             ),
+          //     ],
+          //   ),
+          // ),
+          ),
     );
   }
 }

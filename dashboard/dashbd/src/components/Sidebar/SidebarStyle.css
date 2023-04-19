@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+*{
+    list-style: none;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body{
+    background: #f5f6fa;
+}
+
+
+
+
+.MainLayout{
+    display: flex;
+    flex-direction: row;
+}
+
+.components{
+    margin-left: 15vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper .sidebar{
+    position: sticky;
+    display: block;
+    background: rgb(42, 42, 41);
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* width: 225px; */
+    width: 15vw;
+    height: 100%;
+    padding: 20px 0;
+    /* transition: all 0.5s ease; */
+}
+
+.wrapper .sidebar .profile{
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.wrapper .sidebar .profile img{
+    display: block;
+    width: 6vw;
+    height: 6vw;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.wrapper .sidebar .profile h3{
+    color: #ffffff;
+    margin: 10px 0 5px;
+}
+
+.wrapper .sidebar .profile p{
+    color: rgb(206, 240, 253);
+    font-size: 14px;
+}
+
+.wrapper .sidebar ul li .linkButton{
+    display: block;
+    padding: 13px 30px;
+    /* border-bottom: 1px solid #0e0e0e; */
+    color: rgb(241, 237, 237);
+    font-size: 16px;
+    padding-left: 5vw;
+    position: relative;
+}
+
+.wrapper .sidebar ul li .linkButton .icon{
+    color: #dee4ec;
+    width: 30px;
+    display: inline-block;
+}
+
+.dashboardItem{
+    height: 7vh;
+}
+
+.wrapper .sidebar ul li .linkButton:hover,
+.wrapper .sidebar ul li .linkButton.active{
+    color: #ebe408;
+    border-radius: 2px;
+    background:rgb(47, 47, 47);
+    /* border-right: 2px solid rgb(23, 23, 23); */
+}
+
+.wrapper .sidebar ul li .linkButton:hover .icon,
+.wrapper .sidebar ul li .linkButton.active .icon{
+    color: #141414;
+}
+
+.wrapper .sidebar ul li .linkButton:hover:before,
+.wrapper .sidebar ul li .linkButton.active:before{
+    display: block;
+}
+
+
+@media screen and (max-width:1024px) {
+
+   
+
+    .wrapper .sidebar{
+        font-size: 0.9em;
+    }
+
+    .wrapper .sidebar ul li .linkButton{
+        display: block;
+        padding: 13px 5vw;
+        /* border-bottom: 1px solid #0e0e0e; */
+        color: rgb(241, 237, 237);
+        font-size: 12px;
+        position: relative;
+    }
+}

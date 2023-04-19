@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:foodapp/Constants/values.dart';
 import 'package:foodapp/Pages/tokenPage.dart';
 import 'package:foodapp/model/orders.dart';
+import 'package:foodapp/provider/token_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/provider/cart_provider.dart';
@@ -34,7 +35,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
 
   Future<http.Response> getToken(Map res) async {
     var tokenRes = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/createToken"),
+        Uri.parse("http://localhost:8000/api/order/createToken"),
         body: jsonEncode(res),
         headers: {
           'Content-type': 'application/json',
@@ -46,14 +47,23 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
 
   Future<http.Response> addOrder(Map order) async {
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/order/addOrder"),
+        Uri.parse("http://localhost:8000/api/order/addOrder"),
         body: jsonEncode(order),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
         });
-    
+
     return res;
+  }
+
+  Future<bool> addToken(tokenNo, orderId) async {
+    Map newToken = {'tokenNo': tokenNo, 'orderId': orderId};
+    final tokenData = await context.read<Token>().addToTokenList(newToken);
+    print("true $tokenData");
+    // final tokenData = await Provider.of<Token>(context).addToTokenList(
+    //     {'tokenNo': tokenNo, 'orderId': orderId, 'isPrepared': false});
+    return true;
   }
 
   _handlePaymentSuccess(PaymentSuccessResponse response) async {
@@ -64,14 +74,14 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         orderId: order_Id);
 
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/payment/paymentSuccess"),
+        Uri.parse("http://localhost:8000/api/payment/paymentSuccess"),
         body: jsonEncode({"order_id": order_Id}),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
         });
-    // print("res type");
-    // print(jsonDecode(res.body).runtimeType);
+    print("res type");
+    print(jsonDecode(res.body)['order']);
     http.Response tokenRes = await getToken(jsonDecode(res.body)['order']);
     // Map tokenRes = (await getToken(jsonDecode(res.body)['order'])) ;
     // print("token no");
@@ -88,6 +98,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
     Provider.of<OrdersProvider>(context, listen: false).addToOrders(Provider.of<Cart>(context, listen: false).getCart(), jsonDecode(tokenRes.body)['tokenNo']);
     print('done');
 
+    addToken(jsonDecode(tokenRes.body)['tokenNo'],
+        jsonDecode(res.body)['order']['order_id']);
     // ignore: use_build_context_synchronously
     Navigator.push(
         context,
@@ -115,7 +127,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
 
   void createOrder(amount) async {
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/payment/createOrder"),
+        Uri.parse("http://localhost:8000/api/payment/createOrder"),
         body: jsonEncode({"amount": amount}),
         headers: {
           'Content-type': 'application/json',
@@ -153,7 +165,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
     };
 
     var res = await http.post(
-        Uri.parse("http://10.0.2.2:8000/api/payment/verifySignature"),
+        Uri.parse("http://localhost:8000/api/payment/verifySignature"),
         body: body,
         headers: {
           'Content-type': 'application/json',
