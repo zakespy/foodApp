@@ -4,6 +4,8 @@ import axios from "axios"
 import CircularProgress from '@mui/material/CircularProgress';
 import "../MenuPage/MenuPageStyles.css"
 import MenuCard from "../MenuCard/MenuCard";
+import AddIcon from '@mui/icons-material/Add';
+import { Link } from "react-router-dom";
 
 export default function MenuPage(){
     var menu = []
@@ -32,7 +34,13 @@ export default function MenuPage(){
                         <MenuCard/>
                     })} */}
                     {/* <MenuCard/> */}
-                </div>  
+                    <Link to="/menu-form">
+                        <div className="addItem">
+                            <AddIcon className="add-Button"/> 
+                            <h4 > Add Menu</h4>
+                        </div>
+                    </Link>
+                </div> 
             </div> 
         </>
     )
