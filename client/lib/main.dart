@@ -5,6 +5,7 @@ import 'package:foodapp/Pages/home.dart';
 import 'package:foodapp/provider/cart_provider.dart';
 import 'package:foodapp/Pages/cartPage.dart';
 import 'package:foodapp/provider/profile_provider.dart';
+import 'package:foodapp/provider/my_orders_provider.dart';
 import 'package:provider/provider.dart';
 import 'Pages/login.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
       MultiProvider(providers: [
         ChangeNotifierProvider(create: (_)=>Cart(items: [])),
         ChangeNotifierProvider(create: (_)=>Profile(data: {})),
+        ChangeNotifierProvider(create: (_)=>OrdersProvider()),
       ],child:MaterialApp(
     initialRoute: '/',
     routes: {

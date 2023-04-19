@@ -3,6 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:foodapp/Pages/homeView.dart';
 import 'package:foodapp/Pages/cartPage.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
+import 'package:foodapp/Data/category.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/profile_provider.dart';
@@ -20,11 +21,23 @@ class _homeState extends State<home> {
   int index = 0;
 
   Map profileData = {};
+  // Map category = {};
+
   void getData() async {
     profileData = await context.read<Profile>().getProfile() as Map;
     print(profileData);
   }
 
+  // Future<Map> getCategory() async {
+  //   // Map newCat = {};
+  //   // print("hi");
+  //   FoodCategory cat = FoodCategory();
+  //   // print("hii");
+  //   category = await cat.getCategory();
+  //   // print("hiii");
+  //   // print(category);
+  //   return category;
+  // }
 
   final screen = [
     homeView(),
@@ -35,6 +48,7 @@ class _homeState extends State<home> {
   @override
   void initState() {
     getData();
+    // getCategory();
 
     super.initState();
   }

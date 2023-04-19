@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:foodapp/Constants/values.dart';
 import 'package:foodapp/Pages/tokenPage.dart';
+import 'package:foodapp/model/orders.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/provider/cart_provider.dart';
+import 'package:foodapp/provider/my_orders_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 // import 'package:toast/toast.dart';
@@ -16,8 +18,7 @@ class CartPage extends StatefulWidget {
   _CartPageState createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage>
-    with SingleTickerProviderStateMixin {
+class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin {
   var now = DateTime.now();
   get weekDay => DateFormat('EEEE').format(now);
   get day => DateFormat('dd').format(now);
@@ -81,6 +82,12 @@ class _CartPageState extends State<CartPage>
     // print("newOrder");
     // print(newOrder);
     addOrder(newOrder);
+
+    // ignore: use_build_context_synchronously
+    print('start');
+    Provider.of<OrdersProvider>(context, listen: false).addToOrders(Provider.of<Cart>(context, listen: false).getCart(), jsonDecode(tokenRes.body)['tokenNo']);
+    print('done');
+
     // ignore: use_build_context_synchronously
     Navigator.push(
         context,
@@ -209,6 +216,7 @@ class _CartPageState extends State<CartPage>
   @override
   Widget build(BuildContext context) {
     Cart cartProvider = Provider.of<Cart>(context);
+    OrdersProvider ordersListProvider = Provider.of<OrdersProvider>(context);
     List cart = cartProvider.getCart();
 
     return Scaffold(
