@@ -13,6 +13,9 @@ body{
     background: #f5f6fa;
 }
 
+
+
+
 .MainLayout{
     display: flex;
     flex-direction: row;
@@ -61,7 +64,7 @@ body{
     font-size: 14px;
 }
 
-.wrapper .sidebar ul li a{
+.wrapper .sidebar ul li .linkButton{
     display: block;
     padding: 13px 30px;
     /* border-bottom: 1px solid #0e0e0e; */
@@ -71,7 +74,7 @@ body{
     position: relative;
 }
 
-.wrapper .sidebar ul li a .icon{
+.wrapper .sidebar ul li .linkButton .icon{
     color: #dee4ec;
     width: 30px;
     display: inline-block;
@@ -81,21 +84,21 @@ body{
     height: 7vh;
 }
 
-.wrapper .sidebar ul li a:hover,
-.wrapper .sidebar ul li a.active{
+.wrapper .sidebar ul li .linkButton:hover,
+.wrapper .sidebar ul li .linkButton.active{
     color: #ebe408;
     border-radius: 2px;
     background:rgb(47, 47, 47);
     /* border-right: 2px solid rgb(23, 23, 23); */
 }
 
-.wrapper .sidebar ul li a:hover .icon,
-.wrapper .sidebar ul li a.active .icon{
+.wrapper .sidebar ul li .linkButton:hover .icon,
+.wrapper .sidebar ul li .linkButton.active .icon{
     color: #141414;
 }
 
-.wrapper .sidebar ul li a:hover:before,
-.wrapper .sidebar ul li a.active:before{
+.wrapper .sidebar ul li .linkButton:hover:before,
+.wrapper .sidebar ul li .linkButton.active:before{
     display: block;
 }
 
@@ -108,7 +111,7 @@ body{
         font-size: 0.9em;
     }
 
-    .wrapper .sidebar ul li a{
+    .wrapper .sidebar ul li .linkButton{
         display: block;
         padding: 13px 5vw;
         /* border-bottom: 1px solid #0e0e0e; */

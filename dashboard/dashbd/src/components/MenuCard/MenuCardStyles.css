@@ -30,3 +30,13 @@
     display: flex;
     flex-direction: row;
 }
+
+.actionIcon{
+    margin: 0 10px;
+    color:black
+}
+
+
+.actionIcon:hover{
+    cursor: pointer;
+}

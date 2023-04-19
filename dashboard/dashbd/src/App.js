@@ -1,12 +1,21 @@
 import React from "react";
 import './App.css';
 import Sidebar from "../src/components/Sidebar/Sidebar";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { MenuForm } from "./components/MenuForm/MenuForm";
+import { Home } from "./components/Home/Home";
 
 
 function App() {
   return (
     <> 
-      <Sidebar/>
+      <BrowserRouter>
+        <Sidebar/>
+        {/* <Routes>
+          
+          <Route path="/*" exact element={<Home/>}/>
+        </Routes> */}
+      </BrowserRouter>
     </>
   )
 }

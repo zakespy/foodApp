@@ -26,7 +26,7 @@ export default function MenuPage(){
                     {/* <CircularProgress/> */}
                     {/* {food.length} */}
                     {food.map(e=>{console.log(e)})}
-                    {food.length == 0? <CircularProgress/>: food.map(e=>{return <MenuCard foodName={e.foodName} foodPrice={e.foodPrice}/>})}
+                    {food.length == 0? <CircularProgress/>: food.map(e=>{return <MenuCard food={e} />})}
                     {/* {food.length !== 0? food.map(e=>{<MenuCard/>}): <CircularProgress/>} */}
                     {/* {food.map(e=>{
                         <MenuCard/>
