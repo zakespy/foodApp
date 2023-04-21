@@ -202,12 +202,23 @@
     margin-top: 10px;
   }
 
+
   .canIcon:hover{
     cursor: pointer;
   }
 
+  .deleteCatChip{
+    margin: 5px;
+    background-color: rgb(226, 196, 107);
+  }
+
+  .deleteCatChip:hover{
+    cursor:pointer;
+  }
+
   .catChip{
     margin: 5px;
+    opacity: 0.6;
   }
   .addIcon{
     margin: 5px;
