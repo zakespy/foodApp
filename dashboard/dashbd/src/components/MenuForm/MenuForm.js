@@ -2,6 +2,8 @@ import React from 'react'
 import { useState, useEffect ,useRef} from 'react'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'
+import base64 from "base-64"
+import utf8 from "utf8"
 import Chip from '@mui/material/Chip';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -11,29 +13,7 @@ export function MenuForm({ }) {
     const {state} = useLocation()
     console.log("state",state)
     let toggle = false
-    // const e = {
-    //     "foodName": "daal",
-    //     "foodPrice": 20,
-    //     "category": [
-    //         {
-    //             "categoryName": "Lunch",
-    //             "isPresent":true
-    //         }, 
-    //         {
-    //             "categoryName": "Breakfast",
-    //             "isPresent":false
-    //         },
-    //         {
-    //             "categoryName": "Drinks",
-    //             "isPresent":true
-    //         },
-    //         {
-    //             "categoryName": "Dinner",
-    //             "isPresent":true
-    //         }
-    //     ]
-    // }
-
+    
     let newCat = state.food.foodCategory;
 
     const ref = useRef({
@@ -46,41 +26,55 @@ export function MenuForm({ }) {
     const [image, setImage] = useState()
     // const [newCat, setNewCat] = useState(state == null?[]:state.food.foodCategory)
     const [foodName, setFoodName] = useState(state == null ? "Enter food Name" : state.food.foodName)
-    const [newFoodName,setNewFoodName] = useState()
+    const [newFoodName,setNewFoodName] = useState(foodName)
     const [foodPrice, setFoodPrice] = useState(state == null ? "Enter food Price" : state.food.foodPrice)
-    const [newFoodPrice,setNewFoodPrice] = useState()
+    const [newFoodPrice,setNewFoodPrice] = useState(foodPrice)
     
+    const [newFood,setNewFood] = useState({
+        "oldFoodName": state.food.foodName,
+        "foodName":newFoodName,
+        "foodPrice":newFoodPrice,
+        "foodImage":image,
+        "foodCategory":currCat
+    })
 
-    // function genCat() {
-    //     // console.log("defaultCat",defaultCat)
-    //     defaultCat.map(e => {
-    //         // console.log(e)
-    //         cat.push(
-    //             {
-    //                 "categoryName": e.categoryName,
-    //                 "isPresent": false
-    //             }
-    //         )
-    //     })
-    //     // console.log("cat ",cat)
-    //     cat.map(e => {
-    //         currCat.map(n => {
-    //             if (e.categoryName == n.categoryName) {
-    //                 e.isPresent = true
-    //             }
-    //         })
-    //     })
-    //     // console.log("final cat value",cat)
-    //     setNewCat(cat)
-    // }
 
+    const convertBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
+          fileReader.readAsDataURL(file);
+          fileReader.onload = () => {
+            // console.log(
+            //   fileReader.result.replace("data:", "").replace(/^.+,/, "")
+            // );
+            resolve(
+              setNewFood({
+                ...newFood,
+                "foodImage": fileReader.result
+                  .replace("data:", "")
+                  .replace(/^.+,/, ""),
+              })
+            );
+            // resolve(fileReader.result.replace("data:", "").replace(/^.+,/, ""));
+          };
+          fileReader.onerror = (error) => {
+            reject(error);
+          };
+        });
+      };
+  
     async function getCategory() {
         const category = await axios.get('http://localhost:8000/api/category/getAllCategory').then(e => { setDefaultCat(e.data.categories) })
+    }
+
+    async function addFood(){
+        await axios.post("http://localhost:8000/api/food/addFood",newFood).then(e=>{console.log("response",e)})
     }
 
     const onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             setImage(URL.createObjectURL(event.target.files[0]));
+            convertBase64(event.target.files[0])
         }
     }
 
@@ -100,7 +94,8 @@ export function MenuForm({ }) {
         })
         
         // setCurrCat(newCat)
-        setCurrCat(temp=>({...temp,...ref.current.category[count]}))   
+        setCurrCat(temp=>({...temp,...ref.current.category[count]})) 
+        setNewFood(newFood=>({...newFood,...{"foodCategory":currCat}}))     
         
     }
 
@@ -116,7 +111,8 @@ export function MenuForm({ }) {
             // elem.categoryName === cat?ref.current.category[count].isPresent = true:elem.isPresent=elem.isPresent
             // count++
         })
-        setCurrCat(temp=>({...temp,...ref.current.category[count]}))     
+        setCurrCat(temp=>({...temp,...ref.current.category[count]}))    
+        setNewFood(newFood=>({...newFood,...{"foodCategory":currCat}}))    
         // newCat.map(elem=>{ 
         //     elem.categoryName === cat?elem.isPresent = true:elem.isPresent=elem.isPresent
         // })
@@ -143,12 +139,16 @@ export function MenuForm({ }) {
                             <h2>Food Details</h2>
                         </div>
                         <div class="input-container">
-                            <input type="text" id="input" required="" placeholder={foodName} onChange={e=>{setNewFoodName(e.target.value)}}></input>
+                            <input type="text" id="input" required="" placeholder={foodName} onChange={e=>{setNewFoodName(e.target.value)
+                            setNewFood(newFood=>({...newFood,...{"foodName":e.target.value}}))   
+                            }}></input>
                             <label for="input" class="label">Enter Name</label>
                             {/* <div class="underline"></div> */}
                         </div>
                         <div class="input-container">
-                            <input type="text" id="input" required="" placeholder={foodPrice} onChange={e=>{setNewFoodPrice(e.target.value)}}></input>
+                            <input type="text" id="input" required="" placeholder={foodPrice} onChange={e=>{setNewFoodPrice(e.target.value)
+                            setNewFood(newFood=>({...newFood,...{"foodPrice":e.target.value}}))   
+                            }}></input>
                             <label for="input" class="label">Enter Price</label>
                             {/* <div class="underline"></div> */}
                         </div>
@@ -200,7 +200,10 @@ export function MenuForm({ }) {
 
                         </div>
                         <div className="submitBtn">
-                            <button className='submitButton'>
+                            <button className='submitButton' onClick={()=>{
+                                addFood()
+                            console.log("newFood",newFood)
+                            console.log("image",image)}}>
                                 Submit
                             </button>
                         </div>

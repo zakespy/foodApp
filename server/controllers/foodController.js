@@ -23,12 +23,23 @@ class foodController{
     }
 
     static addFood = async (req,res)=>{
-        const {foodName,foodPrice,foodType,foodImage} = req.body
-        await foodModel.findOne({foodName:foodName}).then(async e=>{
+        const {oldFoodName,foodName,foodPrice,foodCategory,foodImage} = req.body
+        await foodModel.findOne({foodName:oldFoodName}).then(async e=>{
+            console.log(e)
             if(e){
-                return res.json({message:"Food already exists",status:false})
+                e.foodName = foodName
+                e.foodPrice = foodPrice
+                // e.foodType = foodType
+                e.foodImage = foodImage 
+                // console.log("e :",e);
+                e.foodCategory = foodCategory
+                
+                await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
+                    return res.json({message:"Successfully updated food",status:true})
+                })
+                // return res.json({message:"Food already exists",status:false})
             }else{
-                const newFood =  new foodModel({foodName,foodPrice,foodType,foodImage})
+                const newFood =  new foodModel({foodName,foodPrice,foodCategory,foodImage})
                 await newFood.save().then(e=>{
                     return res.json({message:"Successfully added food",status:true})
                 })
@@ -55,7 +66,7 @@ class foodController{
     }
 
     static editFood = async(req,res)=>{
-        const {foodName,foodPrice,foodType,categoryNumber,foodImage} = req.body
+        const {foodName,foodPrice,foodCategory,foodImage} = req.body
         // console.log(req.body.foodName)
         await foodModel.findOne({foodName:foodName}).then(async e=>{
             // console.log(e)
@@ -65,21 +76,8 @@ class foodController{
                 // e.foodType = foodType
                 e.foodImage = foodImage 
                 // console.log("e :",e);
-                if(e.foodCategory.length == 0){
-                    // console.log("e :",e);
-                    e.foodCategory.push(categoryNumber)
-                }else{
-                    let count = 0
-                    e.foodCategory.map(e=>{
-                        if(e.categoryNumber == categoryNumber){
-                            count++;
-                        }
-                    })
-                    if(count==0){
-                        e.foodCategory.push(categoryNumber)
-                    }
-                }
-                // console.log("e :",e);
+                e.foodCategory = foodCategory
+                
                 await foodModel.findOneAndUpdate({foodName:foodName},e).then(e=>{
                     return res.json({message:"Successfully updated food",status:true})
                 })
