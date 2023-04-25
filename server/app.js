@@ -29,6 +29,7 @@ connectDB(DATABASE_URL) //connection
 
 // app.use(createSocket())
 app.use(express.json());
+app.use(express.json({limit: '50mb'}))
 app.use(cors())
 // app.use(express.json({limit: '3mb'}));
 
@@ -76,7 +77,15 @@ const wss =  new WebSocketServer({ port:5000 });
     //   ws.send('something');
     // });
 
-
+    app.use(bodyParser.json({ limit: "50mb" }));
+    app.use(
+      bodyParser.urlencoded({
+        limit: "50mb",
+        extended: true,
+        parameterLimit: 50000,
+      })
+    );
+     
 
 
 // connectSocket    

@@ -243,3 +243,29 @@
     background-color: rgb(231, 223, 108);
     
   }
+
+  .submitButton:hover{
+    background-color: rgb(218, 214, 161);
+  }
+
+  .submitButton {
+    font-size: 17px;
+    padding: 0.5em 2em;
+    border: transparent;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    background: rgb(231, 223, 108);
+    color: white;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+   }
+   
+   .submitButton:hover {
+    /* background: rgb(2,0,36); */
+    background-color: rgb(218, 214, 161);
+    /* background: linear-gradient(90deg, rgb(210, 212, 55) 0%, rgb(234, 210, 182) 100%); */
+   }
+   
+   .submitButton:active {
+    transform: translate(0em, 0.2em);
+   }
