@@ -99,7 +99,7 @@ class Cart with ChangeNotifier {
   // }
   void emptyCart() {
     items.clear();
-
+    print(items);
     notifyListeners();
   }
 }

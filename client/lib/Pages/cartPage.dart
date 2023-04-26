@@ -107,8 +107,12 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
             builder: (context) => TokenPage(
                   // tokenNumber: 1,
                   tokenNumber: jsonDecode(tokenRes.body)['tokenNo'],
-                )));
+            )
+        )
+    );
     // Navigator.pushNamed(context, '/token');
+
+    Provider.of<Cart>(context, listen: false).emptyCart();
   }
 
   _handlePaymentError(PaymentFailureResponse response) {
