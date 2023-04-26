@@ -12,6 +12,10 @@ class OrdersProvider with ChangeNotifier {
   MyOrders get orders_data => myOrdersList;
   // int get orders_data_length => myOrdersList.getLength();
 
+  MyOrders getOrdersList() {
+    return myOrdersList;
+  }
+
   void addToOrders( List orderList, int token ) {
     List<Map> order_list = [];
 
@@ -21,17 +25,21 @@ class OrdersProvider with ChangeNotifier {
       order_list.add(food);
     print(order_list);
     }
-    OrderItems orderDetails = OrderItems(order: order_list, token: token);
-    print(orderDetails.order);
+    OrderItems orderDetails = OrderItems(order: order_list, token: token, status: false);
+    print(orderDetails);
 
     myOrdersList.addOrder( orderDetails );
     print('123');
-    print(myOrdersList.toJson());
+    print("${myOrdersList.toJson()}   1");
     print('123');
   }
 
   void removeFormOrdersList( String token ) {
     myOrdersList.removeOrder(token);
+  }
+
+  num getTotalPrice( int index ) {
+    return myOrdersList.allOrders[index].getPrice();
   }
 
 }

@@ -16,8 +16,8 @@ class MyOrders  {
   void addOrder( OrderItems item ) {
     print(allOrders);
     allOrders.add(item);
-    print(item.toJson());
-    print(allOrders[0].toJson());
+    print(item.order);
+    print(allOrders[0].order);
   }
 
   void removeOrder( String token ) {
@@ -25,14 +25,12 @@ class MyOrders  {
   }
 
   Map toJson() {
-    List<Map> jsonList = [];
+    List jsonList = [];
 
-    allOrders.map((e) => {
-      jsonList.add(
+    jsonList = allOrders.map((e) => {
         e.toJson()
-      )
-    });
-
+    }).toList();
+print(jsonList);
     return {
       "allOrders": jsonList
     };
@@ -44,24 +42,39 @@ class MyOrders  {
 class OrderItems {
   List<Map> order;
   int token;
+  bool status;
 
-  OrderItems({ required this.order, required this.token });
+  OrderItems({ required this.order, required this.token, required this.status});
 
   Map toJson() {
     List<Map> jsonList = [];
     
-    order.map((e) => {
-      jsonList.add({
+    jsonList = order.map((e) => {
         "foodName": e['foodName'], 
         "foodPrice": e['foodPrice'], 
-        "quantity": e['quantity']
-      })
-    });
+        "quantity": e['quantity']     
+    }).toList();
 
     return{
       "order": jsonList,
-      "token": token
+      "token": token,
+      "status": status
     };
+  }
+
+  int getLength(){
+    return order.length;
+  }
+
+  int getPrice(){
+    int price=0;
+
+    order.map((e) => {
+      price += e['foodPrice']*e['quantity'] as int,
+      print(price),
+      });
+
+    return price;
   }
 
 }

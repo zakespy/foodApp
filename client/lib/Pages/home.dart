@@ -3,6 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:foodapp/Pages/homeView.dart';
 import 'package:foodapp/Pages/cartPage.dart';
 import 'package:foodapp/Pages/ProfilePage.dart';
+import 'package:foodapp/Pages/myOrdersPage.dart';
 import 'package:foodapp/Data/category.dart';
 import 'package:provider/provider.dart';
 
@@ -43,6 +44,7 @@ class _homeState extends State<home> {
     homeView(),
     CartPage(),
     ProfilePage({}),
+    ordersPage(),
   ];
 
   @override
@@ -59,6 +61,7 @@ class _homeState extends State<home> {
       Icon(Icons.home),
       Icon(Icons.shopping_cart),
       Icon(Icons.person),
+      Icon(Icons.shopping_cart),
     ];
     Size size = MediaQuery.of(context).size;
     return Container(
