@@ -24,6 +24,7 @@ class foodController{
 
     static addFood = async (req,res)=>{
         const {oldFoodName,foodName,foodPrice,foodCategory,foodImage} = req.body
+        console.log(req.body)
         await foodModel.findOne({foodName:oldFoodName}).then(async e=>{
             console.log(e)
             if(e){
@@ -43,7 +44,7 @@ class foodController{
                 await newFood.save().then(e=>{
                     return res.json({message:"Successfully added food",status:true})
                 })
-            }
+            } 
         }).catch(err=>{
             return res.status(500).json({message:"server error",status:false})
         })

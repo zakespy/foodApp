@@ -15,7 +15,7 @@ export function MenuForm({ }) {
     let toggle = false
 
     let newCat = state.food.foodCategory;
-
+    console.log(newCat)
     const ref = useRef({
         category: state.food.foodCategory
     })
@@ -58,7 +58,7 @@ export function MenuForm({ }) {
                 //   fileReader.result.replace("data:", "").replace(/^.+,/, "")
                 // );
                 resolve(
-                    console.log(fileReader.result),
+                    // console.log(fileReader.result),
                     setNewImage(fileReader.result)
                 );
                 // resolve(fileReader.result.replace("data:", "").replace(/^.+,/, ""));
@@ -74,7 +74,7 @@ export function MenuForm({ }) {
     }
 
     async function addFood() {
-        await axios.post("http://localhost:8000/api/food/addFood", newFood).then(e => { console.log("response", e) })
+        await axios.post("http://localhost:8000/api/food/addFood", {newFood}).then(e => { console.log("response", e) })
     }
 
     const onImageChange = (event) => {
@@ -88,6 +88,7 @@ export function MenuForm({ }) {
     function deleteCat(cat) {
         let count = 0;
         let temp = ref.current.category
+        console.log("temp",temp)
         ref.current.category.map(elem => {
             if (elem.categoryName === cat) {
                 console.log("before", ref.current.category[count].isPresent)
@@ -98,6 +99,7 @@ export function MenuForm({ }) {
             // elem.categoryName === cat?ref.current.category[count].isPresent = true:elem.isPresent=elem.isPresent
             // count++
         })
+        console.log("delete new food",newFood)
 
         // setCurrCat(newCat)
         setCurrCat(temp => ({ ...temp, ...ref.current.category[count] }))
@@ -117,6 +119,8 @@ export function MenuForm({ }) {
             // elem.categoryName === cat?ref.current.category[count].isPresent = true:elem.isPresent=elem.isPresent
             // count++
         })
+
+        console.log("delete new food",newFood)
         setCurrCat(temp => ({ ...temp, ...ref.current.category[count] }))
         setNewFood(newFood => ({ ...newFood, ...{ "foodCategory": currCat } }))
         // newCat.map(elem=>{ 
@@ -164,8 +168,7 @@ export function MenuForm({ }) {
                             <p>Food catgeory</p>
                             {/* <AddCircleIcon className="addIcon"/> */}
                             {console.log("After currcat", currCat)}
-                            {ref.current.category.map(elem => {
-                                // console.log(e)  
+                            {ref.current.category.map(elem => { 
                                 if (elem.isPresent == true) {
                                     return <Chip
                                         icon={<CancelIcon className="canIcon" onClick={() => { deleteCat(elem.categoryName) }} />}
@@ -208,16 +211,10 @@ export function MenuForm({ }) {
 
                         </div>
                         <div className="submitBtn">
-                            {/* <button className='submitButton' onClick={()=>{
-                                addFood()
-                            console.log("newFood",newFood)
-                            console.log("image",image)}}>
-                                Submit
-                            </button> */}
+                            
                             <button className='submitButton' onClick={()=>{
                                 addFood()
-                            console.log("newFood",newFood)
-                            console.log("image",image)}}> Button
+                            console.log("newFood",newFood)}}> Add
                             </button>
                         </div>
 
