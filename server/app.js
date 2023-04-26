@@ -13,6 +13,7 @@ import order from "./routes/order.js"
 import {enqueue , dequeue , reqProcess} from "./modules/queue.js";
 import http from 'http'
 import {WebSocketServer} from 'ws'
+import dashWebSocket from "./modules/dashWebSocket.js";
 // import connectSocket  from "./modules/webSocket.js"; 
 // import {newSocket} from "../server/modules/webSocket.js"
 
@@ -29,18 +30,8 @@ connectDB(DATABASE_URL) //connection
 
 // app.use(createSocket())
 app.use(express.json());
+app.use(express.json({limit: '50mb'}))
 app.use(cors())
-// app.use(express.json({limit: '3mb'}));
-
-// app.use(bodyParser.json({limit: '50mb', extended: true}));
-// app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-// app.use(bodyParser.text({ limit: '200mb' }));
-
-// app.use(express.urlencoded({limit: '5mb'}));
-
-// app.use(bodyParser.json({limit: '50mb'}));
-// app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));  
-
 app.use("/api", customer);
 app.use("/api/food", food);
 app.use("/api/category", category);
@@ -55,6 +46,8 @@ setInterval(()=>{
 
 const server = http.createServer();
 // newSocket(server)
+
+//client websocket
 const wss =  new WebSocketServer({ port:5000 });
     wss.on('connection', (ws)=>{
       ws.on('message',message=>{
@@ -67,6 +60,25 @@ const wss =  new WebSocketServer({ port:5000 });
       console.log('new connection')
     })
 
+
+// dashWebSocket()
+
+// dashboard websocket
+const dashWss =  new WebSocketServer({ port:5010 });
+    dashWss.on('connection', (dashWs)=>{
+      dashWs.on('message',message=>{
+        // ws.send("true")
+        console.log('%s',message)
+      })
+      setTimeout(()=>{
+        dashWs.send("true")
+      },500)
+      console.log('new connection')
+    })
+
+
+
+
     // wss.on('message', function message(data) {
     //   console.log('hello message received: %s ', data);
     //   // wss.send("hiiii")
@@ -76,7 +88,15 @@ const wss =  new WebSocketServer({ port:5000 });
     //   ws.send('something');
     // });
 
-
+    app.use(bodyParser.json({ limit: "50mb" }));
+    app.use(
+      bodyParser.urlencoded({
+        limit: "50mb",
+        extended: true,
+        parameterLimit: 50000,
+      })
+    );
+     
 
 
 // connectSocket    
