@@ -3,10 +3,13 @@ import axios from "axios"
 import React from "react";
 import "../OrderPage/OrderPageStyles.css"
 import useWebSocket from "react-use-websocket"
+import OrderCard from "../OrderCard/Ordercard";
 // import WebSocket from "ws";
 
 export default function OrderPage(){
     
+    
+
     function webSocketConnect(){
         // const ws = new WebSocket('wss://localhost:6000/')
         // ws.onopen=function(){
@@ -43,7 +46,7 @@ export default function OrderPage(){
         <>
             <div className="orderPageContainer">
                 <div className="orderContainer">
-                    hii
+                    <OrderCard/>
                 </div> 
             </div> 
         </>

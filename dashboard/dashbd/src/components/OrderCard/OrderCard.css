@@ -1,116 +1,44 @@
-.card{
+.card-container{
+  background-color: aqua;
+  width:15vw;
+  height:30vh;
+  padding:0.5vw;
+
+}
+
+.orderNo{
+  padding-bottom: 5px;
+  border-bottom: 1.5px solid rgb(57, 57, 57);
+}
+
+.orderInfo{
   display: flex;
-  width: 450px;
-  padding: 20px;
-  border-color: #1F2937;
-  border-style: solid;
-  border-radius: 20px;
+  flex-direction: row;
+  font-weight: 100;
 }
 
-.left{
-  width: 200px;
+.itemName{
+  display: flex;
+  flex-direction: column;
+  width: 9vw;
+  background-color: aliceblue;
+  font-weight: 100;
 }
 
-.pic{
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
+.itemInfo{
+  display: flex;
+  flex-direction: column;
+  width: 5vw;
+  background-color: antiquewhite;
+  font-weight: 100;
 }
 
-.right{
-  width: 250px; 
+.orderDesc{
+  font-weight: 200;
 }
 
-.token{
-  font-size: 50px;
-  text-align: center;
-  font-family: 'Bentham', serif;
-}
-
-.name{
-  font-size: 20px;
-  text-align: center;
-  color: #1F2937;
-  margin-top: 20px;
-}
-
-.price{
-  font-size: 20px;
-  text-align: center;
-  color: #1F2937;
-}
-
-.timer{
-  text-align: center;
-  margin-top: 15px;
-}
-
-#seconds {
-  font-size: 35px;
-  font-weight: bold;
-}
-
-#minutes {
-  font-size: 35px;
-  font-weight: bold;
-}
-#colon {
-  font-size: 35px;
-  font-weight: bold;
-}
-
-.delete{
-  margin-left: 25px;
-}
-
-button {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 20px;
-  padding: 16px;
-  font-weight: 500;
-  background: #5a5c4d;
-  color: rgb(255, 255, 255);
-  border: none;
-  position: relative;
-  overflow: hidden;
-  border-radius: 100px;
-  margin-top: 10px;
-}
-
-.gradient {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  border-radius: 0.6em;
-  margin-top: -0.25em;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
-}
-
-.label {
-  position: relative;
-  top: -1px;
-}
-
-.transition {
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  transition-duration: 500ms;
-  background-color:#1F2937;
-  border-radius: 9999px;
-  width: 0;
-  height: 0;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-button:hover .transition {
-  width: 14em;
-  height: 14em;
-}
-
-button:active {
-  transform: scale(0.97);
+.orderTotal{
+  display: flex;
+  flex-direction: row;
+  border-top: 1.5px solid rgb(46, 46, 46);
 }
