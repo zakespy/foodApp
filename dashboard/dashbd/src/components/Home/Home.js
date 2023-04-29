@@ -11,7 +11,7 @@ export function Home(){
         <Route path="/" exact element={<OrderPage />} />
         <Route path="/menuPage" exact element={<MenuPage />} />
         <Route path="/menu-form" exact element={<MenuForm />} />
-        <Route path="/menu-form" exact element={<MenuForm />} />
+        {/* <Route path="/menu-form" exact element={<MenuForm />} /> */}
     </Routes>
 // </BrowserRouter>
   )

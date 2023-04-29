@@ -15,13 +15,41 @@ export default function MenuPage(){
     const [food,setFood] = useState([])
     const [defaultCat, setDefaultCat] = useState([])
 
+    function clrRepeat(arr){
+        let index = 0
+        let count = 0
+        let catName = ''
+        arr.map(e=>{
+            catName = arr[index].categoryName
+            for(let i = index+1;i<arr.length;i++){
+                if(arr[i].categoryName == catName){
+                    arr.splice(i,1)
+                }
+            }
+            index++
+        })
+        return arr
+    }
+
+    function createCatArray(obj){
+        console.log("obj",obj)
+        obj.map(e=>{
+            console.log(e)
+            cat.push(e)
+        })
+        cat  = clrRepeat(cat)
+        setDefaultCat(cat)
+        console.log("afterCat",cat)
+    }
+
     function fetchFood(){
         // await axios.get("http://localhost:8000/api/food/allFood").then(e=>{setFood(e.data.menu)})
          axios.get("http://localhost:8000/api/food/allFood").then(e=>{setFood(e.data.menu)})
     }
 
     async function getCategory(){
-        const category = await axios.get('http://localhost:8000/api/category/getAllCategory').then(e => { setDefaultCat(e.data.categories) })
+        const category = await axios.get('http://localhost:8000/api/category/getAllCategory').then(e => { createCatArray(e.data.categories) })
+        // const category = await axios.get('http://localhost:8000/api/category/getAllCategory').then(e => { setDefaultCat(e.data.categories) })
         // const category = await axios.get('http://localhost:8000/api/category/getAllCategory').then(e => { cat = e.data.categories })
     }
 
@@ -34,18 +62,10 @@ export default function MenuPage(){
         <>
             <div className="MenuPageContainer">
                 <div className="MenuContainer">
-                    {/* {console.log("food",menu)} */}
-                    {/* <CircularProgress/> */}
-                    {/* {food.length} */}
-                    {/* {food.map(e=>{console.log(e)})} */}
+                    
                     {food.length == 0? <CircularProgress/>: food.map(e=>{return <MenuCard food={e} />})}
-                    {/* {food.length !== 0? food.map(e=>{<MenuCard/>}): <CircularProgress/>} */}
-                    {/* {food.map(e=>{
-                        <MenuCard/>
-                    })} */}
-                    {/* <MenuCard/> */}
-                    {/* <Link to="/menu-form"> */}
-                    {console.log("cat",cat)}
+            
+                    {/* {console.log("cat",cat)} */}
                         <div className="addItem" onClick={()=>{navigate('/menu-form', { state: { food:{
                             "foodName":null,
                             "foodPrice":null,
@@ -54,7 +74,6 @@ export default function MenuPage(){
                             <AddIcon className="add-Button"/> 
                             <h4 > Add Menu</h4>
                         </div>
-                    {/* </Link> */}
                 </div> 
             </div> 
         </>

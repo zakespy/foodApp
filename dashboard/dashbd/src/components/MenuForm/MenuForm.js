@@ -13,7 +13,7 @@ export function MenuForm({ }) {
     const { state } = useLocation()
     console.log("state", state)
     let toggle = false
-
+    let cat = []
     let newCat = state.food.foodCategory;
     console.log(newCat)
     const ref = useRef({
@@ -22,6 +22,7 @@ export function MenuForm({ }) {
     console.log("useRef", ref.current.category)
     const [defaultCat, setDefaultCat] = useState([])
     const [currCat, setCurrCat] = useState(newCat)
+    console.log(currCat)
     // const [currCat, setCurrCat] = useState(state== null ? defaultCat : state.food.foodCategory)
     const [image, setImage] = useState(state == null ? null : state.food.foodImage)
     // const [newCat, setNewCat] = useState(state == null?[]:state.food.foodCategory)
@@ -35,7 +36,7 @@ export function MenuForm({ }) {
         "foodName": newFoodName,
         "foodPrice": newFoodPrice,
         "foodImage": image,
-        "foodCategory": currCat
+        "foodCategory": [currCat]
     })
 
     function setNewImage(pic) {
@@ -74,7 +75,23 @@ export function MenuForm({ }) {
     }
 
     async function addFood() {
-        await axios.post("http://localhost:8000/api/food/addFood", {newFood}).then(e => { console.log("response", e) })
+        // setCurrCat(...currCat,[currCat])
+        let ct = []
+        for(var i in currCat){
+            console.log(currCat[i])
+            ct.push(currCat[i])
+        }
+        console.log("ct",ct)
+        console.log("newFood", currCat)
+        console.log("newFood", newFood.foodCategory)
+        
+        await axios.post("http://localhost:8000/api/food/addFood", {
+            "foodName":newFood.foodName,
+            "foodPrice":newFood.foodPrice,
+            "foodimage":newFood.foodImage,
+            "foodCategory":ct,
+            "oldFoodName":newFood.oldFoodName
+        }).then(e => { console.log("response", e) })
     }
 
     const onImageChange = (event) => {
@@ -87,8 +104,8 @@ export function MenuForm({ }) {
 
     function deleteCat(cat) {
         let count = 0;
-        let temp = ref.current.category
-        console.log("temp",temp)
+        // let temp = ref.current.category
+        // console.log("temp",temp)
         ref.current.category.map(elem => {
             if (elem.categoryName === cat) {
                 console.log("before", ref.current.category[count].isPresent)
@@ -102,7 +119,7 @@ export function MenuForm({ }) {
         console.log("delete new food",newFood)
 
         // setCurrCat(newCat)
-        setCurrCat(temp => ({ ...temp, ...ref.current.category[count] }))
+        setCurrCat(elem => ({ ...elem, ...ref.current.category[count] }))
         setNewFood(newFood => ({ ...newFood, ...{ "foodCategory": currCat } }))
 
     }
@@ -121,7 +138,7 @@ export function MenuForm({ }) {
         })
 
         console.log("delete new food",newFood)
-        setCurrCat(temp => ({ ...temp, ...ref.current.category[count] }))
+        setCurrCat(elem => ({ ...elem, ...ref.current.category[count] }))
         setNewFood(newFood => ({ ...newFood, ...{ "foodCategory": currCat } }))
         // newCat.map(elem=>{ 
         //     elem.categoryName === cat?elem.isPresent = true:elem.isPresent=elem.isPresent

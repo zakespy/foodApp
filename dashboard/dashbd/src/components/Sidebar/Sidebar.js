@@ -27,35 +27,35 @@ export default function Sidebar() {
                         <ul>
                             <li className="dashboardItem">
                                 <Link to="/" className="linkButton">
-                                <a onClick={() => { setComponentsToggle(0) }}>
+                                {/* <a onClick={() => { setComponentsToggle(0) }}> */}
                                     {/* {console.log(componentsToggle)} */}
                                     {/* <span class="icon"><i class="fas fa-home"></i></span> */}
                                     <span class="item">Orders</span>
-                                </a>
+                                {/* </a> */}
                                 </Link>
                             </li>
                             <li className="dashboardItem">
                                 <Link to="/menuPage" className="linkButton">
-                                <a onClick={() => { setComponentsToggle(1) }}>
+                                {/* <a onClick={() => { setComponentsToggle(1) }}> */}
                                     {/* <span class="icon"><i class="fas fa-desktop"></i></span> */}
                                     <span class="item">Menu</span>
-                                </a>
+                                {/* </a> */}
                                 </Link>
                             </li>
                             <li className="dashboardItem">
                                 <Link to="/" className="linkButton">
-                                <a onClick={() => { setComponentsToggle(2) }}>
+                                {/* <a onClick={() => { setComponentsToggle(2) }}> */}
                                     {/* <span class="icon"><i class="fas fa-user-friends"></i></span> */}
                                     <span class="item">Category</span>
-                                </a>
+                                {/* </a> */}
                                 </Link>
                             </li>
                             <li className="dashboardItem">
                                 <Link to="/" className="linkButton">
-                                <a onClick={() => { setComponentsToggle(3) }}>
+                                {/* <a onClick={() => { setComponentsToggle(3) }}> */}
                                     {/* <span class="icon"><i class="fas fa-cog"></i></span> */}
                                     <span class="item">Settings</span>
-                                </a>
+                                {/* </a> */}
                                 </Link>
                             </li>
                         </ul>

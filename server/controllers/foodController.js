@@ -24,7 +24,7 @@ class foodController{
 
     static addFood = async (req,res)=>{
         const {oldFoodName,foodName,foodPrice,foodCategory,foodImage} = req.body
-        console.log(req.body)
+        console.log(req.body.foodCategory)
         await foodModel.findOne({foodName:oldFoodName}).then(async e=>{
             console.log(e)
             if(e){
