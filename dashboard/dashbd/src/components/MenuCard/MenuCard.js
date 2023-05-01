@@ -14,13 +14,13 @@ export default function MenuCard({food}){
 
     return (
         <>
-        {console.log("food Menu card",food)}
+        {/* {console.log("food Menu card",food)} */}
             <div className="MenuCard">
                 <div className="foodName">
                     <h4>{food.foodName}</h4>
                 </div>
                 <div className="foodCategory">
-                    {console.log("food",food)}
+                    {/* {console.log("food",food)} */}
                     {food.foodCategory.length == 0?<h4>No Category</h4>:
                     food.foodCategory.map(e=>{
                         <h4>{e}</h4>

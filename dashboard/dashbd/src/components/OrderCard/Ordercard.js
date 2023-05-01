@@ -1,62 +1,111 @@
 import React from "react";
 import "./OrderCard.css";
 import item from "./Somosa.jpeg";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { useState, useEffect } from "react";
 
-export default function OrderCard(){
+export default function OrderCard({newOrder}) {
 
-    var minutesLabel = document.getElementById("minutes");
-    var secondsLabel = document.getElementById("seconds");
-    var totalSeconds = 0;
-    setInterval(setTime, 1000);
   
-    function setTime() {
-      ++totalSeconds;
-      secondsLabel.innerHTML = pad(totalSeconds % 60);
-      minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
-    }
-  
-    function pad(val) {
-      var valString = val + "";
-      if (valString.length < 2) {
-        return "0" + valString;
-      } else {
-        return valString;
-      }
-    }
-    
-    return(    
-    <div className="card">
 
-        <div class="left">
-        <img src={item} alt="hii" className="pic"/>
-        </div>
+  // const newOrder = {
+  //   customerEmailId: String,
+  //   tokenNo: Number,
+  //   orderTime: Date,
+  //   orderDetails: [
+  //     {
+  //       foodName: "chicken tikka",
+  //       quantity: 2,
+  //       category: [],
+  //       foodPrice: 80
+  //     },
+  //     {
+  //       foodName: "Panner tikka",
+  //       quantity: 3,
+  //       category: [],
+  //       foodPrice: 60
+  //     },
+  //     {
+  //       foodName: "Roti",
+  //       quantity: 8,
+  //       category: [],
+  //       foodPrice: 10
+  //     },
+  //     {
+  //       foodName: "chawal",
+  //       quantity: 1,
+  //       category: [],
+  //       foodPrice: 30
+  //     },
+  //   ],
+  //   preparedStatus: Boolean,
+  //   claimed: Boolean,
+  //   timer:Date,
+  //   paymentStatus: Boolean,
+  //   transactionId: Number,
+  //   bankName: String,
+  //   order_id: String
+  // }
 
-        <div className="right">
 
-        <div className="detail">
-            <p className="token">Token 33</p>
-            <p className="name">Samosa</p>
-            <p className="price">Rs. 20</p>
-        </div>
-        
-        <div className="timer">
-            <label id="minutes">00</label>
-            <label id="colon">:</label>
-            <label id="seconds">00</label>
-        </div>
 
-        <div className="delete">
-        <button>
-            <span class="transition"></span>
-            <span class="gradient"></span>
-            <span class="label">Order Completed</span>
-        </button>
-        </div>
+  const [total, setTotal] = useState()
 
+  function getTotal() {
+    let temp = 0
+    newOrder.orderDetails.map(e => {
+      temp = temp + e.quantity * e.foodPrice
+    })
+    setTotal(temp)
+    console.log("total", temp)
+  }
+
+
+  useEffect(() => { getTotal() }, [])
+
+
+  return (
+    <div className="card-container">
+      <div className="mainCont">
+        <div className="orderNo">
+          <h3>Order No {newOrder.tokenNo}</h3>
         </div>
+        <div className="orderInfo">
+          <div className="itemName">
+            <h4>Name</h4>
+            {newOrder.orderDetails.map(e => {
+              return <p className="orderDesc">{e.foodName}</p>
+            })}
+          </div>
+          <div className="itemInfo">
+            <h4>Quantity</h4>
+            {newOrder.orderDetails.map(e => {
+              return <p className="orderDesc">{e.quantity}</p>
+            })}
+          </div>
+        </div>
+        <div className="orderTotal">
+          <div className="itemName">
+            Total
+          </div>
+          <div className="itemInfo">
+            {total}
+          </div>
+        </div>
+        <div className="orderIcons">
+          <div className="timer">
+            <AccessTimeIcon /> {newOrder.timer}
+          </div>
+          <div className="preCont">
+            <button className="preBtn">
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  
-    )
+
+  )
 }
 
 

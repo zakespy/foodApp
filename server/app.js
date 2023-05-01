@@ -10,9 +10,9 @@ import history from "./routes/history.js";
 import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
 import order from "./routes/order.js"
-import {enqueue , dequeue , reqProcess} from "./modules/queue.js";
+import { enqueue, dequeue, reqProcess } from "./modules/queue.js";
 import http from 'http'
-import {WebSocketServer} from 'ws'
+import { WebSocketServer } from 'ws'
 import dashWebSocket from "./modules/dashWebSocket.js";
 // import connectSocket  from "./modules/webSocket.js"; 
 // import {newSocket} from "../server/modules/webSocket.js"
@@ -22,15 +22,15 @@ const app = express()
 dotenv.config({ path: "./config.env" });
 
 const port = process.env.port || '8000'
-const DATABASE_URL = 
-  process.env.DATABASE_URL 
-  
+const DATABASE_URL =
+  process.env.DATABASE_URL
+
 
 connectDB(DATABASE_URL) //connection
 
 // app.use(createSocket())
 app.use(express.json());
-app.use(express.json({limit: '50mb'}))
+app.use(express.json({ limit: '50mb' }))
 app.use(cors())
 app.use("/api", customer);
 app.use("/api/food", food);
@@ -38,69 +38,108 @@ app.use("/api/category", category);
 app.use("/api/history", history);
 app.use("/api/admin", admin);
 app.use("/api/payment", payment);
-app.use("/api/order",order);
+app.use("/api/order", order);
 
-setInterval(()=>{
+setInterval(() => {
   reqProcess()
-},1000)
+}, 1000)
 
 const server = http.createServer();
 // newSocket(server)
 
 //client websocket
-const wss =  new WebSocketServer({ port:5000 });
-    wss.on('connection', (ws)=>{
-      ws.on('message',message=>{
-        // ws.send("true")
-        console.log('%s',message)
-      })
-      setTimeout(()=>{
-        ws.send("true")
-      },5000)
-      console.log('new connection')
-    })
+const wss = new WebSocketServer({ port: 5000 });
+wss.on('connection', (ws) => {
+  ws.on('message', message => {
+    // ws.send("true")
+    console.log('%s', message)
+  })
+  setTimeout(() => {
+    ws.send("true")
+  }, 5000)
+  console.log('new connection')
+})
 
 
 // dashWebSocket()
+const newOrder = {
+  customerEmailId: String,
+  tokenNo: Number,
+  orderTime: Date,
+  orderDetails: [
+    {
+      foodName: "chicken tikka",
+      quantity: 2,
+      category: [],
+      foodPrice: 80
+    },
+    {
+      foodName: "Panner tikka",
+      quantity: 3,
+      category: [],
+      foodPrice: 60
+    },
+    {
+      foodName: "Roti",
+      quantity: 8,
+      category: [],
+      foodPrice: 10
+    },
+    {
+      foodName: "chawal",
+      quantity: 1,
+      category: [],
+      foodPrice: 30
+    },
+  ],
+  preparedStatus: Boolean,
+  claimed: Boolean,
+  timer: Date,
+  paymentStatus: Boolean,
+  transactionId: Number,
+  bankName: String,
+  order_id: String
+}
+const encoder = new TextEncoder();
+const newData = encoder.encode(JSON.stringify(newOrder))
 
 // dashboard websocket
-const dashWss =  new WebSocketServer({ port:5010 });
-    dashWss.on('connection', (dashWs)=>{
-      dashWs.on('message',message=>{
-        // ws.send("true")
-        console.log('%s',message)
-      })
-      setTimeout(()=>{
-        dashWs.send("true")
-      },500)
-      console.log('new connection')
-    })
+const dashWss = new WebSocketServer({ port: 5010 });
+dashWss.on('connection', (dashWs) => {
+  dashWs.on('message', message => {
+    // ws.send("true")
+    console.log('%s', message)
+  })
+  setInterval(() => {
+    dashWs.send(newData)
+  }, 5000)
+  console.log('new connection')
+})
 
 
 
 
-    // wss.on('message', function message(data) {
-    //   console.log('hello message received: %s ', data);
-    //   // wss.send("hiiii")
-    // });
+// wss.on('message', function message(data) {
+//   console.log('hello message received: %s ', data);
+//   // wss.send("hiiii")
+// });
 
-    // wss.on('open', function open() {
-    //   ws.send('something');
-    // });
+// wss.on('open', function open() {
+//   ws.send('something');
+// });
 
-    app.use(bodyParser.json({ limit: "50mb" }));
-    app.use(
-      bodyParser.urlencoded({
-        limit: "50mb",
-        extended: true,
-        parameterLimit: 50000,
-      })
-    );
-     
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimit: 50000,
+  })
+);
+
 
 
 // connectSocket    
-app.listen(port,()=>{
-    console.log(`Server LIstening at port http://localhost:${port}`)
+app.listen(port, () => {
+  console.log(`Server LIstening at port http://localhost:${port}`)
 })
- 

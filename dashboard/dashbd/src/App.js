@@ -11,12 +11,11 @@ function App() {
   return (
     <> 
       <BrowserRouter>
-        {/* <Sidebar/> */}
+        <Sidebar/>
         {/* <Routes>
-          
           <Route path="/*" exact element={<Home/>}/>
         </Routes> */}
-        <OrderCard/>
+        {/* <OrderCard/> */}
       </BrowserRouter>
     </>
   )
