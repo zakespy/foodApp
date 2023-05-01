@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/Pages/home.dart';
 import 'package:foodapp/provider/cart_provider.dart';
+import 'package:foodapp/provider/menu_provider.dart';
 import 'package:foodapp/provider/token_provider.dart';
 import 'package:foodapp/Pages/cartPage.dart';
 import 'package:foodapp/provider/profile_provider.dart';
@@ -22,8 +23,9 @@ Future<void> main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => Cart(items: [])),
           ChangeNotifierProvider(create: (_) => Profile(data: {})),
-        ChangeNotifierProvider(create: (_)=>OrdersProvider()),
+          ChangeNotifierProvider(create: (_) => OrdersProvider()),
           ChangeNotifierProvider(create: (_) => Token(tokenList: [])),
+          ChangeNotifierProvider(create: (_) => MenuProvider(), lazy: false,),
         ],
         child: MaterialApp(
           initialRoute: '/',

@@ -8,6 +8,7 @@ import 'package:foodapp/Pages/ProfilePage.dart';
 import 'package:foodapp/Pages/tokenPage.dart';
 import 'package:foodapp/Data/food.dart';
 import 'package:foodapp/provider/cart_provider.dart';
+import 'package:foodapp/provider/menu_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/model/food.dart';
 import 'package:foodapp/Widgets/foodCard.dart';
@@ -30,12 +31,37 @@ class homeView extends StatefulWidget {
 class _homeViewState extends State<homeView> {
   Map profileData = {};
   Map category = {};
-  int value = 1;
+  int value = 3;
+  late List<FoodItem> currentMenu;
+  List<FoodItem> menu = [];
+
+
+  Future<List<FoodItem>> getCurrentMenu()async{
+    // menu = await Provider.of<MenuProvider>(context, listen: false).getMyMenu();
+    if( value == 3 ) menu = await Provider.of<MenuProvider>(context, listen: false).getMyMenu();
+
+    return menu;
+  }
+
+  List<FoodItem> getCurrentMenuByCategory( String category ){
+    List<FoodItem> response;
+    response = Provider.of<MenuProvider>(context, listen: false).getMenuByCategory(category);
+
+    return response;
+  }
+  // Future<List<FoodItem>> getCurrentMenuByCategory( String category )async{
+  //   List<FoodItem> response;
+  //   response = await Provider.of<MenuProvider>(context, listen: false).getMenuByCategory(category);
+
+  //   return response;
+  // }
+
 
   void initState() {
     print("h");
     getData();
     getCategory();
+    // getCurrentMenu();
     print('category ${category}');
   }
 
@@ -55,19 +81,19 @@ class _homeViewState extends State<homeView> {
     print(profileData);
   }
 
-  List menu = [];
+  // List menu = [];
   // Map menu = {};
-  Food foodList = Food();
+  // Food foodList = Food();
 
-  Future<List> getMenu() async {
-    Food foodList = Food();
-    List menuResponse = await foodList.getMenu();
+  // Future<List> getMenu() async {
+  //   Food foodList = Food();
+  //   List menuResponse = await foodList.getMenu();
 
-    menu = menuResponse.map((food) => FoodItem(id: food['_id'], name: food['foodName'], price: food['foodPrice'])).toList();
+  //   menu = menuResponse.map((food) => FoodItem(id: food['_id'], name: food['foodName'], price: food['foodPrice'])).toList();
 
-    return menu;
-    // print(menu['menu'].length);
-  }
+  //   return menu;
+  //   // print(menu['menu'].length);
+  // }
   // Future<Map> getMenu() async {
   //   Food foodList = Food();
   //   menu = await foodList.getMenu();
@@ -86,6 +112,9 @@ class _homeViewState extends State<homeView> {
 
   @override
   Widget build(BuildContext context) {
+
+    MenuProvider menuProvider = Provider.of<MenuProvider>(context);
+
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () => {
@@ -173,9 +202,9 @@ class _homeViewState extends State<homeView> {
           child: Column(
             children: <Widget>[
               buildAppBar(),
-              buildFoodFilter(),
+              buildFoodFilter(menuProvider),
               Divider(),
-              buildFoodList(),
+              buildFoodList(menuProvider),
             ],
           ),
         ),
@@ -237,7 +266,7 @@ class _homeViewState extends State<homeView> {
   }
 
 
-  Widget buildFoodFilter() {
+  Widget buildFoodFilter( MenuProvider menu_provider ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12),
       height: 55,
@@ -264,6 +293,7 @@ class _homeViewState extends State<homeView> {
                     onSelected: (selected) {
                       setState(() {
                         value = index;
+                        menu = getCurrentMenuByCategory( category['categories'][index]["categoryName"].toString() );
                       });
                     },
                   ),
@@ -278,7 +308,9 @@ class _homeViewState extends State<homeView> {
 
 
 
-  Widget buildFoodList() {
+  Widget buildFoodList(MenuProvider menu_provider) {
+    // List<FoodItem> currentMenu = menu_provider.getMyMenu();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -286,9 +318,10 @@ class _homeViewState extends State<homeView> {
           Container(
             // margin: EdgeInsets.symmetric( vertical: 16),
             height: MediaQuery.of(context).size.height/1.75,
-            child: Expanded(
+            // child: Expanded(
               child: FutureBuilder(
-                future: getMenu(),
+                // future: menu_provider.getMyMenu()  as Future,
+                future: getCurrentMenu(),
                 builder: (BuildContext context, snapshot) {
                   if (snapshot.hasData) {
                     return GridView.count(
@@ -297,6 +330,13 @@ class _homeViewState extends State<homeView> {
                       crossAxisSpacing: 4,
                       crossAxisCount: 2,
                       physics: BouncingScrollPhysics(),
+                      // children: [
+                      //   FoodCard(FoodItem(id: 'id', name: 'name', price: 1)),
+                      //   FoodCard(FoodItem(id: 'id', name: 'name', price: 1)),
+                      //   FoodCard(FoodItem(id: 'id', name: 'name', price: 1)),
+                      //   FoodCard(FoodItem(id: 'id', name: 'name', price: 1)),
+                      //   FoodCard(FoodItem(id: 'id', name: 'name', price: 1)),
+                      // ],
                       children: menu.map((food) {
                         return FoodCard(food);
                       }).toList(),
@@ -310,7 +350,20 @@ class _homeViewState extends State<homeView> {
                   return Center(child: CircularProgressIndicator());
                 },
               ),
-            ),
+              // child: GridView.count(
+              //       childAspectRatio: 0.85,
+              //       mainAxisSpacing: 4,
+              //       crossAxisSpacing: 4,
+              //       crossAxisCount: 2,
+              //       shrinkWrap: true,
+              //       physics: const BouncingScrollPhysics(),
+              //       children: currentMenu.map((item) => FoodCard(item)).toList(),
+              //       // children: [
+              //       //   FoodCard( FoodItem(id: 'abc', name: 'abc', price: 123) )
+              //       // ],
+              //     )
+                
+            // ),
           ),
         ],
       ),
