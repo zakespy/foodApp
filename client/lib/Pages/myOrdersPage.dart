@@ -58,7 +58,7 @@ class _ordersPageState extends State<ordersPage> {
                       )
                     },
                     child: buildCartItemList(ordersProvider, myOrdersList, myOrdersList.allOrders[index], index)
-                    );
+                  );
                 },
               ),
               SizedBox(height: 16),

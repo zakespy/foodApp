@@ -6,6 +6,7 @@ import 'package:foodapp/Pages/ProfilePage.dart';
 import 'package:foodapp/Pages/myOrdersPage.dart';
 import 'package:foodapp/Data/category.dart';
 import 'package:provider/provider.dart';
+import 'package:foodapp/provider/menu_provider.dart';
 
 import '../provider/profile_provider.dart';
 
@@ -23,9 +24,11 @@ class _homeState extends State<home> {
 
   Map profileData = {};
   // Map category = {};
-
+  
   void getData() async {
     profileData = await context.read<Profile>().getProfile() as Map;
+    // await Provider.of<MenuProvider>(context, listen: false).setMenu();
+    
     print(profileData);
   }
 
@@ -57,6 +60,9 @@ class _homeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
+    print(1111111);
+    // Provider.of<MenuProvider>(context).setMenu();
+    print(1111111);
     final items = [
       Icon(Icons.home),
       Icon(Icons.shopping_cart),
