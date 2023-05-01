@@ -64,7 +64,7 @@ wss.on('connection', (ws) => {
 // dashWebSocket()
 const newOrder = {
   customerEmailId: String,
-  tokenNo: Number,
+  tokenNo: 20,
   orderTime: Date,
   orderDetails: [
     {
@@ -98,20 +98,30 @@ const newOrder = {
   paymentStatus: Boolean,
   transactionId: Number,
   bankName: String,
-  order_id: String
+  order_id: 'order_412'
 }
-const encoder = new TextEncoder();
-const newData = encoder.encode(JSON.stringify(newOrder))
+
+
+
 
 // dashboard websocket
 const dashWss = new WebSocketServer({ port: 5010 });
 dashWss.on('connection', (dashWs) => {
   dashWs.on('message', message => {
     // ws.send("true")
-    console.log('%s', message)
+    console.log(JSON.parse(message))
+  })
+  dashWs.on('headers', (headers) => {
+    headers.push('Access-Control-Allow-Origin: *');
+  });
+  dashWs.on('request', (request, response) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.writeHead(200);
+    response.end('WebSocket server is up and running!');
   })
   setInterval(() => {
-    dashWs.send(newData)
+   
+    dashWs.send(JSON.stringify(newOrder))
   }, 5000)
   console.log('new connection')
 })

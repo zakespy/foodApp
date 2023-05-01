@@ -4,7 +4,7 @@ import item from "./Somosa.jpeg";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useState, useEffect } from "react";
 
-export default function OrderCard({newOrder}) {
+export default function OrderCard({newOrder,deleteOrder}) {
 
   
 
@@ -97,7 +97,7 @@ export default function OrderCard({newOrder}) {
             <AccessTimeIcon /> {newOrder.timer}
           </div>
           <div className="preCont">
-            <button className="preBtn">
+            <button className="preBtn" onClick={()=>{deleteOrder(newOrder.order_id)}}>
               Done
             </button>
           </div>
