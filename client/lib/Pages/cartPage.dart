@@ -128,6 +128,18 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
       }
     );
 
+    await http.post(
+      Uri.parse("http://10.0.2.2:8000/api/dayOrder/addDayOrder"),
+      body: jsonEncode({
+        "tokenNo": jsonDecode(tokenRes.body)['tokenNo'],
+        "orderDetails": Provider.of<Cart>(context, listen: false).getCart(),
+      }),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      }
+    );
+
     Provider.of<Cart>(context, listen: false).emptyCart();
 
 
