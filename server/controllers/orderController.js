@@ -67,7 +67,11 @@ class orderController{
                 preparedStatus: false
             })
             console.log("ongoingorder",newOngoingOrder)
-            
+            const newOrder = {
+                "order_id":order_id,
+                    "tokenNo":tokenNo,
+                    "orderDetails":order.orderDetails
+            }
             newOngoingOrder.save().then(async e=>{
                 // const dashWss = new WebSocketServer({ port: 5010 });
                 // dashWss.on('connection', (dashWs) => {
@@ -99,13 +103,15 @@ class orderController{
                 //   })
                 //   dashWss.close()
                   
-                const order = await ongoingOrderModel.findOne({order_id:order_id})
-                console.log("order",order)
-                const newOrder = {
-                    "order_id":order_id,
-                    "tokenNo":tokenNo,
-                    "orderDetails":order.orderDetails
-                }
+                const order = await ongoingOrderModel.findOne({order_id:order_id,tokenNo:tokenNo}).then(e=>{
+                    newOrder = {
+                        "order_id":order_id,
+                        "tokenNo":tokenNo,
+                        "orderDetails":order.orderDetails
+                    }
+                })
+                console.log("newOrder",newOrder)
+                
                 const stringOrder = JSON.stringify(newOrder)
                 console.log("stringifies data",stringOrder)
                 const ws = new WebSocket('ws://localhost:5010');

@@ -53,19 +53,44 @@ setInterval(() => {
 const server = http.createServer();
 // newSocket(server)
 
-//client websocket
 const wss = new WebSocketServer({ port: 5000 });
-wss.on('connection', (ws) => {
-  ws.on('message', message => {
-    // ws.send("true")
-    console.log('%s', message)
+//client websocket
+wss.on('connection', function connection(ws) {
+  // setInterval(()=>{ws.send("hiii")},1000)
+  console.log("connected")
+  // ws.on('message',(data)=>{
+  //   console.log(data)
+  //   var enc = new TextDecoder("utf-8");
+  //   var arr = new Uint8Array(data);
+  //   console.log(enc.decode(arr));
+  //   ws.send(JSON.stringify(enc.decode(arr)))
+  // })
+  ws.on('message', function incoming(data,isBinary) {
+    console.log("message received",data)
+    var enc = new TextDecoder("utf-8");
+    var arr = new Uint8Array(data);
+    const decodedData = enc.decode(arr)
+    console.log("decoded data",decodedData);
+    console.log("again stringify data",JSON.stringify(decodedData));
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        // client.send(JSON.stringify(decodedData), { binary: isBinary });
+        client.send(JSOn.stringify(decodedData), { binary: isBinary });
+      }
+    })
   })
-  setTimeout(() => {
-    ws.send("true")
-  }, 5000)
+  ws.on('headers', (headers) => {
+    headers.push('Access-Control-Allow-Origin: *');
+  });
+  ws.on('request', (request, response) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.writeHead(200);
+    response.end('WebSocket server is up and running!');
+  })
+
+  
   console.log('new connection')
 })
-
 
 
 

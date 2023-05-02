@@ -7,4 +7,4 @@ router.post('/addOrder',orderController.createOnGoingOrder)
 router.post('/deleteOrder',orderController.deleteOnGoingOrder)
 router.post('/removeOrder',orderController.removeOngoingOrder)
 
-export default router
+export default router 

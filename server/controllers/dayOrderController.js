@@ -8,13 +8,13 @@ export const addOrder = async (req, res) => {
 
     try {
         let dateOrdersDetails = await dayOrderModel.findOne({ dayDate: currentDate });
-        console.log(dateOrdersDetails);
+        // console.log(dateOrdersDetails);
 
         if( dateOrdersDetails == null ){
             const dateOrder = new dayOrderModel({ dayDate: currentDate, order:[{ tokenNumber: tokenNo, orderDetails: orderDetails }] });
 
             await dateOrder.save();
-console.log(1)
+// console.log(1)
             res.status(201).json( { success: true, newDetailList: dateOrder } );
         }
         else{
@@ -23,7 +23,7 @@ console.log(1)
             dateOrder.order.push({ tokenNumber: tokenNo, orderDetails: orderDetails });
 
             await dayOrderModel.findOneAndUpdate({ dayDate: currentDate }, { order: dateOrder.order });
-console.log(2)
+// console.log(2)
             res.status(201).json( { success: true, newDetailList: dateOrder } );
         }
     } catch (error) {
