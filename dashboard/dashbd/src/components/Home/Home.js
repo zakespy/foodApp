@@ -8,6 +8,7 @@ import { Outlet, Link } from "react-router-dom";
 import Sockette from 'sockette';
 import useWebSocket from "react-use-websocket"
 import socketCluster from 'socketcluster-client';
+import CategoryPage from '../CategoryPage/CategoryPage';
  
 
 // let newData = []
@@ -79,7 +80,7 @@ export function Home(){
         <Route path="/" exact element={<OrderPage orderGroup={newData}/>} />
         <Route path="/menuPage" exact element={<MenuPage />} />
         <Route path="/menu-form" exact element={<MenuForm />} />
-        {/* <Route path="/menu-form" exact element={<MenuForm />} /> */}
+        <Route path="/category-form" exact element={<CategoryPage />} />
     </Routes>
 // </BrowserRouter>
   )

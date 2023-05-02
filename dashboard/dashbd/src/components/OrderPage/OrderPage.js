@@ -201,7 +201,7 @@ export default function OrderPage(){
         index++
       })
       newItem.removeFromList(order_id)
-      setNewOrderList(newGrp)
+      setNewOrderList(temp=>({...temp,...newGrp}));
       sendMSgSocket(order_id)
     }
 
@@ -218,33 +218,34 @@ export default function OrderPage(){
     } 
 
     function updateOrderList(order){
-      console.log(order)
+      console.log("order",order)
       let count = 0
-      newItem.add2List(order)
-      newGrp.push(order)
-      console.log("updated list",newGrp)
-      setNewOrderList(newGrp)
-      // if(newGrp.length == 0){
-      //   newItem.add2List(order)
-      //   newGrp.push(order)
-      //   console.log("updated newgrp",newGrp)
-      //   setNewOrderList(newGrp)
-      //   return 
-      // }else{
-      //   newGrp.map(e=>{
-      //     if(e.order_id == order.order_id){
-      //       count++
-      //     }
-      //   })
-      //   if(count == 0){
-      //     newItem.add2List(order)
-      //     newGrp.push(order)
-      //   }
-      //   console.log("updated newgrp",newGrp)
-      //   setNewOrderList(newGrp)
-      //   console.log("aft newGrp",newGrp)
-      //   setNewOrderList(temp=>({...temp,...newGrp}));
-      // }
+      // newItem.add2List(order)
+      // newGrp.push(order)
+      // console.log("updated list",newGrp)
+      // setNewOrderList(newGrp)
+      if(newItem.getList().length == 0){
+        console.log(newItem.getList())
+        newItem.add2List(order)
+        newGrp.push(order)
+        console.log("updated newgrp",newGrp)
+        setNewOrderList(newGrp)
+        return 
+      }else{
+        newItem.getList().map(e=>{
+          if(e.order_id == order.order_id){
+            count++
+          }
+        })
+        if(count == 0){
+          newItem.add2List(order)
+          newGrp.push(order)
+        }
+        console.log("updated newgrp",newGrp)
+        setNewOrderList(newGrp)
+        console.log("aft newGrp",newGrp)
+        setNewOrderList(temp=>({...temp,...newGrp}));
+      }
       
     }
 
@@ -262,7 +263,7 @@ export default function OrderPage(){
             <div className="orderPageContainer">
                 <div className="orderContainer">
                   {console.log("newOrderList",newOrderList)}
-                    {newOrderList.map(e=>{
+                    {newItem.getList().map(e=>{
                         return <OrderCard newOrder={e} deleteOrder={deleteOrder}/>
                     })}
                     {getWebSocket}
