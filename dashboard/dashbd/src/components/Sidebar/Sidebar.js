@@ -43,7 +43,7 @@ export default function Sidebar() {
                                 </Link>
                             </li>
                             <li className="dashboardItem">
-                                <Link to="/" className="linkButton">
+                                <Link to="/category-form" className="linkButton">
                                 {/* <a onClick={() => { setComponentsToggle(2) }}> */}
                                     {/* <span class="icon"><i class="fas fa-user-friends"></i></span> */}
                                     <span class="item">Category</span>

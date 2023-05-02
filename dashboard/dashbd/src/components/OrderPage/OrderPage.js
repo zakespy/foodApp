@@ -4,7 +4,11 @@ import React from "react";
 import "../OrderPage/OrderPageStyles.css"
 import useWebSocket from "react-use-websocket"
 import OrderCard from "../OrderCard/Ordercard";
+import Order from "../../classes/Order";
 // import WebSocket from "ws";
+
+const newItem = new Order()
+
 
 export default function OrderPage(){
     
@@ -45,7 +49,7 @@ export default function OrderPage(){
             paymentStatus: Boolean,
             transactionId: Number,
             bankName: String,
-            order_id: String
+            order_id: 'order_123'
           },
           {
             customerEmailId: String,
@@ -83,7 +87,7 @@ export default function OrderPage(){
             paymentStatus: Boolean,
             transactionId: Number,
             bankName: String,
-            order_id: String
+            order_id: 'order_321'
           },
           {
             customerEmailId: String,
@@ -121,7 +125,7 @@ export default function OrderPage(){
             paymentStatus: Boolean,
             transactionId: Number,
             bankName: String,
-            order_id: String
+            order_id: 'order_213'
           },
           {
             customerEmailId: String,
@@ -159,11 +163,13 @@ export default function OrderPage(){
             paymentStatus: Boolean,
             transactionId: Number,
             bankName: String,
-            order_id: String
+            order_id: 'order_132'
           }
     ]
 
-    const newGrp = [];
+    // const newGrp = orderGroup;
+    const newGrp = newItem.getList();
+    const [newOrderList,setNewOrderList] = useState(newGrp.reverse())
 
     function webSocketConnect(){
         // const ws = new WebSocket('wss://localhost:6000/')
@@ -185,29 +191,70 @@ export default function OrderPage(){
         //     console.log('received: %s', data);
         //   });
     }
-    const decoder = new TextDecoder('iso-8859-1')
-    function decodeMsg(msg){
-        console.log(msg)
-        // let data = new Uint8Array(msg.data); // convert ArrayBuffer to Uint8Array
-        // let view = new DataView(data.buffer); // create DataView using the ArrayBuffer
+    
+    const deleteOrder = (order_id)=>{
+      let index = 0
+      newGrp.map(e=>{
+        if(e.order_id == order_id){
+          newGrp.splice(index,1)
+        }
+        index++
+      })
+      newItem.removeFromList(order_id)
+      setNewOrderList(temp=>({...temp,...newGrp}));
+      sendMSgSocket(order_id)
+    }
 
-        // let value1 = view.getUint16(0); // read a 16-bit unsigned integer at byte offset 0
-        // let value2 = view.getFloat32(2);
-        // console.log(value1)
-        // console.log(value2)
-        const newData = decoder.decode(msg)
-        console.log(JSON.parse(newData))
+    function sendMSgSocket(msg){
+      sendJsonMessage(JSON.stringify(msg))
+    }
+   
+    function decodeMsg(msg){
+        console.log(msg)     
+        console.log(JSON.parse(msg.data))
+        const newOrder = JSON.parse(msg.data)
+        updateOrderList(newOrder)
+        // console.log(ab2str(msg.data))
     } 
+
+    function updateOrderList(order){
+      console.log("order",order)
+      let count = 0
+      // newItem.add2List(order)
+      // newGrp.push(order)
+      // console.log("updated list",newGrp)
+      // setNewOrderList(newGrp)
+      if(newItem.getList().length == 0){
+        console.log(newItem.getList())
+        newItem.add2List(order)
+        newGrp.push(order)
+        console.log("updated newgrp",newGrp)
+        setNewOrderList(newGrp)
+        return 
+      }else{
+        newItem.getList().map(e=>{
+          if(e.order_id == order.order_id){
+            count++
+          }
+        })
+        if(count == 0){
+          newItem.add2List(order)
+          newGrp.push(order)
+        }
+        console.log("updated newgrp",newGrp)
+        setNewOrderList(newGrp)
+        console.log("aft newGrp",newGrp)
+        setNewOrderList(temp=>({...temp,...newGrp}));
+      }
+      
+    }
 
     const { sendJsonMessage, getWebSocket } = useWebSocket('ws://localhost:5010', {
         onOpen: () => console.log('WebSocket connection opened.'),
         onClose: () => console.log('WebSocket connection closed.'),
         shouldReconnect: (closeEvent) => true,
         onMessage: (data) => {decodeMsg(data)}
-      });
-
-
-    
+      }); 
 
     useEffect(()=>{webSocketConnect()},[])
 
@@ -215,8 +262,9 @@ export default function OrderPage(){
         <>
             <div className="orderPageContainer">
                 <div className="orderContainer">
-                    {orderGroup.map(e=>{
-                        return <OrderCard newOrder={e}/>
+                  {console.log("newOrderList",newOrderList)}
+                    {newItem.getList().map(e=>{
+                        return <OrderCard newOrder={e} deleteOrder={deleteOrder}/>
                     })}
                     {getWebSocket}
                 </div> 
