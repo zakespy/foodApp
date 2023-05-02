@@ -12,16 +12,16 @@ const dayOrderSchema = new mongoose.Schema({
                 quantity:Number,
                 category:Number,
                 foodPrice:Number
-           }],
-           preparedStatus:Boolean,
-           claimed:Boolean,
-           paymentStatus:Boolean,
-           transactionId:Number,
-           bankName:String,
+            }],
+            preparedStatus:Boolean,
+            claimed:Boolean,
+            paymentStatus:Boolean,
+            transactionId:Number,
+            bankName:String,
         }
     ]
 })
 
-const dayOrderModel = mongoose.model("order",dayOrderSchema)
+const dayOrderModel = mongoose.model("dayOrder",dayOrderSchema)
 export default dayOrderModel
 

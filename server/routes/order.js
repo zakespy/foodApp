@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.post('/createToken',orderController.createToken)
 router.post('/addOrder',orderController.createOnGoingOrder)
+router.post('/removeOrder',orderController.removeOngoingOrder)
 
 export default router
