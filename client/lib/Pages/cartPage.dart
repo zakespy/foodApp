@@ -123,9 +123,9 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         "orderDetails": Provider.of<Cart>(context, listen: false).getCart(),
       }),
       headers: {
-        'Content-type': 'application/json',
+        // 'Content-type': 'application/json',
         'Accept': 'application/json',
-      }
+      } 
     );
 
     await http.post(

@@ -25,7 +25,8 @@
     "razorpay": "^2.8.6",
     "redis": "^4.6.5",
     "socket.io": "^4.6.1",
-    "ws": "^8.13.0"
+    "ws": "^8.13.0",
+    "ws-wrapper": "^2.0.2"
   },
   "description": ""
 }

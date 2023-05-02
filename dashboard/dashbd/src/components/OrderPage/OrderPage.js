@@ -5,7 +5,8 @@ import "../OrderPage/OrderPageStyles.css"
 import useWebSocket from "react-use-websocket"
 import OrderCard from "../OrderCard/Ordercard";
 import Order from "../../classes/Order";
-// import WebSocket from "ws";
+import WebSocket from "ws";
+import { WebSocketServer } from 'ws'
 
 const newItem = new Order()
 
@@ -194,24 +195,37 @@ export default function OrderPage(){
     
     const deleteOrder = (order_id)=>{
       let index = 0
+      let tokenNo
       newGrp.map(e=>{
         if(e.order_id == order_id){
+          tokenNo = e.tokenNo
           newGrp.splice(index,1)
         }
         index++
       })
       newItem.removeFromList(order_id)
       setNewOrderList(temp=>({...temp,...newGrp}));
-      sendMSgSocket(order_id)
+      deleteFromDB(tokenNo)
+      // sendMSgSocket(order_id)
     }
 
-    function sendMSgSocket(msg){
-      sendJsonMessage(JSON.stringify(msg))
+    async function deleteFromDB(tokenNo){
+      await axios.post("http://localhost:8000/api/order/removeOrder",{
+        "tokenNo":tokenNo
+      }).then(e=>{console.log("deleted")})
     }
+
+    // function sendMSgSocket(msg){
+    //   sendJsonMessage(JSON.stringify(msg))
+    // }
    
     function decodeMsg(msg){
         console.log(msg)     
-        console.log(JSON.parse(msg.data))
+        // var enc = new TextDecoder("utf-8");
+        // var arr = new Uint8Array(msg.data);
+        // const decodedData = enc.decode(arr)
+        // console.log(JSON.parse(decodedData))
+
         const newOrder = JSON.parse(msg.data)
         updateOrderList(newOrder)
         // console.log(ab2str(msg.data))
@@ -249,11 +263,53 @@ export default function OrderPage(){
       
     }
 
+    // const ws = new WebSocket('ws://localhost:5010');
+    // ws.OPEN()
+    // ws.onopen(()=>{
+    //   console.log("connected")
+    // })
+    // ws.on('error', console.error);
+    // ws.on('connection',()=>{
+    //   console.log("client side connected")
+    // })
+    // ws.on('open', function open() {
+    //   console.log('connected');
+    //   // ws.send(Date.now());
+    // });
+    
+    // ws.on('close', function close() {
+    //   console.log('disconnected');
+    // });
+    
+    // ws.on('message', function message(data) {
+    //   console.log(`Round-trip time: ${Date.now() - data} ms`);
+    
+    //   // setTimeout(function timeout() {
+    //   //   ws.send(Date.now());
+    //   // }, 500);
+    // });
+              //   ws.addEventListener('open', () => {
+              //       // ws.send(stringOrder);
+              //       console.log('client side connection established.');
+              //   });
+              
+              // ws.addEventListener('message', event => {
+              //   console.log(`client side message: ${event.data}`);
+              // });
+              
+              //   ws.addEventListener('close', () => {
+              //       console.log('client side connection closed.');
+              //   });
+
     const { sendJsonMessage, getWebSocket } = useWebSocket('ws://localhost:5010', {
         onOpen: () => console.log('WebSocket connection opened.'),
         onClose: () => console.log('WebSocket connection closed.'),
         shouldReconnect: (closeEvent) => true,
-        onMessage: (data) => {decodeMsg(data)}
+        onMessage: (data) => {
+          console.log("data received",data.data)
+          // sendJsonMessage(data.data)
+          // console.log("client side message received",data.data)
+          decodeMsg(data)}
       }); 
 
     useEffect(()=>{webSocketConnect()},[])
@@ -266,7 +322,7 @@ export default function OrderPage(){
                     {newItem.getList().map(e=>{
                         return <OrderCard newOrder={e} deleteOrder={deleteOrder}/>
                     })}
-                    {getWebSocket}
+                    {/* {getWebSocket} */}
                 </div> 
             </div> 
         </>

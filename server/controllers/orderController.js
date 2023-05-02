@@ -1,5 +1,8 @@
 import ongoingOrderModel from "../models/ongoingOrder.js";
 import {enqueue , dequeue , reqProcess} from "../modules/queue.js";
+import { WebSocketServer } from 'ws'
+import WebSocket from 'ws';
+
 // import dayOrderModel from "../models/dayOrderModel.js";
 // import ongoingOrderModel from "../models/ongoingOrder.js";
 // import Queue from 'bull' 
@@ -52,8 +55,9 @@ class orderController{
 
     static createOnGoingOrder = async (req,res)=>{
         const {tokenNo, order_id, orderDetails} = req.body 
-        console.log(req.body)
-
+        console.log("inside api create ongoing order",req.body.orderDetails)
+        
+        
         try {
             const newOngoingOrder = new ongoingOrderModel({
                 tokenNo: tokenNo,
@@ -63,20 +67,93 @@ class orderController{
                 preparedStatus: false
             })
             console.log("ongoingorder",newOngoingOrder)
-            newOngoingOrder.save().then(e=>{
+            
+            newOngoingOrder.save().then(async e=>{
+                // const dashWss = new WebSocketServer({ port: 5010 });
+                // dashWss.on('connection', (dashWs) => {
+                //     dashWs.send(stringOrder)
+                //     dashWs.on('message', message => {
+                //       // ws.send("true")
+                //       // console.log("message received",JSON.parse(message))
+                //       console.log("closing message")
+                //       dashWss.close()
+                //     //   console.log("data send",message)
+                //     //   setInterval(()=>{ 
+                //     //     dashWs.send(stringOrder)
+                //     //   },1000)
+                      
+                //     })
+                //     dashWs.on('headers', (headers) => {
+                //       headers.push('Access-Control-Allow-Origin: *');
+                //     });
+                //     dashWs.on('request', (request, response) => {
+                //       response.setHeader('Access-Control-Allow-Origin', '*');
+                //       response.writeHead(200);
+                //       response.end('WebSocket server is up and running!');
+                //     })
+                //     // setInterval(() => {
+                     
+                //     //   dashWs.send(JSON.stringify(newOrder))
+                //     // }, 5000)
+                //     console.log('new connection')
+                //   })
+                //   dashWss.close()
+                  
+                const order = await ongoingOrderModel.findOne({order_id:order_id})
+                console.log("order",order)
+                const newOrder = {
+                    "order_id":order_id,
+                    "tokenNo":tokenNo,
+                    "orderDetails":order.orderDetails
+                }
+                const stringOrder = JSON.stringify(newOrder)
+                console.log("stringifies data",stringOrder)
+                const ws = new WebSocket('ws://localhost:5010');
+                
+                ws.addEventListener('open', () => {
+                    ws.send(stringOrder);
+                    console.log('WebSocket connection established.');
+                    ws.close()
+                });
+              
+              ws.addEventListener('message', event => {
+                console.log(`Received message: ${event.data}`);
+              });
+              
+                ws.addEventListener('close', () => {
+                    console.log('WebSocket connection closed.');
+                });
+                // ws.send(JSON.stringify(newOrder));
                 console.log("succesfull")
                 res.json({message:"Successfully added order",status:true})
             })            
         } catch (error) {
-            res.status(500).json({message:"Server error",status:false})
-        }
+            res.status(500).json({message:"Server error",error:error,status:false})
+        } 
     }
 
     static removeOngoingOrder = async (req, res) => {
-        const { order_id } = req.body;
+        const { tokenNo } = req.body;
 
         try {
-            ongoingOrderModel.findOneAndDelete(order_id, { order_id: order_id });
+            ongoingOrderModel.findOneAndDelete( { tokenNo: tokenNo }).then(e=>{
+                const ws = new WebSocket('ws://localhost:5000');
+                
+                ws.addEventListener('open', () => {
+                    ws.send(tokenNo);
+                    console.log('WebSocket connection established.');
+                    ws.close()
+                });
+              
+              ws.addEventListener('message', event => {
+                console.log(`Received message: ${event.data}`);
+              });
+              
+                ws.addEventListener('close', () => {
+                    console.log('WebSocket connection closed.');
+                });
+                return res.json({message:"Successfully deleted order",status:true})
+            });
         } catch (error) {
             res.status(500).json({message:"Server error",status:false})
         }
