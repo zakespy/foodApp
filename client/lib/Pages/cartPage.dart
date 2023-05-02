@@ -115,12 +115,14 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
     // List<Map> cartForServer = Provider.of<Cart>(context, listen: false).getCart().map((e) => {
 
     // }).toList();
+    List tempCart = Provider.of<Cart>(context, listen: false).getCart();
+    print(tempCart);
     var orderConfirmation = await http.post(
       Uri.parse("http://10.0.2.2:8000/api/order/addOrder"),
       body: jsonEncode({
         "tokenNo": jsonDecode(tokenRes.body)['tokenNo'],
         "order_id": order_Id,
-        "orderDetails": Provider.of<Cart>(context, listen: false).getCart(),
+        "orderDetails": tempCart
       }),
       headers: {
         'Content-type': 'application/json',
