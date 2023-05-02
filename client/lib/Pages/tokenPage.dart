@@ -81,14 +81,14 @@ class _TokenPageState extends State<TokenPage> {
 //   // channel.sink.close(); to close websocket
 // }
 
-  bool chechToken(orderId) {
-    String res = "Processing";
-    bool result = getToken(orderId);
-    result ? Provider.of<Token>(context).updateToken(orderId) : "";
+  bool chechToken(tokenNo) {
+    print('tokenNo $tokenNo');
+    bool result = false;
+    tokenNo == widget.tokenNumber ? result = true : result = false;
     // result ? res = "Prepared" : '';
     // return res;
     // return result ? 'Prepared' : 'Processing';
-    return result ? true : false;
+    return result;
   }
 
   Future<List> getTokenList() async {
@@ -152,7 +152,9 @@ class _TokenPageState extends State<TokenPage> {
                               ? 'Prepared'
                               : 'Processing'
                           : 'processing',
-                      style: TextStyle(fontSize: 24)),
+                      style: TextStyle(fontSize: 24)
+                        // '${snapshot}'
+                      ),
                   snapshot.hasData
                       ? chechToken(snapshot.data)
                           ? ElevatedButton(

@@ -14,6 +14,7 @@ import dayOrder from "./routes/dayOrder.js"
 import { enqueue, dequeue, reqProcess } from "./modules/queue.js";
 import http from 'http'
 import { WebSocketServer } from 'ws'
+import WebSocket from 'ws';
 import bodyParser from 'body-parser';
 import dashWebSocket from "./modules/dashWebSocket.js";
 // import connectSocket  from "./modules/webSocket.js"; 
@@ -66,6 +67,9 @@ wss.on('connection', (ws) => {
 })
 
 
+
+
+
 // dashWebSocket()
 const newOrder = {
   customerEmailId: String,
@@ -111,25 +115,86 @@ const newOrder = {
 
 // dashboard websocket
 const dashWss = new WebSocketServer({ port: 5010 });
-dashWss.on('connection', (dashWs) => {
-  dashWs.on('message', message => {
-    // ws.send("true")
-    console.log(JSON.parse(message))
+
+// dashWss.addEventListener('open', () => {
+//   // dashWss.send(stringOrder);
+//   console.log('WebSocket connection established.');
+// });
+
+// dashWss.addEventListener('message', event => {
+//   dashWss.send(event.data);
+// console.log(`Received message: ${event.data}`);
+// });
+
+// dashWss.addEventListener('close', () => {
+//   console.log('WebSocket connection closed.');
+// });
+
+dashWss.on('connection', function connection(ws) {
+  // setInterval(()=>{ws.send("hiii")},1000)
+  console.log("connected")
+  // ws.on('message',(data)=>{
+  //   console.log(data)
+  //   var enc = new TextDecoder("utf-8");
+  //   var arr = new Uint8Array(data);
+  //   console.log(enc.decode(arr));
+  //   ws.send(JSON.stringify(enc.decode(arr)))
+  // })
+  ws.on('message', function incoming(data,isBinary) {
+    console.log("message received",data)
+    // var enc = new TextDecoder("utf-8");
+    // var arr = new Uint8Array(data);
+    // const decodedData = enc.decode(arr)
+    // console.log("decoded data",decodedData);
+    // console.log("again stringify data",JSON.stringify(decodedData));
+    dashWss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        // client.send(JSON.stringify(decodedData), { binary: isBinary });
+        client.send(data, { binary: isBinary });
+      }
+    })
   })
-  dashWs.on('headers', (headers) => {
+  ws.on('headers', (headers) => {
     headers.push('Access-Control-Allow-Origin: *');
   });
-  dashWs.on('request', (request, response) => {
+  ws.on('request', (request, response) => {
     response.setHeader('Access-Control-Allow-Origin', '*');
     response.writeHead(200);
     response.end('WebSocket server is up and running!');
   })
-  setInterval(() => {
-   
-    dashWs.send(JSON.stringify(newOrder))
-  }, 5000)
+
+  
   console.log('new connection')
 })
+
+// dashWss.on('connection', (dashWs) => {
+//   dashWs.on('message', message => {
+//     // ws.send("true")
+//     // console.log("message received",JSON.parse(message))
+//     console.log("data send",message)
+//     // setInterval(()=>{
+//       // sendData(message)
+//       dashWs.send(message)
+//     // },1000)
+    
+//   })
+//   dashWs.on('headers', (headers) => {
+//     headers.push('Access-Control-Allow-Origin: *');
+//   });
+//   dashWs.on('request', (request, response) => {
+//     response.setHeader('Access-Control-Allow-Origin', '*');
+//     response.writeHead(200);
+//     response.end('WebSocket server is up and running!');
+//   })
+
+//   // function sendData(msg){
+//   //   dashWss.send(msg)
+//   // }  // setInterval(() => {
+   
+//   //   dashWs.send(JSON.stringify(newOrder))
+//   // }, 5000)
+//   console.log('new connection')
+// })
 
 
 

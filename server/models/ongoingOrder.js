@@ -7,7 +7,7 @@ const ongoingOrderSchema = new mongoose.Schema({
     orderDetails: [{
         foodName: String,
         quantity: Number,
-        category: Number,
+        category: [],
         foodPrice: Number
     }],
     preparedStatus: Boolean,

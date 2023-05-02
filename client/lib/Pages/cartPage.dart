@@ -125,9 +125,9 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         "orderDetails": tempCart
       }),
       headers: {
-        'Content-type': 'application/json',
+        // 'Content-type': 'application/json',
         'Accept': 'application/json',
-      }
+      } 
     );
 
     await http.post(
