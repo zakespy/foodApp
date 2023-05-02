@@ -42,4 +42,8 @@ class OrdersProvider with ChangeNotifier {
     return myOrdersList.allOrders[index].getPrice();
   }
 
+  void changeCurrentStatus( String token ) {
+    myOrdersList.changeStatusByToken(token);
+  }
+
 }

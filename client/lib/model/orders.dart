@@ -24,6 +24,15 @@ class MyOrders  {
     allOrders.removeWhere((element) => element.token == token );
   }
 
+  void changeStatusByToken( String token ) {
+    int index = 0;
+
+    for(int i = 0; i < allOrders.length; i++){
+      if( allOrders[i].token == token ) allOrders[i].changeStatus();
+    }
+
+  }
+
   Map toJson() {
     List jsonList = [];
 
@@ -75,6 +84,10 @@ class OrderItems {
       });
 
     return price;
+  }
+
+  void changeStatus () {
+    status = true;
   }
 
 }
