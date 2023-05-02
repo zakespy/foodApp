@@ -9,5 +9,6 @@ router.get('/getAllCategory',categoryController.getAllCategory)
 router.post('/addCategory',categoryController.addCategory)
 router.post('/removeCategory',categoryController.deleteCategory)
 router.post('/editgory',categoryController.editCategory)
+router.post('/editAllMenu',categoryController.addCategory2ToAllMenu)
 
 export default router

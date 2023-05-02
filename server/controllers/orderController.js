@@ -82,6 +82,16 @@ class orderController{
         }
     }
 
+    static deleteOnGoingOrder = async (req,res)=>{
+        const {order_id} = req.body
+        try {
+            await ongoingOrderModel.findOneAndRemove({order_id:order_id}).then(e=>{
+                return res.json({message:"Succesfully deleted order",status:true})
+            })
+        }catch(error){
+            return res.status(500).json({message:"Server error",error:error})
+        }
+    }
 }
 
 export default orderController

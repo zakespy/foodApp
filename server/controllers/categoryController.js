@@ -1,6 +1,7 @@
 //admin food category operations
 
 import categoryModel from "../models/categoryModel.js";
+import foodModel from "../models/foodModel.js";
 
 class categoryController{
     static getAllCategory = async (req,res)=>{
@@ -29,7 +30,7 @@ class categoryController{
     }
 
     static deleteCategory = async(req,res)=>{
-        const {categoryName} = rq.body
+        const {categoryName} = req.body
         await categoryModel.findOne({categoryName:categoryName}).then(async e=>{
             if(e){
                 await categoryModel.findOneAndDelete({categoryName:categoryName}).then(e=>{
@@ -57,6 +58,22 @@ class categoryController{
         }).catch(err=>{
             return res.status(500).json({message:"Server error",status:false})
         })
+    } 
+
+    static addCategory2ToAllMenu = async (req,res)=>{
+        const {updatedMenu} = req.body
+        console.log("updatedMenu",updatedMenu)
+        try {
+            const newArr = updatedMenu.map(async e=>{
+                await foodModel.findOneAndUpdate({foodName:e.foodName},e).then(e=>{console.log(e)})
+            })
+            newArr.then(e=>{
+                return res.json({message:"Succesfully updated all menu",status:true})
+            })
+        } catch (error) {
+            return res.status(500).json({message:"Server error",error:error,status:false})
+        }
+        
     }
 }
 
