@@ -10,6 +10,7 @@ import history from "./routes/history.js";
 import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
 import order from "./routes/order.js"
+import dayOrder from "./routes/dayOrder.js"
 import { enqueue, dequeue, reqProcess } from "./modules/queue.js";
 import http from 'http'
 import { WebSocketServer } from 'ws'
@@ -42,6 +43,7 @@ app.use("/api/history", history);
 app.use("/api/admin", admin);
 app.use("/api/payment", payment);
 app.use("/api/order", order);
+app.use("/api/dayOrder", dayOrder);
 
 setInterval(() => {
   reqProcess()

@@ -51,10 +51,17 @@ class orderController{
     }
 
     static createOnGoingOrder = async (req,res)=>{
-        const {tokenNo,order_id} = req.body 
+        const {tokenNo, order_id, orderDetails} = req.body 
         console.log(req.body)
+
         try {
-            const newOngoingOrder = new ongoingOrderModel({tokenNo:tokenNo,order_id:order_id,claimed:false,preparedStatus:false})
+            const newOngoingOrder = new ongoingOrderModel({
+                tokenNo: tokenNo,
+                order_id: order_id,
+                orderDetails: orderDetails,
+                claimed: false,
+                preparedStatus: false
+            })
             console.log("ongoingorder",newOngoingOrder)
             newOngoingOrder.save().then(e=>{
                 console.log("succesfull")
@@ -63,8 +70,16 @@ class orderController{
         } catch (error) {
             res.status(500).json({message:"Server error",status:false})
         }
-        
-        
+    }
+
+    static removeOngoingOrder = async (req, res) => {
+        const { order_id } = req.body;
+
+        try {
+            ongoingOrderModel.findOneAndDelete(order_id, { order_id: order_id });
+        } catch (error) {
+            res.status(500).json({message:"Server error",status:false})
+        }
     }
 
     static deleteOnGoingOrder = async (req,res)=>{
