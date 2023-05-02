@@ -1,5 +1,5 @@
 import express from "express";
-import bodyParser from "body-parser";
+// import bodyParser from "body-parser";
 import cors from 'cors'
 import dotenv from 'dotenv';
 import connectDB from "./db/connection.js";
@@ -13,6 +13,7 @@ import order from "./routes/order.js"
 import { enqueue, dequeue, reqProcess } from "./modules/queue.js";
 import http from 'http'
 import { WebSocketServer } from 'ws'
+import bodyParser from 'body-parser';
 import dashWebSocket from "./modules/dashWebSocket.js";
 // import connectSocket  from "./modules/webSocket.js"; 
 // import {newSocket} from "../server/modules/webSocket.js"
@@ -30,7 +31,9 @@ connectDB(DATABASE_URL) //connection
 
 // app.use(createSocket())
 app.use(express.json());
-app.use(express.json({ limit: '50mb' }))
+// app.use(express.json({ limit: '50mb' }))
+app.use(bodyParser.json({limit:"30mb",extended:true}))
+app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 app.use(cors())
 app.use("/api", customer);
 app.use("/api/food", food);
