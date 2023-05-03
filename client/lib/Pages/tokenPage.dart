@@ -147,11 +147,10 @@ class _TokenPageState extends State<TokenPage> {
                   SizedBox(height: 32),
                   Text(
                       // snapshot.hasData && snapshot.data == "true"
-                      snapshot.hasData
-                          ? chechToken(snapshot.data)
+                      chechToken(snapshot.data)
                               ? 'Prepared'
                               : 'Processing'
-                          : 'processing',
+                      ,    // : 'processing',
                       style: TextStyle(fontSize: 24)
                         // '${snapshot}'
                       ),
