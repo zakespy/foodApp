@@ -53,46 +53,6 @@ class orderController{
        
     }
 
-    static createOnGoingOrder = async (req,res)=>{
-        const {tokenNo,order_id,orderDetails} = req.body
-        console.log(orderDetails)
-        try {
-            const newOrder ={
-                "order_id":order_id,
-                "orderDetails":orderDetails,
-                "tokenNo":tokenNo
-            }
-
-            const newOngoingOrder = new ongoingOrderModel({
-                tokenNo: tokenNo,
-                order_id: order_id,
-                orderDetails: orderDetails,
-                claimed: false,
-                preparedStatus: false
-            })
-            await newOngoingOrder.save().then(e=>{
-                const ws = new WebSocket('ws://localhost:5010');
-                            ws.addEventListener('open', () => {
-                                ws.send(JSON.stringify(newOrder));
-                                console.log('WebSocket connection established.');
-                                ws.close()
-                            });
-                          
-                          ws.addEventListener('message', event => {
-                            console.log(`Received message: ${event.data}`);
-                          });
-                          
-                            ws.addEventListener('close', () => {
-                                console.log('WebSocket connection closed.');
-                            });
-                            // ws.send(JSON.stringify(newOrder));
-                             
-            })
-        } catch (error) {
-            res.status(500).json({message:"Server error",error:error,status:false})
-        }
-    } 
-
     // static createOnGoingOrder = async (req,res)=>{
     //     const {tokenNo, order_id, orderDetails} = req.body 
     //     console.log("inside api create ongoing order",req.body.orderDetails)
@@ -107,11 +67,7 @@ class orderController{
     //             preparedStatus: false
     //         })
     //         console.log("ongoingorder",newOngoingOrder)
-    //         const newOrder = {
-    //             "order_id":order_id,
-    //                 "tokenNo":tokenNo,
-    //                 "orderDetails":order.orderDetails
-    //         }
+            
     //         newOngoingOrder.save().then(async e=>{
     //             // const dashWss = new WebSocketServer({ port: 5010 });
     //             // dashWss.on('connection', (dashWs) => {
@@ -143,15 +99,13 @@ class orderController{
     //             //   })
     //             //   dashWss.close()
                   
-    //             const order = await ongoingOrderModel.findOne({order_id:order_id,tokenNo:tokenNo}).then(e=>{
-    //                 newOrder = {
-    //                     "order_id":order_id,
-    //                     "tokenNo":tokenNo,
-    //                     "orderDetails":order.orderDetails
-    //                 }
-    //             })
-    //             console.log("newOrder",newOrder)
-                
+    //             const order = await ongoingOrderModel.findOne({order_id:order_id})
+    //             console.log("order",order)
+    //             const newOrder = {
+    //                 "order_id":order_id,
+    //                 "tokenNo":tokenNo,
+    //                 "orderDetails":order.orderDetails
+    //             }
     //             const stringOrder = JSON.stringify(newOrder)
     //             console.log("stringifies data",stringOrder)
     //             const ws = new WebSocket('ws://localhost:5010');
@@ -177,6 +131,58 @@ class orderController{
     //         res.status(500).json({message:"Server error",error:error,status:false})
     //     } 
     // }
+
+    static createOnGoingOrder = async (req,res)=>{
+        const {tokenNo,order_id,orderDetails} = await req.body
+        setTimeout(async ()=>{
+            console.log("orderDetails",orderDetails)
+            const newDetails = orderDetails
+            console.log("neDetails",newDetails)
+        try {
+            const newOrder ={
+                "order_id":order_id,
+                "orderDetails":orderDetails,
+                "tokenNo":tokenNo
+            }
+
+            const newOngoingOrder = new ongoingOrderModel({
+                tokenNo: tokenNo,
+                order_id: order_id,
+                orderDetails: orderDetails,
+                claimed: false,
+                preparedStatus: false
+            })
+            await newOngoingOrder.save().then(async e=>{
+                const details = await ongoingOrderModel.findOne({order_id: order_id});
+                newOrder.orderDetails = [
+                    { foodName: 'Dosa', foodPrice: 40, quantity: 1 },
+                    { foodName: 'Daal', foodPrice: 30, quantity: 1 },
+                  ];
+                console.log("newOrder",newOrder.orderDetails)
+                
+                const ws = new WebSocket('ws://localhost:5010');
+                            ws.addEventListener('open', () => {
+                                ws.send(JSON.stringify(newOrder));
+                                console.log('WebSocket connection established.');
+                                ws.close()
+                            });
+                          
+                          ws.addEventListener('message', event => {
+                            console.log(`Received message: ${event.data}`);
+                          });
+                          
+                            ws.addEventListener('close', () => {
+                                console.log('WebSocket connection closed.');
+                            });
+                            // ws.send(JSON.stringify(newOrder));
+                            return res.json({ message:"success", status: true })
+            })
+        } catch (error) {
+            return res.status(500).json({message:"Server error",error:error,status:false})
+        }
+        },2000)
+        
+    }
 
     static removeOngoingOrder = async (req, res) => {
         const { tokenNo } = req.body;
