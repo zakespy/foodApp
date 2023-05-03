@@ -117,6 +117,10 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
     // }).toList();
     List tempCart = Provider.of<Cart>(context, listen: false).getCart();
     print(tempCart);
+    
+    Future.delayed(const Duration(milliseconds: 2000), () async {
+
+
     var orderConfirmation = await http.post(
       Uri.parse("http://10.0.2.2:8000/api/order/addOrder"),
       body: jsonEncode({
@@ -125,7 +129,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         "orderDetails": tempCart
       }),
       headers: {
-        // 'Content-type': 'application/json',
+        'Content-type': 'application/json',
         'Accept': 'application/json',
       } 
     );
@@ -141,6 +145,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
         'Accept': 'application/json',
       }
     );
+    });
+
 
     Provider.of<Cart>(context, listen: false).emptyCart();
 
