@@ -11,6 +11,7 @@ import admin from "./routes/admin.js";
 import payment from "./routes/payment.js";
 import order from "./routes/order.js"
 import dayOrder from "./routes/dayOrder.js"
+import serverSentEvent from "./routes/serverSentEvent.js"
 import { enqueue, dequeue, reqProcess } from "./modules/queue.js";
 import http from 'http'
 import { WebSocketServer } from 'ws'
@@ -45,6 +46,7 @@ app.use("/api/admin", admin);
 app.use("/api/payment", payment);
 app.use("/api/order", order);
 app.use("/api/dayOrder", dayOrder);
+app.use("/api/socket",serverSentEvent)
 
 setInterval(() => {
   reqProcess()
@@ -135,103 +137,33 @@ const newOrder = {
   order_id: 'order_412'
 }
 
-
-
-
 // dashboard websocket
-const dashWss = new WebSocketServer({ port: 5010 });
 
-// dashWss.addEventListener('open', () => {
-//   // dashWss.send(stringOrder);
-//   console.log('WebSocket connection established.');
-// });
+// const dashWss = new WebSocketServer({ port: 5010 });
 
-// dashWss.addEventListener('message', event => {
-//   dashWss.send(event.data);
-// console.log(`Received message: ${event.data}`);
-// });
-
-// dashWss.addEventListener('close', () => {
-//   console.log('WebSocket connection closed.');
-// });
-
-dashWss.on('connection', function connection(ws) {
-  // setInterval(()=>{ws.send("hiii")},1000)
-  console.log("connected")
-  // ws.on('message',(data)=>{
-  //   console.log(data)
-  //   var enc = new TextDecoder("utf-8");
-  //   var arr = new Uint8Array(data);
-  //   console.log(enc.decode(arr));
-  //   ws.send(JSON.stringify(enc.decode(arr)))
-  // })
-  ws.on('message', function incoming(data,isBinary) {
-    console.log("message received",data)
-    // var enc = new TextDecoder("utf-8");
-    // var arr = new Uint8Array(data);
-    // const decodedData = enc.decode(arr)
-    // console.log("decoded data",decodedData);
-    // console.log("again stringify data",JSON.stringify(decodedData));
-    dashWss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        // client.send(JSON.stringify(decodedData), { binary: isBinary });
-        client.send(data, { binary: isBinary });
-      }
-    })
-  })
-  ws.on('headers', (headers) => {
-    headers.push('Access-Control-Allow-Origin: *');
-  });
-  ws.on('request', (request, response) => {
-    response.setHeader('Access-Control-Allow-Origin', '*');
-    response.writeHead(200);
-    response.end('WebSocket server is up and running!');
-  })
-
-  
-  console.log('new connection')
-})
-
-// dashWss.on('connection', (dashWs) => {
-//   dashWs.on('message', message => {
-//     // ws.send("true")
-//     // console.log("message received",JSON.parse(message))
-//     console.log("data send",message)
-//     // setInterval(()=>{
-//       // sendData(message)
-//       dashWs.send(message)
-//     // },1000)
-    
+// dashWss.on('connection', function connection(ws) {
+//   console.log("connected")
+//   ws.on('message', function incoming(data,isBinary) {
+//     console.log("message received",data)
+//     dashWss.clients.forEach(function each(client) {
+//       if (client !== ws && client.readyState === WebSocket.OPEN) {
+//         client.send(data, { binary: isBinary });
+//       }
+//     })
 //   })
-//   dashWs.on('headers', (headers) => {
+//   ws.on('headers', (headers) => {
 //     headers.push('Access-Control-Allow-Origin: *');
 //   });
-//   dashWs.on('request', (request, response) => {
+//   ws.on('request', (request, response) => {
 //     response.setHeader('Access-Control-Allow-Origin', '*');
 //     response.writeHead(200);
 //     response.end('WebSocket server is up and running!');
 //   })
 
-//   // function sendData(msg){
-//   //   dashWss.send(msg)
-//   // }  // setInterval(() => {
-   
-//   //   dashWs.send(JSON.stringify(newOrder))
-//   // }, 5000)
+  
 //   console.log('new connection')
 // })
 
-
-
-
-// wss.on('message', function message(data) {
-//   console.log('hello message received: %s ', data);
-//   // wss.send("hiiii")
-// });
-
-// wss.on('open', function open() {
-//   ws.send('something');
-// });
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(

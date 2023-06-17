@@ -139,7 +139,7 @@ class _TokenPageState extends State<TokenPage> {
                     'Token Number:',
                     style: TextStyle(fontSize: 24),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     '${widget.tokenNumber}',
                     style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
