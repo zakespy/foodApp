@@ -77,7 +77,8 @@ wss.on('connection', function connection(ws) {
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         // client.send(JSON.stringify(decodedData), { binary: isBinary });
-        client.send(JSOn.stringify(decodedData), { binary: isBinary });
+        // client.send(JSON.stringify(decodedData), { binary: isBinary });
+        client.send("true", { binary: isBinary });
       }
     })
   })
@@ -139,30 +140,30 @@ const newOrder = {
 
 // dashboard websocket
 
-// const dashWss = new WebSocketServer({ port: 5010 });
+const dashWss = new WebSocketServer({ port: 5010 });
 
-// dashWss.on('connection', function connection(ws) {
-//   console.log("connected")
-//   ws.on('message', function incoming(data,isBinary) {
-//     console.log("message received",data)
-//     dashWss.clients.forEach(function each(client) {
-//       if (client !== ws && client.readyState === WebSocket.OPEN) {
-//         client.send(data, { binary: isBinary });
-//       }
-//     })
-//   })
-//   ws.on('headers', (headers) => {
-//     headers.push('Access-Control-Allow-Origin: *');
-//   });
-//   ws.on('request', (request, response) => {
-//     response.setHeader('Access-Control-Allow-Origin', '*');
-//     response.writeHead(200);
-//     response.end('WebSocket server is up and running!');
-//   })
+dashWss.on('connection', function connection(ws) {
+  console.log("connected")
+  ws.on('message', function incoming(data,isBinary) {
+    console.log("message received",data)
+    dashWss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(data, { binary: isBinary });
+      }
+    })
+  })
+  ws.on('headers', (headers) => {
+    headers.push('Access-Control-Allow-Origin: *');
+  });
+  ws.on('request', (request, response) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.writeHead(200);
+    response.end('WebSocket server is up and running!');
+  })
 
   
-//   console.log('new connection')
-// })
+  console.log('new connection')
+})
 
 
 app.use(bodyParser.json({ limit: "50mb" }));

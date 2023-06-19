@@ -23,9 +23,11 @@ class Token with ChangeNotifier {
     return true;
   }
 
-  void removeFromTokenList(Map token) {
+  bool removeFromTokenList(Map token) {
     tokenList.remove(token);
+    print(tokenList);
     notifyListeners();
+    return true;
   }
 
   Map getToken(String orderId) {

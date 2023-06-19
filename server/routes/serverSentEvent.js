@@ -1,12 +1,40 @@
 import express from 'express'
-import SSE from 'express-sse'
+import sse from 'express-sse'
 
 
 const router = express.Router();
-var sse = new SSE(["array", "containing", "initial", "content", "(optional)"]);
-router.get('/sse/toDashBoard',sse.init())
+let newData = 0
+setInterval(()=>{
+    newData++
+},2000)
 
-sse.send("hii");
+
+const emitSSE = (res, id, data) => {
+    res.write('id: ' + id + '\n');
+    res.write("data: " + data + '\n\n');
+    // res.flush()
+}
+
+const handleSSE = (req, res) => {
+    res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+    });
+    const id = (new Date()).toLocaleTimeString();
+    // Sends a SSE every 3 seconds on a single connection.
+    emitSSE(res, id, newData);
+    // emitSSE(res, id, (new Date()).toLocaleTimeString());
+    // setInterval(function () {
+    // }, 3000);
+
+    emitSSE(res, id, (new Date()).toLocaleTimeString());
+}
+
+
+router.get('/sse/toDashBoard',handleSSE)
+
+// sse.send("hii");
 // router.get('/sse/toDashBoard', (req, res) => {
 //     res.setHeader('Content-Type', 'text/event-stream');
 //     res.setHeader('Cache-Control', 'no-cache');
@@ -28,4 +56,4 @@ sse.send("hii");
 //     });
 // })
 
-export  default router
+export default router

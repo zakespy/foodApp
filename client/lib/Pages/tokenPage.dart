@@ -1,12 +1,21 @@
 // import 'dart:js';
 
 import 'package:flutter/material.dart';
+import 'package:foodapp/Pages/home.dart';
 import 'package:provider/provider.dart';
 import 'package:foodapp/provider/token_provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 String orderId = '';
 bool _isProcessing = false;
+Map token = {};
+
+// resources *************************
+
+// Uri.parse('ws://localhost:5000'),
+
+// ***********************************
+
 // final channel = WebSocketChannel.connect(
 //   Uri.parse('ws://localhost:5000'),
 // );
@@ -81,14 +90,14 @@ class _TokenPageState extends State<TokenPage> {
 //   // channel.sink.close(); to close websocket
 // }
 
-  bool chechToken(tokenNo) {
-    print('tokenNo $tokenNo');
-    bool result = false;
-    tokenNo == widget.tokenNumber ? result = true : result = false;
+  bool chechToken(orderId) {
+    String res = "Processing";
+    bool result = getToken(orderId);
+    result ? Provider.of<Token>(context).updateToken(orderId) : "";
     // result ? res = "Prepared" : '';
     // return res;
     // return result ? 'Prepared' : 'Processing';
-    return result;
+    return result ? true : false;
   }
 
   Future<List> getTokenList() async {
@@ -101,22 +110,36 @@ class _TokenPageState extends State<TokenPage> {
     // List tokenList = Provider.of<Token>(context,listen: false).TokenList;
     List tokenList = context.read<Token>().getTokenList();
     print('tokenList $tokenList');
-    if (orderId == "true") {
-      return true;
-    } else {
-      return false;
-    }
+    // if (orderId == "true") {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
     // List tokenList = Provider.of<Token>(context).TokenList;
     // print('tokenList $tokenList');
-    // bool isPresent = false;
-    // tokenList.map((e) => {
-    //       if (orderId == 'true') {isPresent = true}
-    //       // if (e['orderId'] == orderId) {isPresent = true}
-    //     });
-    // return isPresent;
+    bool isPresent = false;
+    tokenList.map((e) => {
+          if (orderId == 'true')
+            {
+              isPresent = true,
+              token = e,
+            }
+          // if (e['orderId'] == orderId) {isPresent = true}
+        });
+    return isPresent;
+  }
+
+  void deleteTokenFromList() {
+    bool res = context.read<Token>().removeFromTokenList(token);
+    if (res) {
+      Navigator.pushReplacement(context, MaterialPageRoute<void>(
+      builder: (BuildContext context) => const home(),
+    ));
+    }
   }
 
   void initState() {
+    print("TokenPage");
     // initialize(widget.orderId);
     // super.initState();
     // clientSocket();
@@ -139,7 +162,7 @@ class _TokenPageState extends State<TokenPage> {
                     'Token Number:',
                     style: TextStyle(fontSize: 24),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   Text(
                     '${widget.tokenNumber}',
                     style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
@@ -147,19 +170,18 @@ class _TokenPageState extends State<TokenPage> {
                   SizedBox(height: 32),
                   Text(
                       // snapshot.hasData && snapshot.data == "true"
-                      chechToken(snapshot.data)
+                      snapshot.hasData
+                          ? chechToken(snapshot.data)
                               ? 'Prepared'
                               : 'Processing'
-                      ,    // : 'processing',
-                      style: TextStyle(fontSize: 24)
-                        // '${snapshot}'
-                      ),
+                          : 'processing',
+                      style: TextStyle(fontSize: 24)),
                   snapshot.hasData
                       ? chechToken(snapshot.data)
                           ? ElevatedButton(
                               child: Text("Claim"),
                               onPressed: () =>
-                                  {Navigator.pushNamed(context, '/')},
+                                  {deleteTokenFromList()},
                             )
                           : Text("Claim ")
                       : Text("Claim "),

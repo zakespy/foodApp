@@ -231,34 +231,35 @@ export default function OrderPage(){
       
     }
 
-    // const { sendJsonMessage, getWebSocket } = useWebSocket('ws://localhost:5010', {
-    //     onOpen: () => console.log('WebSocket connection opened.'),
-    //     onClose: () => console.log('WebSocket connection closed.'),
-    //     shouldReconnect: (closeEvent) => true,
-    //     onMessage: (data) => {
-    //       console.log("data received",data.data)
-    //       decodeMsg(data)}
-    //   }); 
+    const { sendJsonMessage, getWebSocket } = useWebSocket('ws://localhost:5010', {
+        onOpen: () => console.log('WebSocket connection opened.'),
+        onClose: () => console.log('WebSocket connection closed.'),
+        shouldReconnect: (closeEvent) => true,
+        onMessage: (data) => {
+          console.log("data received",data.data)
+          decodeMsg(data)}
+      }); 
 
-    // useEffect(()=>{webSocketConnect()},[])
-    useEffect(() => {
-      const eventSource = new EventSource('http://localhost:8000/api/socket/sse/toDashBoard');
+    useEffect(()=>{webSocketConnect()},[])
+    
+    // useEffect(() => {
+    //   const eventSource = new EventSource('http://localhost:8000/api/socket/sse/toDashBoard');
   
-      eventSource.onmessage = (event) => {
-        console.log(event.data)
-        // setData(event.data);
-        // decodeMsg(data)
-      };
+    //   eventSource.onmessage = (event) => {
+    //     console.log(event.data)
+    //     // setData(event.data);
+    //     // decodeMsg(data)
+    //   };
   
-      eventSource.onerror = (error) => {
-        console.error('SSE error:', error);
-        eventSource.close();
-      };
+    //   eventSource.onerror = (error) => {
+    //     console.error('SSE error:', error);
+    //     eventSource.close();
+    //   };
   
-      return () => {
-        eventSource.close();
-      };
-    }, []);
+    //   return () => {
+    //     eventSource.close();
+    //   };
+    // }, []);
 
     return (
         <>
